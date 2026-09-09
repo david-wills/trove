@@ -252,8 +252,10 @@ async normalizerListDeclined() : Promise<Result<JsonValue[], string>> {
 },
 /**
  * A page of a raw dropped file rendered as a table (`RawPage` serialized). The
- * path is vault-relative and jailed by `Vault::resolve`; `.trove/` is never
- * readable. Read cost is O(offset + limit), never the whole file.
+ * path is vault-relative; the authoritative jail (path escapes plus `.trove/`,
+ * case-insensitive) lives in core via `Vault::resolve_user`, so it can't be
+ * bypassed with a `./` prefix or letter-case variation. Read cost is
+ * O(offset + limit), never the whole file.
  */
 async normalizerReadRaw(path: string, offset: number, limit: number) : Promise<Result<JsonValue, string>> {
     try {

@@ -1,5 +1,5 @@
 //! Debug harness: run one TickTick sync pass against a vault and print the
-//! stats. Defaults to a temp vault path so it can't touch ~/Trove by
+//! stats. Defaults to a temp vault path so it can't touch ~/Documents/Trove by
 //! accident; point it at a copy of the real tasks/ + token to validate
 //! end-to-end.
 //!

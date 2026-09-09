@@ -84,7 +84,7 @@ This step is mechanical and low-risk but broad; it lands after health is verifie
 - New: summary written on first read and reused; hand-edited jsonl (different size) detected and reflected; deleted collection drops the metric; corrupt/wrong-version summary self-repairs; two heartrate months with one modified still yield correct series.
 - In oura.rs sync tests: after a stub-server `collect_oura`, assert `.trove/oura-summary.json` is fresh and consistent.
 
-Then: `cargo check` (workspace), regenerate/commit `src/bindings.ts`, rebuild per memory rule (`npm run tauri dev`), open Health tab against the real ~/Trove vault — first open does one full rebuild (~0.5–1 s, off-thread, no hang), subsequent opens are instant; metric/bucket switching on heart-rate is instant. After the Step 3 sweep, spot-check the other heavy views (Finance, Ads, Activity) for regressions.
+Then: `cargo check` (workspace), regenerate/commit `src/bindings.ts`, rebuild per memory rule (`npm run tauri dev`), open Health tab against the real ~/Documents/Trove vault — first open does one full rebuild (~0.5–1 s, off-thread, no hang), subsequent opens are instant; metric/bucket switching on heart-rate is instant. After the Step 3 sweep, spot-check the other heavy views (Finance, Ads, Activity) for regressions.
 
 ## Risks / edge cases
 
@@ -98,7 +98,7 @@ Then: `cargo check` (workspace), regenerate/commit `src/bindings.ts`, rebuild pe
 
 # Appendix A — Supporting evidence (verified during exploration)
 
-## Measured vault volume (real `~/Trove`, 2026-06)
+## Measured vault volume (real `~/Documents/Trove`, 2026-06)
 
 | File / dir | Size | Records |
 |---|---|---|

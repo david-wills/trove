@@ -195,7 +195,7 @@ export default function HealthView() {
               On your iPhone, open <strong>Health</strong>, tap your picture,
               then <strong>Export All Health Data</strong>. AirDrop the{" "}
               <code>export.zip</code> to this Mac and import it here — every
-              metric becomes plain CSV files in <code>~/Trove/health</code>.
+              metric becomes plain CSV files in <code>~/Documents/Trove/health</code>.
             </p>
             <button className="btn-primary" onClick={pickAndImport}>
               Import export.zip…
@@ -442,8 +442,8 @@ function MetricsSection({
                   {SOURCE_META[s.source].label}{" "}
                   <code>
                     {s.source === "oura"
-                      ? "~/Trove/health/oura/"
-                      : `~/Trove/health/${metric.slug}/`}
+                      ? "~/Documents/Trove/health/oura/"
+                      : `~/Documents/Trove/health/${metric.slug}/`}
                   </code>
                 </span>
               ))}

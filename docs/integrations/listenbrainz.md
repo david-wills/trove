@@ -85,7 +85,7 @@ All optional in the contract; unmatched listens simply carry no MBIDs.
 
 | Capability | Status | How to validate (exact steps) |
 |---|---|---|
-| Backfill | 🧪 | Connect → ListenBrainz → enter any public username (no key needed); toggle on + Sync now; confirm `~/Trove/media/plays/listenbrainz/YYYY-MM.jsonl` (+ `raw/`) month-partitioned, row count ≈ the profile's listen count |
+| Backfill | 🧪 | Connect → ListenBrainz → enter any public username (no key needed); toggle on + Sync now; confirm `~/Documents/Trove/media/plays/listenbrainz/YYYY-MM.jsonl` (+ `raw/`) month-partitioned, row count ≈ the profile's listen count |
 | Incremental poll | 🧪 | submit a listen from any client; wait a poll cycle (hourly) or Sync now; exactly one new row; re-run Sync → no duplicate (guid dedupe). For a large gap: let >100 listens accumulate, Sync once, confirm ALL land (the gap-drain fix) |
 
 ## Build notes (as-built, 2026-06-14)

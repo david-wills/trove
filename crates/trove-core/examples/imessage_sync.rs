@@ -1,5 +1,5 @@
 //! Debug harness: run one iMessage sync pass into a throwaway vault and
-//! print what happened. Never touches the real ~/Trove.
+//! print what happened. Never touches the real ~/Documents/Trove.
 //!
 //! ```bash
 //! cargo run -p trove-core --example imessage_sync -- /tmp/trove-imessage-validate

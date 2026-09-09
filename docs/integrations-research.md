@@ -7,7 +7,7 @@
 **Mechanisms:** M1 one-shot file import · M2 watch folder · M3 local DB copy-then-read (often needs Full Disk Access) · M4 OS API watcher (TCC) · M5 cloud API pull (OAuth/token) · M6 agent collector.
 
 > **⚠️ Vault paths in this doc are not authoritative.** Per-source entries
-> below suggest vault paths (`geo/…`, `~/Trove/social/dating/`, …) that
+> below suggest vault paths (`geo/…`, `~/Documents/Trove/social/dating/`, …) that
 > predate the Phase 1 domain taxonomy. **The taxonomy table in
 > `docs/integrations/README.md` wins wherever they disagree.** Phase 2
 > briefs take their paths from the taxonomy, never from this doc.
@@ -4181,7 +4181,7 @@ Every major social platform now offers a GDPR-compliant "Download Your Data" exp
 
 3. API access is mostly blocked or expensive for closed platforms: X/Twitter API is now pay-per-use with no free tier for new developers; Instagram Graph API requires Business/Creator account + Facebook Page linkage (personal accounts locked out since Dec 2024); Reddit API requires pre-approval since 2025. For all three, M1 archive export is the only practical general-user path.
 
-4. Dating apps (Tinder, Hinge, Bumble) require special handling: implement as an opt-in category with explicit user acknowledgment of sensitivity, store under per-source folders like any social source (`~/Trove/social/<source>/`, e.g. `social/tinder/`) with the privacy-sensitive needs-flag set, and document that contents include match history and message text. The same JSON import pattern works across Tinder/Hinge.
+4. Dating apps (Tinder, Hinge, Bumble) require special handling: implement as an opt-in category with explicit user acknowledgment of sensitivity, store under per-source folders like any social source (`~/Documents/Trove/social/<source>/`, e.g. `social/tinder/`) with the privacy-sensitive needs-flag set, and document that contents include match history and message text. The same JSON import pattern works across Tinder/Hinge.
 
 5. Threads shares an export with Instagram — parse both from the same Accounts Center ZIP. This is a free win — one import handles two platforms.
 

@@ -320,7 +320,7 @@ export default function ScreenTimeView() {
         Read from the usage streams iCloud already syncs between your Apple
         devices — nothing leaves your machine. Apple keeps only a few weeks
         on disk; Trove banks them for good. Raw sessions:{" "}
-        <code>~/Trove/screen-time/</code> — one folder per device, one JSONL
+        <code>~/Documents/Trove/screen-time/</code> — one folder per device, one JSONL
         file per day.
       </div>
     </div>

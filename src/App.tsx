@@ -177,7 +177,7 @@ export default function App() {
         <div className="drop-overlay">
           <div className="drop-overlay-card">
             Drop to add to your vault
-            <span>.md and .txt land in ~/Trove/artifacts</span>
+            <span>.md and .txt land in ~/Documents/Trove/artifacts</span>
           </div>
         </div>
       )}

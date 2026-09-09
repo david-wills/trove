@@ -165,9 +165,9 @@ export default function TasksView() {
         <div className="activity-empty">
           No tasks here yet. Trove syncs TickTick every 15 minutes once a
           token is provisioned at{" "}
-          <code>~/Trove/.trove/sync/ticktick-token.json</code> — and any other
+          <code>~/Documents/Trove/.trove/sync/ticktick-token.json</code> — and any other
           to-do app can plug in by writing the open task format under{" "}
-          <code>~/Trove/tasks/</code>.
+          <code>~/Documents/Trove/tasks/</code>.
         </div>
       )}
 
@@ -223,7 +223,7 @@ export default function TasksView() {
       <div className="activity-footnote">
         Synced read-only from TickTick — completions are detected by diffing
         snapshots, building a history TickTick itself doesn't expose. Files:{" "}
-        <code>~/Trove/tasks/</code> — open tasks in <code>tasks.jsonl</code>,
+        <code>~/Documents/Trove/tasks/</code> — open tasks in <code>tasks.jsonl</code>,
         completions in <code>events/</code>, one source per folder.
       </div>
     </div>

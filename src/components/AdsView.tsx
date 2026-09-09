@@ -286,7 +286,7 @@ export default function AdsView({
         Observed by the browser extension's opt-in page observer — viewability
         is the MRC display bar (≥50% visible for ≥1s). Nothing is blocked and
         no page content is captured. Raw records:{" "}
-        <code>~/Trove/browser/ads/</code> — one JSONL file per day.
+        <code>~/Documents/Trove/browser/ads/</code> — one JSONL file per day.
       </div>
     </div>
   );

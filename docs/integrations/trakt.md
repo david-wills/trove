@@ -94,7 +94,7 @@ media-plays — curation stays raw. No tier-specific code paths.
 
 | Capability | Status | How to validate (exact steps) |
 |---|---|---|
-| History backfill + poll | 🧪 | register the OAuth app + `export TROVE_TRAKT_CLIENT_ID/_SECRET` (journal); Connect → Trakt (browser consent at localhost:38576); toggle on + Sync now; confirm `~/Trove/media/plays/trakt/YYYY-MM.jsonl` (+ `raw/`) rows match the trakt.tv history page (movies AND episodes), re-run produces no dupes; let the token age past expiry and confirm it refreshes (no reconnect prompt) |
+| History backfill + poll | 🧪 | register the OAuth app + `export TROVE_TRAKT_CLIENT_ID/_SECRET` (journal); Connect → Trakt (browser consent at localhost:38576); toggle on + Sync now; confirm `~/Documents/Trove/media/plays/trakt/YYYY-MM.jsonl` (+ `raw/`) rows match the trakt.tv history page (movies AND episodes), re-run produces no dupes; let the token age past expiry and confirm it refreshes (no reconnect prompt) |
 | Curation snapshots | ⬜ deferred (P2) | NOT built this iteration — `// TODO(trakt P2)` in `trakt.rs` lists the exact endpoints (`/sync/ratings`, `/sync/watchlist`, `/sync/collection/{movies,shows}`) → `media/trakt/{ratings,watchlist,collection}.jsonl` replace-on-sync (raw, no contract). A small follow-up; pick up any iteration |
 | Public-profile fallback | ⬜ deferred | OAuth is the default path; the no-OAuth username path still needs the app's client_id header so it unblocks no validation — additive enhancement |
 

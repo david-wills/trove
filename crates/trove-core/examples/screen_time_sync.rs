@@ -1,5 +1,5 @@
 //! Debug harness: run one Screen Time (Biome) sync pass into a throwaway
-//! vault and print what happened. Never touches the real ~/Trove. Reads the
+//! vault and print what happened. Never touches the real ~/Documents/Trove. Reads the
 //! real Biome streams, so the binary needs Full Disk Access (a terminal
 //! with FDA inherits it).
 //!

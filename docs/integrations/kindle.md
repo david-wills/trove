@@ -108,7 +108,7 @@ in `extra`, never as errors. Sideloaded books have no cap.
 - **Note vs. highlight:** Kindle "Note" blocks carry user text with no underlying passage — mapped to `note` field (not `text`). Highlight blocks go to `text`. Bookmarks have neither.
 - **Capped clippings:** Amazon's ~10% cap produces a marker line instead of text; parsed as `text=""` + `extra.capped=true`, never as a skip or error.
 - **BOM:** `\u{FEFF}` stripped from the first block (some firmware versions prepend it).
-- **No sample on disk** (`~/Trove-samples/` empty for Kindle) — format verified against three independent primary sources (lvzon/kindle-clippings canonical parser, 2024 Medium walkthrough, KindleExport docs). Fixtures cover five block types (three-segment highlight, three-segment note, two-segment bookmark, three-segment capped, two-segment older-firmware) with both date families and capital-Location keyword variant.
+- **No sample on disk** (`~/Documents/Trove-samples/` empty for Kindle) — format verified against three independent primary sources (lvzon/kindle-clippings canonical parser, 2024 Medium walkthrough, KindleExport docs). Fixtures cover five block types (three-segment highlight, three-segment note, two-segment bookmark, three-segment capped, two-segment older-firmware) with both date families and capital-Location keyword variant.
 
 ## Research notes
 

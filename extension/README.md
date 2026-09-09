@@ -3,7 +3,7 @@
 The live half of Trove's browser collector: snapshots the active tab and
 every audible tab a few times a minute and streams them to the local `troved`
 binary over Chrome native messaging. troved merges snapshots into spans and
-appends them to `~/Trove/browser/YYYY-MM-DD.jsonl` with `source:"extension"`
+appends them to `~/Documents/Trove/browser/YYYY-MM-DD.jsonl` with `source:"extension"`
 — richer and authoritative over the history import (`source:"history"`),
 which keeps running as backup. **Local-only:** no host permissions, no
 network access; data goes binary-to-binary on this machine.
@@ -27,7 +27,7 @@ and real per-tab engagement spans, with no retention limit.
    runs per profile; spans can't carry the profile name — the tabs API
    doesn't expose it — so extension rows have an empty `profile`).
 4. Verify: browse for ~30 seconds, then check
-   `tail ~/Trove/browser/$(date +%F).jsonl` for `"source":"extension"` rows.
+   `tail ~/Documents/Trove/browser/$(date +%F).jsonl` for `"source":"extension"` rows.
 
 The `key` field in `manifest.json` pins the extension ID to
 `inhhdcdmfoiodfkipnheoiejdegipgpb` on any machine (the ID is a hash of that
@@ -62,7 +62,7 @@ the extension is exactly the dumb watcher above: no host permissions
 - **Ad observation** (first feature): records which display ads were served
   (network, advertiser via click-through landing URL, size) and how long
   each was ≥50% on screen (`viewable` = the MRC 50%/1s standard) to
-  `~/Trove/browser/ads/YYYY-MM-DD.jsonl`. Never blocks ads, never captures
+  `~/Documents/Trove/browser/ads/YYYY-MM-DD.jsonl`. Never blocks ads, never captures
   page text or creative images.
 - Detection matches iframes against `observer/ad-domains.js`, a generated
   module (regenerate with `node scripts/gen-ad-domains.mjs` and commit) —

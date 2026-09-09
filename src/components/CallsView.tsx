@@ -243,7 +243,7 @@ export default function CallsView() {
       <div className="activity-footnote">
         Calls are imported read-only from the system call history database —
         nothing is ever modified. Raw records:{" "}
-        <code>~/Trove/correspondence/calls/</code> — one JSONL file per month.
+        <code>~/Documents/Trove/correspondence/calls/</code> — one JSONL file per month.
       </div>
     </div>
   );

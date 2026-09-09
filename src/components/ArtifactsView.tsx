@@ -196,7 +196,7 @@ export default function ArtifactsView({ openRequest }: { openRequest: OpenReques
           <div className="editor-placeholder">
             <h2>Your documents live in your vault</h2>
             <p>
-              Everything here is a plain file in <code>~/Trove/artifacts</code> —
+              Everything here is a plain file in <code>~/Documents/Trove/artifacts</code> —
               notes you write and documents you import, readable by you, your
               tools, and any AI you choose. Select a file, create a note, or
               drag <code>.md</code> / <code>.txt</code> files anywhere in this

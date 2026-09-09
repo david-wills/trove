@@ -82,7 +82,7 @@ All fields optional; sessions without summaries simply carry none.
 
 | Capability | Status | How to validate (exact steps) |
 |---|---|---|
-| Session metadata + summaries | 🧪 | enable Claude Code in the hub; Sync now; confirm rows in `~/Trove/developer/claude-code/YYYY-MM.jsonl` match sessions in the `claude` resume list (session_id, project, counts, summary); confirm NO prompt/response text in those rows; hub last-data updates |
+| Session metadata + summaries | 🧪 | enable Claude Code in the hub; Sync now; confirm rows in `~/Documents/Trove/developer/claude-code/YYYY-MM.jsonl` match sessions in the `claude` resume list (session_id, project, counts, summary); confirm NO prompt/response text in those rows; hub last-data updates |
 | Full-text opt-in | 🧪 | enable the **Claude Code — full transcripts** toggle (`claude-code-transcripts`), Sync now, confirm sidecars under `developer/claude-code/transcripts/<session-id>.jsonl`; with it off, confirm that dir is never created |
 | CLAUDE_CONFIG_DIR override | 🧪 | `export CLAUDE_CONFIG_DIR=<copied dir>`; Sync; confirm the scan follows it |
 

@@ -501,7 +501,7 @@ export default function WeatherView() {
       <div className="activity-footnote">
         Conditions come from the Open-Meteo public API — no account, no key,
         no tracking; only your rounded coordinates are sent. Raw records:{" "}
-        <code>~/Trove/weather/</code> — one JSONL file per month.
+        <code>~/Documents/Trove/weather/</code> — one JSONL file per month.
         {manual && (
           <>
             {" "}

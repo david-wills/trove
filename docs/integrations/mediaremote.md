@@ -41,7 +41,7 @@ deliberate spike gate, not a blind build:
 
 **To unpark (Needs-David):** run a bounded spike of `mediaremote-adapter` (or
 `mediaremote-rs`) on macOS 26 → if it streams now-playing JSON, drop a captured
-sample in `~/Trove-samples/` (the Needs-sample) and the loop builds the Live
+sample in `~/Documents/Trove-samples/` (the Needs-sample) and the loop builds the Live
 collector (debounce/session/suppression/mapping + the covered-bundle-ID
 double-count guard per the build plan); if the adapter is dead on 26, evaluate
 the JXA/osascript fallback, else mark **🚫 unavailable** with the reason.

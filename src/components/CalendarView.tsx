@@ -196,7 +196,7 @@ export default function CalendarView() {
       {summary && summary.events === 0 && !needsPermission && (
         <div className="activity-empty">
           No events in range yet. The first sync backfills full calendar
-          history into <code>~/Trove/calendar/</code> within a few minutes of
+          history into <code>~/Documents/Trove/calendar/</code> within a few minutes of
           access being granted.
         </div>
       )}
@@ -283,10 +283,10 @@ export default function CalendarView() {
 
       <div className="activity-footnote">
         Read from the system calendar store (EventKit), which carries every
-        account macOS syncs. Files: <code>~/Trove/calendar/</code> — events by
+        account macOS syncs. Files: <code>~/Documents/Trove/calendar/</code> — events by
         month in <code>events/</code>, the reschedule/cancellation stream in{" "}
         <code>changes/</code>. Reminders land in{" "}
-        <code>~/Trove/tasks/apple-reminders/</code> (see the Tasks tab).
+        <code>~/Documents/Trove/tasks/apple-reminders/</code> (see the Tasks tab).
       </div>
     </div>
   );

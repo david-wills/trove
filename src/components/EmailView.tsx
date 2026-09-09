@@ -287,7 +287,7 @@ export default function EmailView() {
 
       <div className="activity-footnote">
         Email is stored complete in your vault —{" "}
-        <code>~/Trove/correspondence/email/</code>, one JSONL file per month,
+        <code>~/Documents/Trove/correspondence/email/</code>, one JSONL file per month,
         shared by Gmail sync and .mbox imports and deduped by Message-ID.
         Bodies are full text; attachments are metadata only unless opted in.
       </div>

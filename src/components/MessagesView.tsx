@@ -349,7 +349,7 @@ export default function MessagesView() {
         iMessage is imported read-only from the Messages database — Messages
         is never modified. Email arrives via Gmail sync and .mbox archives
         (browse it in the Email tab); Slack from exported archives. Raw
-        messages: <code>~/Trove/correspondence/</code> — one JSONL file per
+        messages: <code>~/Documents/Trove/correspondence/</code> — one JSONL file per
         source per month.
       </div>
     </div>

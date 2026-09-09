@@ -92,7 +92,7 @@ Trove computes its own charts at read time, so they are not pulled.
 
 | Capability | Status | How to validate (exact steps) |
 |---|---|---|
-| Backfill | 🧪 | (1) `export TROVE_LASTFM_API_KEY=<free key from last.fm/api/account/create>`; (2) in the app, Connect → Last.fm → paste a public **username** (the key comes from env, you do NOT paste it); (3) toggle on + Sync now; (4) confirm `~/Trove/media/plays/lastfm/YYYY-MM.jsonl` (+ `raw/`) month-partitioned back to account creation, row count ≈ the profile's lifetime scrobble total |
+| Backfill | 🧪 | (1) `export TROVE_LASTFM_API_KEY=<free key from last.fm/api/account/create>`; (2) in the app, Connect → Last.fm → paste a public **username** (the key comes from env, you do NOT paste it); (3) toggle on + Sync now; (4) confirm `~/Documents/Trove/media/plays/lastfm/YYYY-MM.jsonl` (+ `raw/`) month-partitioned back to account creation, row count ≈ the profile's lifetime scrobble total |
 | Incremental poll | 🧪 | scrobble one track from any client; wait a poll cycle (hourly) or Sync now; confirm exactly one new row; re-run Sync and confirm no duplicate (guid dedupe) |
 
 ## Build notes (as-built, 2026-06-14)

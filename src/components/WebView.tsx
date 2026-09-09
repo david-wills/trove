@@ -345,7 +345,7 @@ export default function WebView() {
       <div className="activity-footnote">
         Imported read-only from Chrome's and Safari's local history databases
         — the browsers are never modified. Raw visits:{" "}
-        <code>~/Trove/browser/</code> — one JSONL file per day.
+        <code>~/Documents/Trove/browser/</code> — one JSONL file per day.
       </div>
     </div>
   );

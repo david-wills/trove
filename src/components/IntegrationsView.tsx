@@ -778,7 +778,7 @@ function IntegrationCard({
             </div>
           )}
           <div className="int-meta">
-            <code>~/Trove/{item.vault_path}</code>
+            <code>~/Documents/Trove/{item.vault_path}</code>
             {item.last_data && (
               <span>
                 {item.kind === "import" ? "last import" : "last data"}{" "}

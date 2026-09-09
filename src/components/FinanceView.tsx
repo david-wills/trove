@@ -148,7 +148,7 @@ export default function FinanceView() {
           No financial data yet. Connect your banks on the Integrations tab —
           Trove pulls balances and transactions once a day through your own
           SimpleFIN Bridge credential, into plain files under{" "}
-          <code>~/Trove/finance/</code>.
+          <code>~/Documents/Trove/finance/</code>.
         </div>
       )}
 
@@ -241,7 +241,7 @@ export default function FinanceView() {
 
       <div className="activity-footnote">
         Files are the source of truth: accounts in{" "}
-        <code>~/Trove/finance/accounts.jsonl</code>, transactions per account
+        <code>~/Documents/Trove/finance/accounts.jsonl</code>, transactions per account
         and year under <code>finance/transactions/</code>, daily balance
         snapshots under <code>finance/balances/</code>. Read-only — Trove can
         never move money.

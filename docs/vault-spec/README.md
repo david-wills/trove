@@ -1,6 +1,6 @@
 # The Trove Vault Format
 
-A Trove vault is a plain folder (`~/Trove` by default) of open-format files —
+A Trove vault is a plain folder (`~/Documents/Trove` by default) of open-format files —
 JSONL, CSV, markdown. **The files are the source of truth**: every database,
 index, and summary is rebuildable from them, and anything that can read a
 text file can read a vault.

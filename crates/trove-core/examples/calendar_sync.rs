@@ -1,5 +1,5 @@
 //! Debug harness: run one Calendar + Reminders sync pass into a throwaway
-//! vault and print what happened. Never touches the real ~/Trove.
+//! vault and print what happened. Never touches the real ~/Documents/Trove.
 //!
 //! ```bash
 //! cargo run --release -p trove-core --example calendar_sync -- /tmp/trove-calendar-validate

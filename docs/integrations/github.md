@@ -15,7 +15,7 @@
 - **effort / priority:** S / P0
 - **needs:** Needs-login (mint a fine-grained PAT to validate the live pull);
   archive-ZIP backfill slice deferred → Needs-sample (request the account
-  export, drop in `~/Trove-samples/`)
+  export, drop in `~/Documents/Trove-samples/`)
 
 ## What it is
 
@@ -120,7 +120,7 @@ regenerated, `bindings.ts` up to date.
 |---|---|---|
 | API pull (commits/PRs/issues/stars/gists) | 🧪 | paste a real PAT; Sync now; spot-check rows against github.com profile; hub last-data updates |
 | Tasks routing | 🧪 | assign yourself an issue; Sync now; row appears in `tasks/github/` and in the tasks view |
-| Archive backfill | 🚫 deferred (Needs-sample) | request the account archive ZIP, drop it in `~/Trove-samples/`; build the import DEF, then confirm pre-PAT history appears and no duplicate guids |
+| Archive backfill | 🚫 deferred (Needs-sample) | request the account archive ZIP, drop it in `~/Documents/Trove-samples/`; build the import DEF, then confirm pre-PAT history appears and no duplicate guids |
 
 ## Research notes
 

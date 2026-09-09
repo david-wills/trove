@@ -23,7 +23,7 @@ fn the_docs_python_collector_works_against_a_real_vault() {
     let _ = fs::remove_dir_all(&home);
     fs::create_dir_all(&home).unwrap();
 
-    // The example targets ~/Trove; pathlib honors $HOME.
+    // The example targets ~/Documents/Trove; pathlib honors $HOME.
     let out = match Command::new("python3").arg("-c").arg(script).env("HOME", &home).output() {
         Ok(out) => out,
         Err(e) => {

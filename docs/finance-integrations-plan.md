@@ -45,7 +45,7 @@ Conclusion baked into the design: **file import is not a fallback, it's a peer b
 Files are the source of truth; everything below is plain CSV/JSONL, rebuildable-index rules apply.
 
 ```
-~/Trove/finance/
+~/Documents/Trove/finance/
   accounts.jsonl                    # registry: one line per known account
   transactions/<account-id>/<year>.jsonl
   balances/<account-id>.jsonl       # daily balance snapshots (net-worth-over-time)

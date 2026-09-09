@@ -16,10 +16,10 @@ A Rust workspace and a Tauri app:
 - [`extension/`](extension/) is a Chrome extension that streams tab activity to the daemon over native messaging. Local-only; it has no network permission.
 - [`docs/vault-spec/`](docs/vault-spec/) is the file-format spec: the vault's conventions, one page per data domain, a JSON Schema per record type, and a guide to writing a collector in any language. It is the part of the project I would keep if I had to throw the rest away.
 
-The vault is a folder, `~/Trove`, of JSONL, CSV and markdown. The files are the source of truth; every index the app builds is under `.trove/` and rebuildable from them. Anything that can read a text file can read a vault, including you, `grep`, and whatever model you point at it.
+The vault is a folder, `~/Documents/Trove`, of JSONL, CSV and markdown. The files are the source of truth; every index the app builds is under `.trove/` and rebuildable from them. Anything that can read a text file can read a vault, including you, `grep`, and whatever model you point at it.
 
 ```
-~/Trove/
+~/Documents/Trove/
   correspondence/<source>/YYYY-MM.jsonl     every message and call, one shape
   tasks/<source>/tasks.jsonl + events/      open-task snapshot + append-only completion stream
   calendar/events/ + calendar/changes/      occurrences + a change stream (reschedules, cancels)
@@ -84,7 +84,7 @@ macOS only. You need Rust via `rustup` (built with 1.96), Node 22 or newer (buil
 git clone https://github.com/david-wills/trove
 cd trove
 npm install
-npm run tauri dev            # the app; creates ~/Trove on first launch
+npm run tauri dev            # the app; creates ~/Documents/Trove on first launch
 cargo test -p trove-core     # the core tests
 ```
 

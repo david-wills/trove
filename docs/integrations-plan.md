@@ -27,7 +27,7 @@ merge into `integrations` → when a milestone is finalized, merge
 - [x] `integrations` branch created off `main`.
 - [ ] **Start the slow exports now** (multi-day lead times): Google
   Takeout, Apple privacy export (privacy.apple.com), GDPR archives (Meta,
-  X, Reddit, Discord…). Drop arrivals into `~/Trove-samples/` — this is
+  X, Reddit, Discord…). Drop arrivals into `~/Documents/Trove-samples/` — this is
   what un-blocks Needs-sample parsers later.
 
 ## Phase 1 — Foundation gate (one supervised session)
@@ -76,7 +76,7 @@ merge into `integrations` → when a milestone is finalized, merge
    - `pmset -g sched` shows no "Repeating power events"
      (`sudo pmset repeat cancel` if it does); optional `caffeinate -ims`.
    - Next stretch of `INDEX.md` has ratified contracts.
-   - Newly-arrived exports dropped into `~/Trove-samples/`.
+   - Newly-arrived exports dropped into `~/Documents/Trove-samples/`.
 10. **Launch:** in a session on `integration-staging`, say: **"/loop —
     work the integration queue per docs/collector-loop.md"** (self-paced).
     The loop: picks providers top-down, builds each on its own short-lived

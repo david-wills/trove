@@ -1741,7 +1741,7 @@ fn export_bindings(builder: &tauri_specta::Builder<tauri::Wry>) {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let vault = Vault::open_or_create(Vault::default_root())
-        .expect("failed to open or create vault at ~/Trove");
+        .expect("failed to open or create vault at ~/Documents/Trove");
 
     // Contend for the vault's single-writer lock on a background thread: this
     // app collects only while it holds the lock, defers to troved (or another

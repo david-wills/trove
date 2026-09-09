@@ -39,10 +39,11 @@ pub struct ArtifactMeta {
 }
 
 impl Vault {
-    /// Default vault location: ~/Trove
+    /// Default vault location: ~/Documents/Trove
     pub fn default_root() -> PathBuf {
         dirs::home_dir()
             .expect("no home directory")
+            .join("Documents")
             .join("Trove")
     }
 

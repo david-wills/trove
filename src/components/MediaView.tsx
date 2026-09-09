@@ -336,10 +336,10 @@ export default function MediaView() {
 
       <div className="activity-footnote">
         One read-time stream over per-source files: music scrobbles in{" "}
-        <code>~/Trove/music/plays/</code>, podcast listens in{" "}
-        <code>~/Trove/podcasts/events/</code>, audible web spans in{" "}
-        <code>~/Trove/browser/</code>, and iPhone playback in{" "}
-        <code>~/Trove/media/nowplaying/</code>. The tabs are content type:
+        <code>~/Documents/Trove/music/plays/</code>, podcast listens in{" "}
+        <code>~/Documents/Trove/podcasts/events/</code>, audible web spans in{" "}
+        <code>~/Documents/Trove/browser/</code>, and iPhone playback in{" "}
+        <code>~/Documents/Trove/media/nowplaying/</code>. The tabs are content type:
         iPhone sessions are sorted into music, podcasts, audiobooks, or video
         from the playing app. Spotify joins here when connected.
       </div>

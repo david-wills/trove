@@ -76,7 +76,7 @@ fn print_help() {
     );
 }
 
-/// The vault root for `run`: --vault flag > TROVE_VAULT env > ~/Trove.
+/// The vault root for `run`: --vault flag > TROVE_VAULT env > ~/Documents/Trove.
 fn vault_root(args: &[String]) -> Result<PathBuf> {
     if let Some(i) = args.iter().position(|a| a == "--vault") {
         let path = args.get(i + 1).context("--vault requires a path")?;

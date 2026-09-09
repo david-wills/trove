@@ -266,7 +266,7 @@ export default function ActivityView() {
               )}{" "}
             </>
           ))}
-        Raw events: <code>~/Trove/activity/</code> — one JSONL file per day.
+        Raw events: <code>~/Documents/Trove/activity/</code> — one JSONL file per day.
       </div>
     </div>
   );
