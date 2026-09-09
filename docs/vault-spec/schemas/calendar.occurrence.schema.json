@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/calendar.occurrence.schema.json",
+  "title": "Trove calendar occurrence",
+  "description": "One line of calendar/events/YYYY-MM.jsonl: a single event occurrence (recurrences expanded), keyed by id + occurrence. A snapshot of the present, rewritten whole per affected month on each sync. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["id"],
+  "additionalProperties": true,
+  "properties": {
+    "id": { "type": "string", "description": "event identifier, shared across all occurrences of a recurring event", "examples": ["AB2C4FD5-1486-407E-97E6-21CECAA1D03E"] },
+    "occurrence": { "type": "string", "format": "date-time", "description": "the instance's original slot (RFC3339 local), stable across a reschedule, which is what makes id+occurrence a usable key", "examples": ["2026-03-02T10:00:00-08:00"] },
+    "start": { "type": "string", "format": "date-time", "description": "RFC3339 local start; for all-day events, local midnight", "examples": ["2026-03-02T10:00:00-08:00"] },
+    "end": { "type": "string", "format": "date-time", "description": "RFC3339 local end; for all-day events, 23:59:59 local", "examples": ["2026-03-02T11:00:00-08:00"] },
+    "all_day": { "type": "boolean", "description": "whether this is an all-day event", "examples": [false] },
+    "title": { "type": "string", "description": "event title", "examples": ["Monday Traffic Brainstorm"] },
+    "calendar": { "type": "string", "description": "calendar name (\"Work\", \"Birthdays\", …)", "examples": ["Work"] },
+    "account": { "type": "string", "description": "account the calendar syncs from (\"iCloud\", \"dwills@example.com\", …)", "examples": ["dwills@example.com"] },
+    "location": { "type": "string", "description": "event location", "examples": ["Google Meet"] },
+    "notes": { "type": "string", "description": "free-form body, verbatim (may contain HTML)", "examples": ["Agenda: Q3 traffic plan"] },
+    "attendees": { "type": "array", "items": { "type": "string" }, "description": "event attendees", "examples": [["dwills@example.com", "sam@example.com"]] },
+    "status": { "type": "string", "enum": ["confirmed", "tentative", "canceled", ""], "description": "occurrence status: \"confirmed\" | \"tentative\" | \"canceled\" | \"\" (none reported)", "examples": ["confirmed"] },
+    "recurring": { "type": "boolean", "description": "whether this occurrence belongs to a recurring series", "examples": [true] }
+  }
+}

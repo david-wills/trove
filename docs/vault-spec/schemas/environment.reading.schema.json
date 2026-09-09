@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/environment.reading.schema.json",
+  "title": "Trove environment reading",
+  "description": "One line of environment/<source>/YYYY-MM.jsonl: a scalar reading (one metric, one value) from a public ambient feed at a place and time. Shares its core (ts/source/metric/value) with home sensor readings so the two merge at read time. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "metric", "value"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time of the observation", "examples": ["2026-06-10T13:00:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["airnow"] },
+    "metric": { "type": "string", "pattern": "^[a-z0-9_]+$", "description": "what was measured, snake_case: temperature, humidity, pm25, pm10, ozone, no2, so2, co, aqi, pollen, kp, water_level, discharge, wave_height, noise_db, pressure, uv, … — kept consistent with the home reading contract", "examples": ["pm25"] },
+    "value": { "type": "number", "description": "the measured value (unit rides in the unit field)", "examples": [42] },
+    "unit": { "type": "string", "description": "unit of value: C, F, percent, ppm, ug_m3, aqi, db, ft, cfs, m, hpa, index, …", "examples": ["aqi"] },
+    "place": { "type": "string", "description": "human label of where (station / city / reporting-area name)", "examples": ["Los Angeles-North Main Street"] },
+    "lat": { "type": "number", "description": "latitude of the observation, in degrees", "examples": [34.0667] },
+    "lon": { "type": "number", "description": "longitude of the observation, in degrees", "examples": [-118.2269] },
+    "station": { "type": "string", "description": "source-native station / site / sensor id", "examples": ["060371103"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (typically station/site + metric + ts)", "examples": ["airnow:060371103:pm25:2026-06-10T13:00"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (AQI category, raw concentration, flood-stage, per-pollutant subindices, …)", "examples": [{ "category": "Good", "raw_concentration": 10.1, "raw_unit": "ug_m3" }] }
+  }
+}

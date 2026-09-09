@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/media.play.schema.json",
+  "title": "Trove media play",
+  "description": "One line of media/plays/<source>/YYYY-MM.jsonl. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "category", "kind", "title", "subtitle", "seconds"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the play happened (started, for spans)", "examples": ["2026-06-10T21:00:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]*$", "description": "collector id; identical to the source folder name (lowercase/digits/dash); may be \"\" in sparse lines, the folder then names it", "examples": ["letterboxd"] },
+    "category": { "type": "string", "enum": ["music", "podcast", "audiobook", "video", "other"], "description": "content type and the UI's filter axis: \"music\" | \"podcast\" | \"audiobook\" | \"video\" | \"other\"", "examples": ["video"] },
+    "kind": { "type": "string", "enum": ["play", "partial"], "description": "\"play\" (a real listen/watch) | \"partial\" (skip, unfinished)", "examples": ["play"] },
+    "title": { "type": "string", "description": "track / episode / film title", "examples": ["Heat"] },
+    "subtitle": { "type": "string", "description": "artist / show / director / site — the grouping key for top charts", "examples": ["Michael Mann"] },
+    "detail": { "type": "string", "description": "album / URL / chapter", "examples": ["https://letterboxd.com/film/heat-1995/"] },
+    "device": { "type": "string", "description": "device label the play came from, when known", "examples": ["iPhone"] },
+    "seconds": { "type": "integer", "minimum": 0, "description": "seconds actually played, in seconds; 0 when unknown", "examples": [10260] },
+    "favicon": { "type": "string", "description": "icon URL, if any", "examples": ["https://letterboxd.com/favicon.ico"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (for re-runnable imports)", "examples": ["lb-heat-1995"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (ratings, rewatch flags, …)", "examples": [{ "rating": "5", "rewatch": "true" }] }
+  }
+}

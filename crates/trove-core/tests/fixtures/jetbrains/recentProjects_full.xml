@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Synthetic fixture: IntelliJ IDEA 2024.1 recentProjects.xml
+     Represents the modern format with additionalInfo map (IDEA 2019.2+).
+     Includes legacy recentPaths for a path not already in additionalInfo.
+     Fields: activationTimestamp, projectOpenTimestamp, build, displayName. -->
+<application>
+  <component name="RecentProjectsManager">
+    <option name="additionalInfo">
+      <map>
+        <entry key="$USER_HOME$/Projects/alpha">
+          <value>
+            <RecentProjectMetaInfo opened="true" displayName="Alpha App" frameTitle="Alpha App - IntelliJ IDEA">
+              <option name="activationTimestamp" value="1687788000000" />
+              <option name="projectOpenTimestamp" value="1687786000000" />
+              <option name="buildTimestamp" value="1686000000000" />
+              <option name="build" value="IU-241.18034.62" />
+              <option name="productionCode" value="IU" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/Projects/beta">
+          <value>
+            <RecentProjectMetaInfo opened="false">
+              <option name="activationTimestamp" value="1687700000000" />
+              <option name="build" value="IU-241.18034.62" />
+              <option name="productionCode" value="IU" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="recentPaths">
+      <list>
+        <option value="$USER_HOME$/Projects/alpha" />
+        <option value="$USER_HOME$/Projects/gamma" />
+      </list>
+    </option>
+    <option name="lastOpenedProject" value="$USER_HOME$/Projects/alpha" />
+  </component>
+</application>

@@ -1,0 +1,2 @@
+{"ts":"2026-03-14T11:02:00-07:00","source":"epic-mychart","guid":"MedicationRequest/eM7-atorva","name":"Atorvastatin 20 MG Oral Tablet","code":"617312","code_system":"rxnorm","dose":"1 tablet by mouth nightly","status":"active","kind":"request","prescriber":"Dr. Priya Nair","start":"2026-03-14"}
+{"ts":"2026-05-01","source":"cms-blue-button","guid":"eob-pde-88412","name":"LISINOPRIL 10MG TABLET","code":"00603-3741-21","code_system":"ndc","status":"completed","kind":"fill","prescriber":"NAIR, PRIYA","extra":{"daysSupply":90,"quantity":90}}

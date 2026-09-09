@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/health-medical.observation.schema.json",
+  "title": "Trove medical observation",
+  "description": "One line of health/medical/<source>/observations/YYYY-MM.jsonl: a lab result or vital sign (FHIR Observation / DiagnosticReport, or a parsed lab PDF). Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid", "test"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "description": "RFC3339 local effective/collection time, or a date-only YYYY-MM-DD when that is all the source gives (clinical data is routinely date-granular)", "examples": ["2026-04-02T09:30:10-07:00", "2025-11-03"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["quest-diagnostics"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key: FHIR Observation.id (org-scoped), or hash+test+date for a parsed PDF", "examples": ["obs-15074-8-7a3f"] },
+    "test": { "type": "string", "description": "test/measurement name (FHIR code.text or coding.display)", "examples": ["Glucose [Mass/volume] in Blood"] },
+    "code": { "type": "string", "description": "terminology code (FHIR coding.code) — LOINC for labs/vitals; omitted by a PDF-parsed row", "examples": ["15074-8"] },
+    "code_system": { "type": "string", "description": "which system the code is from: \"loinc\" | \"snomed\" | …", "examples": ["loinc"] },
+    "value": { "type": "number", "description": "numeric result (FHIR valueQuantity.value), paired with unit", "examples": [113] },
+    "value_text": { "type": "string", "description": "qualitative result (FHIR valueString: \"Positive\", \"Non-Reactive\", …) for non-numeric tests", "examples": ["Non-Reactive"] },
+    "unit": { "type": "string", "description": "unit of value, UCUM where FHIR-sourced (\"mg/dL\", \"mm[Hg]\")", "examples": ["mg/dL"] },
+    "reference_range": { "type": "string", "description": "normal range as text (\"70-99\", \"<5.7\")", "examples": ["70-99"] },
+    "flag": { "type": "string", "description": "abnormal interpretation (\"H\", \"L\", \"A\", …)", "examples": ["H"] },
+    "panel": { "type": "string", "description": "parent DiagnosticReport / order name", "examples": ["Comprehensive Metabolic Panel"] },
+    "provider": { "type": "string", "description": "ordering provider or lab, as a display name", "examples": ["Quest Diagnostics"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (specimen, status, full resource, confidence)", "examples": [{ "confidence": "0.82" }] }
+  }
+}

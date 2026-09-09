@@ -1,0 +1,3 @@
+{"ts":"2026-04-02T09:30:10-07:00","source":"quest-diagnostics","guid":"obs-15074-8-7a3f","test":"Glucose [Mass/volume] in Blood","code":"15074-8","code_system":"loinc","value":113,"unit":"mg/dL","reference_range":"70-99","flag":"H","panel":"Comprehensive Metabolic Panel","provider":"Quest Diagnostics"}
+{"ts":"2026-05-21T08:14:00-07:00","source":"epic-mychart","guid":"Observation/eXJ2-bp-9921","test":"Systolic blood pressure","code":"8480-6","code_system":"loinc","value":128,"unit":"mm[Hg]"}
+{"ts":"2025-11-03","source":"lab-pdf","guid":"f3a9c1-hiv-ab","test":"HIV 1/2 Antibody Screen","value_text":"Non-Reactive","extra":{"confidence":"0.82"}}

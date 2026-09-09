@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/habits.habit.schema.json",
+  "title": "Trove habit",
+  "description": "One line of habits/<source>/habits.jsonl: a current habit definition, rewritten whole per sync. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["source", "id", "title"],
+  "additionalProperties": true,
+  "properties": {
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["ticktick"] },
+    "id": { "type": "string", "description": "source-native habit id, the snapshot key (Way of Life: a stable hash of the habit name)", "examples": ["6247e8f0b3a1c2"] },
+    "title": { "type": "string", "description": "habit name", "examples": ["Drink water"] },
+    "schedule": { "type": "string", "description": "cadence, verbatim from the source: an RRULE, \"daily\", \"weekly\", \"Mon,Wed,Fri\" — raw, not interpreted", "examples": ["RRULE:FREQ=DAILY;INTERVAL=1"] },
+    "goal": { "type": "number", "description": "per-period target for a measurable habit (8 glasses, 30 minutes)", "examples": [8] },
+    "unit": { "type": "string", "description": "the unit goal is counted in (\"Glass\", \"min\", \"page\")", "examples": ["Glass"] },
+    "color": { "type": "string", "description": "display color, where the source has one", "examples": ["#97E38B"] },
+    "archived": { "type": "boolean", "description": "habit is archived / paused / no longer active", "examples": [false] },
+    "created": { "type": "string", "format": "date-time", "description": "RFC3339 local time the habit was created", "examples": ["2026-01-04T08:00:00-08:00"] },
+    "modified": { "type": "string", "format": "date-time", "description": "RFC3339 local time the habit was last modified", "examples": ["2026-02-01T09:30:00-08:00"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (streak counts, RPG XP/level/gold, reminders, icon, target days, …)", "examples": [{ "totalCheckIns": 118, "targetDays": 21 }] }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/location.fix.schema.json",
+  "title": "Trove location fix",
+  "description": "One line of location/<source>/YYYY-MM-DD.jsonl: a single GPS fix. A track/batch/segment is the set of fixes sharing one trail id, not a points array. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "lat", "lon"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time of the fix", "examples": ["2026-06-10T08:14:03-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["owntracks"] },
+    "lat": { "type": "number", "minimum": -90, "maximum": 90, "description": "latitude, in decimal degrees (WGS84)", "examples": [37.77493] },
+    "lon": { "type": "number", "minimum": -180, "maximum": 180, "description": "longitude, in decimal degrees (WGS84)", "examples": [-122.41942] },
+    "ele": { "type": "number", "description": "elevation, in meters", "examples": [28.4] },
+    "speed": { "type": "number", "minimum": 0, "description": "ground speed, in meters/second", "examples": [1.3] },
+    "accuracy": { "type": "number", "minimum": 0, "description": "horizontal accuracy radius, in meters", "examples": [5] },
+    "heading": { "type": "number", "minimum": 0, "maximum": 360, "description": "course over ground, in degrees (0–360, clockwise from north)", "examples": [92] },
+    "trail": { "type": "string", "description": "stable id grouping the fixes of one track/batch/segment/trip; the read-time grouping key", "examples": ["phone-2026-06-10"] },
+    "trail_name": { "type": "string", "description": "display name for the trail (GPX track name, segment label)", "examples": ["Morning commute"] },
+    "mode": { "type": "string", "description": "movement mode where the source classifies it (verbatim: walking, cycling, driving, transit, …)", "examples": ["cycling"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (a fix id, a trip-id+seq, or a (ts,lat,lon) hash where the source gives no id)", "examples": ["ot-1718031243-37.77493--122.41942"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (odometer, charge, battery, motion type, wifi SSID, place confidence, …)", "examples": [{ "batt": 74, "topic": "owntracks/dave/iphone" }] }
+  }
+}

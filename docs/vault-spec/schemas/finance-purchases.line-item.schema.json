@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/finance-purchases.line-item.schema.json",
+  "title": "Trove purchase line item",
+  "description": "One line of finance/purchases/<source>/YYYY-MM.jsonl: a single purchased line item, grouped into an order at read time by order_id. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid", "merchant"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local order/purchase date (sources give a date; write local midnight)", "examples": ["2026-05-28T00:00:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["amazon"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (order id + line index, transaction id, …)", "examples": ["112-7654321-0011223:1"] },
+    "order_id": { "type": "string", "description": "groups the line items of one order/receipt; the read-time grouping key", "examples": ["112-7654321-0011223"] },
+    "merchant": { "type": "string", "description": "where it was bought (Amazon, the Apple storefront, the retailer)", "examples": ["Amazon"] },
+    "item": { "type": "string", "description": "item description / title (the app name, product title, grocery item)", "examples": ["Anker USB-C Charger 65W"] },
+    "qty": { "type": "number", "description": "quantity purchased", "examples": [2] },
+    "unit_price": { "type": "number", "description": "price per unit (currency is the separate currency field)", "examples": [35.99] },
+    "amount": { "type": "number", "description": "line total (unit_price × qty, before order-level shipping/tax; currency is the separate currency field)", "examples": [71.98] },
+    "currency": { "type": "string", "description": "ISO 4217 code; omit when the source doesn't state it", "examples": ["USD"] },
+    "category": { "type": "string", "description": "source-native category/department (Electronics, Productivity)", "examples": ["Electronics"] },
+    "url": { "type": "string", "description": "product/item link, when the source gives one", "examples": ["https://www.amazon.com/gp/product/B08D6T6N9C"] },
+    "status": { "type": "string", "description": "source-native fulfilment state (delivered, shipped, refunded, canceled)", "examples": ["delivered"] },
+    "shipment": { "type": "object", "additionalProperties": true, "description": "shipping detail when present (tracking, carrier, delivered timestamp, …)", "examples": [{ "tracking": "TBA303012345678", "carrier": "AMZL", "delivered": "2026-05-30T15:42:00-07:00" }] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (ASIN, tax, payment instrument, storefront, subscription flag, loyalty id, …)", "examples": [{ "asin": "B08D6T6N9C", "unit_price_tax": 3.06, "payment": "Visa ****1234" }] }
+  }
+}

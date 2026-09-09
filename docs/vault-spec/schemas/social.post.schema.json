@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/social.post.schema.json",
+  "title": "Trove social post",
+  "description": "One line of social/<source>/YYYY-MM.jsonl: a single piece of content the vault owner authored (post / comment / reply / repost / quote / edit). Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "anyOf": [{ "format": "date-time" }, { "format": "date" }], "description": "RFC3339 local time the item was authored (publish/post/edit time), or a date-only YYYY-MM-DD where the source is day-granular (ratified 2026-07-20 for normalizer imports; a date sorts as a lexical prefix of a timestamp)", "examples": ["2026-06-10T14:03:01-07:00", "2026-06-11"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["bluesky"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (Bluesky record CID/rkey, Mastodon status URI, tweet id, Reddit fullname, HN item id, {domain}:{revid} for a wiki edit, post slug; a hash of (section, ts, text) where an export carries no stable id)", "examples": ["at://did:plc:abc123/app.bsky.feed.post/3kxy"] },
+    "kind": { "type": "string", "enum": ["post", "comment", "reply", "repost", "quote", "edit"], "description": "\"post\" (default, a top-level item) | \"comment\" | \"reply\" | \"repost\" | \"quote\" | \"edit\" — Reddit submissions + comments, HN stories + comments, microblog replies/boosts/quote-posts, and wiki edits all converge here", "examples": ["reply"] },
+    "text": { "type": "string", "description": "the body, full fidelity (X full_text untruncated, a caption, a Reddit comment, a wiki edit comment) — trimming is a read-time opinion", "examples": ["totally agree — the CAR export is the cleanest part"] },
+    "title": { "type": "string", "description": "the item's title where it has one: HN story, Substack post, Tumblr/Reddit title, the edited page's title for kind:\"edit\"", "examples": ["Show HN: A local-first personal data vault"] },
+    "url": { "type": "string", "description": "the canonical link: a link-post's target, an HN story URL, or the item's own permalink", "examples": ["https://example.com/trove"] },
+    "lang": { "type": "string", "description": "language tag the source recorded (Mastodon language, Bluesky langs)", "examples": ["en"] },
+    "reply_to": { "type": "string", "description": "source-native id of the parent this replies/comments on (raw handle, not resolved)", "examples": ["at://did:plc:xyz789/app.bsky.feed.post/3kw2"] },
+    "repost_of": { "type": "string", "description": "source-native id of the reposted/boosted/reblogged item (kind:\"repost\" — carries no text of its own)", "examples": ["at://did:plc:xyz789/app.bsky.feed.post/3kw1"] },
+    "quote_of": { "type": "string", "description": "source-native id of the quoted item (kind:\"quote\" — a repost that does add text)", "examples": ["at://did:plc:xyz789/app.bsky.feed.post/3kw3"] },
+    "thread": { "type": "string", "description": "conversation/thread root id, when the source exposes one (Bluesky reply root, Mastodon conversation, Reddit submission of a comment)", "examples": ["at://did:plc:xyz789/app.bsky.feed.post/3kw0"] },
+    "context": { "type": "string", "description": "where it was authored: subreddit, Mastodon visibility, Tumblr/Substack blog, wiki domain — a source-native grouping label", "examples": ["r/rust"] },
+    "tags": { "type": "array", "items": { "type": "string" }, "description": "author-applied tags/hashtags the source records structurally (Tumblr tags)", "examples": [["localfirst", "rust"]] },
+    "media": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "type": { "type": "string", "description": "media type: image | video | gif", "examples": ["image"] },
+          "url": { "type": "string", "description": "URL of the attached media (metadata only, never a copy)", "examples": ["https://cdn.bsky.app/img/abc.jpg"] },
+          "alt": { "type": "string", "description": "the author's alt text / description for the media item", "examples": ["a screenshot of the repo viewer"] }
+        },
+        "description": "one attached-media metadata entry: {type, url, alt}",
+        "examples": [{ "type": "image", "url": "https://cdn.bsky.app/img/abc.jpg", "alt": "a screenshot of the repo viewer" }]
+      },
+      "description": "attached media metadata only, never copies: {type, url, alt} per item (image/video/gif; alt = the author's alt text / description)",
+      "examples": [[{ "type": "image", "url": "https://cdn.bsky.app/img/abc.jpg", "alt": "a screenshot of the repo viewer" }]]
+    },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (engagement counts, post type, revision ids, sizediff, reblog flags, …) — full fidelity", "examples": [{ "likeCount": 12, "repostCount": 3 }] }
+  }
+}

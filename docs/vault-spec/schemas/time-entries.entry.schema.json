@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/time-entries.entry.schema.json",
+  "title": "Trove time entry",
+  "description": "One line of time-entries/<source>/YYYY-MM.jsonl: one user-asserted time entry. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["source", "id", "start"],
+  "additionalProperties": true,
+  "properties": {
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["toggl-track"] },
+    "id": { "type": "string", "description": "source-native entry id, the dedupe key", "examples": ["3691827456"] },
+    "start": { "type": "string", "anyOf": [{ "format": "date-time" }, { "format": "date" }], "description": "when the entry began: RFC3339 local time, or a date-only YYYY-MM-DD for a duration-only entry the source never timestamped (Harvest \"X hours on this day\")", "examples": ["2026-06-10T09:00:00-07:00", "2026-06-09"] },
+    "end": { "type": "string", "format": "date-time", "description": "RFC3339 local time the entry stopped; omitted while a timer runs", "examples": ["2026-06-10T10:30:00-07:00"] },
+    "duration_secs": { "type": "integer", "minimum": 0, "description": "seconds tracked; omitted while a timer runs, present for duration-only entries that have no end", "examples": [5400] },
+    "description": { "type": "string", "description": "the user's note for the entry", "examples": ["Quarterly traffic report"] },
+    "project": { "type": "string", "description": "project name, verbatim", "examples": ["Editorial"] },
+    "client": { "type": "string", "description": "client name, verbatim (Harvest/Clockify; absent on trackers without clients)", "examples": ["Acme Co"] },
+    "task": { "type": "string", "description": "task/sub-activity name within the project, verbatim", "examples": ["time-entries collector"] },
+    "tags": { "type": "array", "items": { "type": "string" }, "description": "source-native tag labels", "examples": [["deep-work"]] },
+    "billable": { "type": "boolean", "description": "whether the entry is marked billable", "examples": [true] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (workspace/account id, hourly rate, rounding, invoice id, color, …)", "examples": [{ "workspace_id": 1234567 }] }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/tasks.event.schema.json",
+  "title": "Trove task event",
+  "description": "One line of tasks/<source>/events/YYYY-MM.jsonl: the task shape (flattened) plus time + kind. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["time", "kind", "source", "id", "title"],
+  "additionalProperties": true,
+  "properties": {
+    "time": { "type": "string", "format": "date-time", "description": "RFC3339 local time of the lifecycle event", "examples": ["2026-06-10T17:30:00-07:00"] },
+    "kind": { "type": "string", "enum": ["completed", "created", "deleted"], "description": "lifecycle event type: \"completed\" | \"created\" | \"deleted\"", "examples": ["completed"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["ticktick"] },
+    "id": { "type": "string", "description": "source-native task id, the dedupe key", "examples": ["6f1a"] },
+    "title": { "type": "string", "description": "task title", "examples": ["Renew passport"] },
+    "status": { "type": "string", "description": "task state at the event (flattened from the task shape)", "examples": ["done"] },
+    "completed": { "type": "string", "format": "date-time", "description": "RFC3339 local completion time; for a recurring task, the last instance completion", "examples": ["2026-06-10T17:29:12-07:00"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (full fidelity)", "examples": [{ "projectId": "inbox123" }] }
+  }
+}

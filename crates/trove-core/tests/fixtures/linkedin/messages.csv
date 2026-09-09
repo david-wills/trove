@@ -1,0 +1,4 @@
+CONVERSATION ID,CONVERSATION TITLE,FROM,SENDER PROFILE URL,TO,RECIPIENT PROFILE URLS,DATE,SUBJECT,CONTENT,FOLDER
+conv-1,Project Alpha,Alice Example,https://www.linkedin.com/in/alice,Bob Builder,https://www.linkedin.com/in/bob,2021-03-01 10:00:00 UTC,Hello,Hey there! Nice to connect.,inbox
+conv-1,Project Alpha,Bob Builder,https://www.linkedin.com/in/bob,Alice Example,https://www.linkedin.com/in/alice,2021-03-01 10:05:00 UTC,Hello,Nice to meet you too!,inbox
+conv-2,Coffee Chat,,https://www.linkedin.com/in/carol,Alice Example,https://www.linkedin.com/in/alice,2021-04-15 09:30:00 UTC,,Would love to catch up sometime.,inbox

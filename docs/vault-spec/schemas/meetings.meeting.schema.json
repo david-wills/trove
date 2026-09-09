@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/meetings.meeting.schema.json",
+  "title": "Trove meeting",
+  "description": "One line of meetings/<source>/YYYY-MM.jsonl: one record per meeting (not per utterance); transcripts ride as sidecar artifacts. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the meeting started (= started when known; falls back to the export's or file's date for sources with no start time)", "examples": ["2026-06-10T09:00:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["granola"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key: a source-unique meeting id (Granola note id, Fathom/Read.ai/tl;dv meeting id, Fireflies transcript id, Zoom meeting UUID, Meet conference record id, Webex instance id, a content hash for export imports)", "examples": ["note_8f2a1c"] },
+    "title": { "type": "string", "description": "meeting title / topic (export imports may carry none)", "examples": ["Q3 Roadmap Sync"] },
+    "started": { "type": "string", "format": "date-time", "description": "RFC3339 local meeting start, when the source reports it", "examples": ["2026-06-10T09:00:00-07:00"] },
+    "ended": { "type": "string", "format": "date-time", "description": "RFC3339 local meeting end, when the source reports it", "examples": ["2026-06-10T09:49:00-07:00"] },
+    "duration_secs": { "type": "integer", "minimum": 0, "description": "meeting length, in seconds", "examples": [2940] },
+    "platform": { "type": "string", "description": "conferencing platform the meeting ran on: \"zoom\" | \"meet\" | \"teams\" | \"webex\" | … (the recorder's own brand, verbatim, when that's all that's known)", "examples": ["zoom"] },
+    "attendees": { "type": "array", "items": { "type": "string" }, "description": "raw handles — lowercased emails / service ids (not display names)", "examples": [["dwills@example.com", "sam@example.com", "ana@example.com"]] },
+    "attendee_names": { "type": "array", "items": { "type": "string" }, "description": "display names, positionally paired with attendees where the source gives both", "examples": [["David Wills", "Sam Ortiz", "Ana"]] },
+    "host": { "type": "string", "description": "organizer/host handle (same shaping as attendees)", "examples": ["dwills@example.com"] },
+    "summary": { "type": "string", "description": "AI summary / notes, markdown (omitted by sources that yield only transcripts, e.g. Meet)", "examples": ["## Decisions\n- Ship the meetings contract first"] },
+    "meeting_url": { "type": "string", "description": "the join/conference URL", "examples": ["https://zoom.us/j/123456789"] },
+    "recording_url": { "type": "string", "description": "link to the recording, when the source exposes a durable one", "examples": ["https://granola.ai/recordings/note_8f2a1c"] },
+    "folder": { "type": "string", "description": "the notetaker's own folder / workspace label for the meeting", "examples": ["Work"] },
+    "transcript_ref": { "type": "string", "description": "vault-relative path to the transcript sidecar (the source's raw file or a copied artifact); omitted when no transcript exists", "examples": ["meetings/granola/raw/files/note_8f2a1c.jsonl"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (action items, keywords, speaker analytics, sentence-level AI tags, Drive Doc refs, …)", "examples": [{ "workspace": "Work", "creator_email": "dwills@example.com" }] }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/notes.note.schema.json",
+  "title": "Trove note",
+  "description": "One line of notes/<source>/YYYY-MM.jsonl: a single collected note, keyed by id. A per-source snapshot of the present, rewritten whole per affected month (of created) on each sync/import. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["source", "id"],
+  "additionalProperties": true,
+  "properties": {
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["bear"] },
+    "id": { "type": "string", "description": "source-native note id, the dedupe key (Bear ZUNIQUEIDENTIFIER, Day One / Notion / Roam uuid, Keep filename, vault-relative path)", "examples": ["4F8A2C1E-0B7D-4E2A-9F3C-1A2B3C4D5E6F"] },
+    "title": { "type": "string", "description": "note title (explicit, or the filename / first line / H1 where the source has no title field); omit when the source has none", "examples": ["Garden planting plan"] },
+    "body": { "type": "string", "description": "the full note text, verbatim — Markdown / plain text / HTML→Markdown (full fidelity; trimming or rendering is a read-time opinion)", "examples": ["# Garden planting plan\n\n- Tomatoes in the south bed\n- #garden #spring"] },
+    "created": { "type": "string", "format": "date-time", "description": "RFC3339 local time the note was created (falls back to file mtime where that is all the source exposes)", "examples": ["2026-03-14T09:12:00-07:00"] },
+    "modified": { "type": "string", "format": "date-time", "description": "RFC3339 local time the note was last edited", "examples": ["2026-04-02T18:40:00-07:00"] },
+    "tags": { "type": "array", "items": { "type": "string" }, "description": "note tags, verbatim (Bear/Drafts tags, Day One/Keep labels, frontmatter tags)", "examples": [["garden", "spring"]] },
+    "folder": { "type": "string", "description": "the note's one place: folder / notebook / collection / group name, or vault-relative path for folder-tree sources", "examples": ["Home"] },
+    "pinned": { "type": "boolean", "description": "pinned / flagged", "examples": [true] },
+    "archived": { "type": "boolean", "description": "archived (out of the active set, not deleted)", "examples": [false] },
+    "trashed": { "type": "boolean", "description": "in trash / soft-deleted (kept for fidelity; a read-time filter decides whether to surface)", "examples": [false] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (full fidelity): Day One location/weather/mood, Stoic mood/metrics, Keep checklist items + color, Roam/Reflect backlinks, frontmatter, content-type/format marker, …", "examples": [{ "ZUNIQUEIDENTIFIER": "4F8A2C1E" }] }
+  }
+}

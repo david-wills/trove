@@ -1,0 +1,3 @@
+{"ts":"2026-06-10T08:14:03-07:00","source":"owntracks","lat":37.77493,"lon":-122.41942,"ele":28.4,"speed":1.3,"accuracy":5,"heading":92,"trail":"phone-2026-06-10","guid":"ot-1718031243-37.77493--122.41942","extra":{"batt":74,"topic":"owntracks/dave/iphone"}}
+{"ts":"2026-06-10T08:31:50-07:00","source":"google-timeline","lat":37.80331,"lon":-122.44896,"trail":"seg-2026-06-10T08:22:00","mode":"cycling","guid":"gt-2026-06-10T08:22:00-cycling","extra":{"distance_m":4120,"point_confidence":"high"}}
+{"ts":"2026-06-10T18:02:11-07:00","source":"smartcar","lat":37.4419,"lon":-122.143,"extra":{"odometer_km":48213.6,"make":"TESLA"}}

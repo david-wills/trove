@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/correspondence.message.schema.json",
+  "title": "Trove correspondence message",
+  "description": "One line of correspondence/<source>/YYYY-MM.jsonl. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "chat", "sender", "kind"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the message was sent/received", "examples": ["2026-06-10T14:03:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["imessage"] },
+    "chat": { "type": "string", "description": "conversation key within the source: handle / group id (iMessage), thread subject (email), channel (Slack)", "examples": ["+15551234567"] },
+    "chat_name": { "type": "string", "description": "display name for the chat (group names, channel topics)", "examples": ["trip planning"] },
+    "sender": { "type": "string", "description": "canonical author address; empty when from_me", "examples": ["ana@example.com"] },
+    "sender_name": { "type": "string", "description": "display name for the sender", "examples": ["Ana"] },
+    "from_me": { "type": "boolean", "description": "sent by the vault owner", "examples": [false] },
+    "kind": { "type": "string", "enum": ["message", "reaction", "event", "call"], "description": "message type: \"message\" (default) | \"reaction\" | \"event\" | \"call\"", "examples": ["message"] },
+    "text": { "type": "string", "description": "the body (full fidelity — trimming is a read-time opinion)", "examples": ["running late, omw"] },
+    "duration_secs": { "type": "integer", "minimum": 0, "description": "connected seconds for kind:\"call\" (0 = missed)", "examples": [0] },
+    "to": { "type": "array", "items": { "type": "string" }, "description": "explicit recipients (email to/cc)", "examples": [["you@example.com"]] },
+    "subject": { "type": "string", "description": "subject where the medium has one", "examples": ["Trip planning"] },
+    "service": { "type": "string", "description": "transport detail: \"iMessage\"/\"SMS\", the email account address, the Slack workspace", "examples": ["iMessage"] },
+    "attachments": {
+      "type": "array",
+      "items": { "type": "object", "additionalProperties": true },
+      "description": "attachment metadata only (name, mime, size)",
+      "examples": [[{ "name": "photo.jpg", "mime": "image/jpeg", "size": 18234 }]]
+    },
+    "reaction": { "type": "string", "description": "for kind:\"reaction\": \"loved\", \"liked\", …", "examples": ["loved"] },
+    "reply_to": { "type": "string", "description": "source-native id this reacts/replies to", "examples": ["ABC-122"] },
+    "labels": { "type": "array", "items": { "type": "string" }, "description": "source-native labels/folders (Gmail INBOX, CATEGORY_*, …) — a read-time filter", "examples": [["INBOX"]] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (iMessage guid, email Message-ID, Slack channel/ts); imports skip already-stored guids", "examples": ["ABC-123"] },
+    "rowid": { "type": "integer", "description": "source-native monotonic id (drives cursor rebuilds)", "examples": [88412] }
+  }
+}

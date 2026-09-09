@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/home.reading.schema.json",
+  "title": "Trove home sensor reading",
+  "description": "One line of home/<source>/YYYY-MM.jsonl: a scalar reading from an owned sensor/device. Shares its four-field core (ts, source, metric, value) with environment readings so the two merge at read time. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "metric", "value"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the reading was taken", "examples": ["2026-06-10T14:05:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["airthings"] },
+    "metric": { "type": "string", "pattern": "^[a-z0-9_]+$", "description": "what was measured, snake_case: temperature, humidity, co2, pm25, pm10, radon, voc, noise_db, pressure, aqi, uv, water_level, … — kept stable so it lines up with environment readings", "examples": ["radon"] },
+    "value": { "type": "number", "description": "the numeric reading (unit rides in the unit field)", "examples": [48] },
+    "unit": { "type": "string", "description": "unit of value: C, F, percent, ppm, ug_m3, bq_m3, db, hpa, aqi, index, … — omit only when truly unitless", "examples": ["bq_m3"] },
+    "place": { "type": "string", "description": "human label of where: room name or station name", "examples": ["Bedroom"] },
+    "device": { "type": "string", "description": "the owned device/sensor id or name (home-specific)", "examples": ["2960123456"] },
+    "lat": { "type": "number", "description": "latitude in degrees, when the device reports it (outdoor PWS)", "examples": [37.7793] },
+    "lon": { "type": "number", "description": "longitude in degrees, when the device reports it (outdoor PWS)", "examples": [-122.4193] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (battery, score, raw index, …)", "examples": [{ "battery": 86 }] }
+  }
+}

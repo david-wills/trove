@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/reading.item.schema.json",
+  "title": "Trove reading item",
+  "description": "One line of reading/<source>/YYYY-MM.jsonl: a saved/read article, bookmark, or RSS item. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the item was saved (or read/published, the most identity-bearing time the source exposes)", "examples": ["2026-06-10T14:03:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["raindrop"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (Raindrop/Linkding/Wallabag/Reader item id, Pinboard hash, URL+saved-at hash for exports)", "examples": ["rd-1029384"] },
+    "url": { "type": "string", "description": "the saved/linked page", "examples": ["https://example.com/a-deep-dive"] },
+    "title": { "type": "string", "description": "article / bookmark title", "examples": ["A Deep Dive into Local-First Software"] },
+    "author": { "type": "string", "description": "byline, where the source carries one", "examples": ["Jane Roe"] },
+    "site": { "type": "string", "description": "publisher / domain", "examples": ["example.com"] },
+    "feed": { "type": "string", "description": "RSS feed / publication title, for reader sources", "examples": ["Example Engineering Blog"] },
+    "excerpt": { "type": "string", "description": "snippet, selection, or the bookmark's own note/description", "examples": ["The cloud is just someone else's computer."] },
+    "tags": { "type": "array", "items": { "type": "string" }, "description": "user tags / folders / collection labels", "examples": [["software", "local-first"]] },
+    "state": { "type": "string", "enum": ["saved", "archived", "read", "favorite"], "description": "coarse read state: \"saved\" (default, unread) | \"archived\" | \"read\" | \"favorite\" (starred)", "examples": ["saved"] },
+    "progress": { "type": "integer", "minimum": 0, "maximum": 100, "description": "read progress as an integer percent, 0–100 (Instapaper, Reader)", "examples": [63] },
+    "read_at": { "type": "string", "format": "date-time", "description": "RFC3339 local time the item was read / last opened", "examples": ["2026-06-09T08:02:00-07:00"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (collection name, cover, shared flag, original CSV position, …)", "examples": [{ "collection": "Reading", "cover": "https://example.com/cover.jpg" }] }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/health-medical.condition.schema.json",
+  "title": "Trove medical condition",
+  "description": "One line of health/medical/<source>/conditions/YYYY-MM.jsonl: a problem, diagnosis, or condition (FHIR Condition, or an ICD-10 diagnosis carried on a Blue Button claim). Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid", "name"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "description": "RFC3339 local recorded date, or a date-only YYYY-MM-DD when that is all the source gives", "examples": ["2026-02-10T15:40:00-08:00", "2026-05-01"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["epic-mychart"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key: FHIR Condition.id, or eob-id+dx-seq", "examples": ["Condition/eC4-htn"] },
+    "name": { "type": "string", "description": "condition name (FHIR code.text / coding.display)", "examples": ["Essential hypertension"] },
+    "code": { "type": "string", "description": "terminology code (FHIR coding.code)", "examples": ["59621000"] },
+    "code_system": { "type": "string", "description": "which system the code is from: \"snomed\" | \"icd10\" | …", "examples": ["snomed"] },
+    "onset": { "type": "string", "description": "onset (RFC3339 local, date-only, or a coarse year \"2019\" when that's all that's recorded)", "examples": ["2019"] },
+    "status": { "type": "string", "description": "clinical status (\"active\", \"resolved\", \"remission\", …)", "examples": ["active"] },
+    "category": { "type": "string", "description": "FHIR category (\"problem-list-item\", \"encounter-diagnosis\", …)", "examples": ["problem-list-item"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (verification status, severity, full resource)", "examples": [{ "verificationStatus": "confirmed" }] }
+  }
+}

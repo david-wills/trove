@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/calendar.change.schema.json",
+  "title": "Trove calendar change",
+  "description": "One line of calendar/changes/YYYY-MM.jsonl: an append-only diff observed by a sync — added / changed / removed. The unrecoverable history layer (the occurrence store always reflects the present). Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "kind", "id"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time of the sync that observed the change", "examples": ["2026-06-11T15:02:10-07:00"] },
+    "kind": { "type": "string", "enum": ["added", "changed", "removed"], "description": "diff type: \"added\" | \"changed\" | \"removed\"", "examples": ["changed"] },
+    "id": { "type": "string", "description": "event id", "examples": ["AB2C4FD5-1486-407E-97E6-21CECAA1D03E"] },
+    "occurrence": { "type": "string", "format": "date-time", "description": "instance slot, as in the snapshot (RFC3339 local)", "examples": ["2026-03-02T10:00:00-08:00"] },
+    "title": { "type": "string", "description": "event title — a thumbnail for context without a snapshot join", "examples": ["Monday Traffic Brainstorm"] },
+    "start": { "type": "string", "format": "date-time", "description": "RFC3339 local start — a thumbnail for context without a snapshot join", "examples": ["2026-03-02T11:00:00-08:00"] },
+    "calendar": { "type": "string", "description": "calendar name — a thumbnail for context without a snapshot join", "examples": ["Work"] },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "old", "new"],
+        "additionalProperties": true,
+        "properties": {
+          "field": { "type": "string", "description": "name of the field that drifted", "examples": ["start"] },
+          "old": { "description": "the field's previous raw JSON value", "examples": ["2026-03-02T10:00:00-08:00"] },
+          "new": { "description": "the field's new raw JSON value", "examples": ["2026-03-02T11:00:00-08:00"] }
+        }
+      },
+      "description": "only on \"changed\": exactly the fields that drifted, each {field, old, new}",
+      "examples": [[{ "field": "start", "old": "2026-03-02T10:00:00-08:00", "new": "2026-03-02T11:00:00-08:00" }]]
+    }
+  }
+}

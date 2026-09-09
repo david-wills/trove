@@ -1,0 +1,4 @@
+{"ts":"2026-06-10T13:00:00-07:00","source":"tesla-energy","device":"site-228841","kwh":2.74,"interval_secs":3600,"direction":"production"}
+{"ts":"2026-06-10T13:00:00-07:00","source":"green-button","kwh":0.91,"interval_secs":3600,"direction":"consumption","guid":"meter-77100-2026061013"}
+{"ts":"2026-06-10T13:00:00-07:00","source":"green-button","circuit":"gas-meter","value":0.42,"unit":"therm","interval_secs":3600,"direction":"consumption"}
+{"ts":"2026-06-10T13:05:00-07:00","source":"emporia","circuit":"Dryer","kwh":0.013}

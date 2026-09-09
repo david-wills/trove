@@ -1,0 +1,3 @@
+{"ts":"2026-06-10T13:00:00-07:00","source":"airnow","metric":"pm25","value":42,"unit":"aqi","place":"Los Angeles-North Main Street","lat":34.0667,"lon":-118.2269,"station":"060371103","guid":"airnow:060371103:pm25:2026-06-10T13:00","extra":{"category":"Good","raw_concentration":10.1,"raw_unit":"ug_m3"}}
+{"ts":"2026-06-10T14:35:00-07:00","source":"usgs-water","metric":"discharge","value":1240,"unit":"cfs","station":"11447650","lat":38.4564,"lon":-121.5008,"guid":"usgs-water:11447650:00060:2026-06-10T14:35","extra":{"flood_stage":"action","parameter_code":"00060"}}
+{"ts":"2026-06-10T14:05:00-07:00","source":"macos-microphone","metric":"noise_db","value":48.2,"unit":"db"}

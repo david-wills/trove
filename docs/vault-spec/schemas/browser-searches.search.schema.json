@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/browser-searches.search.schema.json",
+  "title": "Trove browser search",
+  "description": "One line of browser/searches/<source>/YYYY-MM.jsonl: a single search query issued at a single time. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "query"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the search was issued", "examples": ["2026-06-10T21:03:01-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["google-takeout"] },
+    "query": { "type": "string", "description": "the search terms, decoded (URL-unescaped, prefix stripped)", "examples": ["trove app local first"] },
+    "engine": { "type": "string", "description": "the search engine, lowercased: \"google\", \"bing\", \"duckduckgo\", \"safari-default\" (Safari's address-bar default when the host is opaque), … — the read-time grouping axis", "examples": ["google"] },
+    "url": { "type": "string", "description": "the full search URL, when the source has one (Takeout titleUrl; the visited Safari URL)", "examples": ["https://www.google.com/search?q=trove+app+local+first"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (a (time, query) hash for Takeout My Activity rows; a search-URL-visit hash for Safari)", "examples": ["gt-search-2026-06-10T21:03:01-trove+app+local+first"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (Takeout header/products/locationInfos, Safari visit count, …)", "examples": [{ "header": "Search", "products": ["Search"] }] }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/home.event.schema.json",
+  "title": "Trove home device event",
+  "description": "One line of home/<source>/events/YYYY-MM.jsonl: a discrete device event (lock/unlock, motion, doorbell, vacuum run, light on/off, voice command). Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "device", "event"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time of the event", "examples": ["2026-06-10T18:42:11-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["august-yale"] },
+    "device": { "type": "string", "description": "device id or name the event came from", "examples": ["front-door"] },
+    "event": { "type": "string", "description": "what happened, lower-case verb/noun: unlock, lock, motion, doorbell, run, on, off, command, open, close, leak, …", "examples": ["unlock"] },
+    "value": { "type": "number", "description": "a numeric payload where one fits (brightness after on, area cleaned)", "examples": [80] },
+    "detail": { "type": "string", "description": "free-form payload: the method (\"keypad\"), the cleaned area, the transcribed Alexa command", "examples": ["keypad"] },
+    "who": { "type": "string", "description": "raw handle of who triggered it (keypad code id, account handle) — never resolved to a person", "examples": ["guest-code-3"] },
+    "who_name": { "type": "string", "description": "display name for who, if the source gives one", "examples": ["Guest"] },
+    "guid": { "type": "string", "description": "source-unique event id, the dedupe key", "examples": ["6612f0a1-7c3d-4e2a-9b11-0f2e4c8d1a55"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (response text, event subtype, clip URL, …)", "examples": [{ "eventId": "a1b2c3" }] }
+  }
+}

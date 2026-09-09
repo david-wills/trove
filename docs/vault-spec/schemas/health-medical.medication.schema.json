@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/health-medical.medication.schema.json",
+  "title": "Trove medication",
+  "description": "One line of health/medical/<source>/medications/YYYY-MM.jsonl: a prescribed, reported, or filled medication (FHIR MedicationRequest / MedicationStatement, Blue Button Part D claim, or a parsed pharmacy PDF). Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid", "name"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "description": "RFC3339 local authored / fill date, or a date-only YYYY-MM-DD when that is all the source gives", "examples": ["2026-03-14T11:02:00-07:00", "2026-05-01"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["epic-mychart"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key: FHIR resource id, EOB id, or ndc+date+prescriber", "examples": ["MedicationRequest/eM7-atorva"] },
+    "name": { "type": "string", "description": "medication name (FHIR medicationCodeableConcept.text / coding.display)", "examples": ["Atorvastatin 20 MG Oral Tablet"] },
+    "code": { "type": "string", "description": "terminology code (RxNorm coding.code, or the dispensed NDC)", "examples": ["617312"] },
+    "code_system": { "type": "string", "description": "which system the code is from: \"rxnorm\" | \"ndc\" | …", "examples": ["rxnorm"] },
+    "dose": { "type": "string", "description": "dosage instruction as text (FHIR dosageInstruction.text)", "examples": ["1 tablet by mouth nightly"] },
+    "status": { "type": "string", "description": "source-native status (\"active\", \"completed\", \"stopped\", …)", "examples": ["active"] },
+    "kind": { "type": "string", "enum": ["request", "statement", "fill"], "description": "\"request\" (prescription order) | \"statement\" (reported med) | \"fill\" (dispensed claim)", "examples": ["request"] },
+    "prescriber": { "type": "string", "description": "prescriber, as a display name (FHIR requester.display)", "examples": ["Dr. Priya Nair"] },
+    "start": { "type": "string", "description": "validity/effective period start (RFC3339 local or date-only)", "examples": ["2026-03-14"] },
+    "end": { "type": "string", "description": "validity/effective period end (RFC3339 local or date-only)", "examples": ["2026-09-14"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (days supply, quantity, route, full resource)", "examples": [{ "daysSupply": 90, "quantity": 90 }] }
+  }
+}

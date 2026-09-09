@@ -1,0 +1,3 @@
+{"source":"ticktick","id":"6247e8f0b3a1c2","title":"Drink water","schedule":"RRULE:FREQ=DAILY;INTERVAL=1","goal":8,"unit":"Glass","color":"#97E38B","archived":false,"created":"2026-01-04T08:00:00-08:00","extra":{"totalCheckIns":118,"targetDays":21}}
+{"source":"habitica","id":"a1f4c0de-2b77-4f3e-9c11-8d6e0f5a2b34","title":"Meditate","schedule":"weekly","archived":true,"extra":{"frequency":"daily","streak":0,"history_len":204,"xp_reward":true}}
+{"source":"way-of-life","id":"f3a9c1b27e","title":"No alcohol"}

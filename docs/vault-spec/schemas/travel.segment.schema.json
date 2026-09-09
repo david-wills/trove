@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/travel.segment.schema.json",
+  "title": "Trove travel segment",
+  "description": "One line of travel/<source>/YYYY-MM.jsonl: a single trip segment (flight, lodging, car, train, …), keyed by guid. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "type", "guid"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time of the segment's start (departure, check-in, pickup); the partition key", "examples": ["2026-07-14T08:25:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["tripit"] },
+    "type": { "type": "string", "enum": ["flight", "lodging", "car", "train", "ferry", "bus", "cruise", "transfer", "activity", "other"], "description": "segment kind discriminator", "examples": ["flight"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (ICS UID, Airbnb confirmation code, Flighty row id, booking-ref+segment, or a date+route+number hash)", "examples": ["item-1847562301-1"] },
+    "end_ts": { "type": "string", "format": "date-time", "description": "RFC3339 local arrival / check-out / drop-off, when known", "examples": ["2026-07-14T16:58:00-04:00"] },
+    "start_place": { "type": "string", "description": "origin: airport/station code (IATA where it has one) or city — the departure/check-in place", "examples": ["SFO"] },
+    "start_place_name": { "type": "string", "description": "display name for start_place (airport name, hotel/listing name, city label)", "examples": ["San Francisco Intl"] },
+    "end_place": { "type": "string", "description": "destination: airport/station code or city (flights, trains, transfers, one-way car rentals)", "examples": ["JFK"] },
+    "end_place_name": { "type": "string", "description": "display name for end_place", "examples": ["John F. Kennedy Intl"] },
+    "vendor": { "type": "string", "description": "operating brand: airline, hotel/lodging brand, rental company, rail operator", "examples": ["United Airlines"] },
+    "number": { "type": "string", "description": "flight or train number, verbatim", "examples": ["UA 523"] },
+    "confirmation": { "type": "string", "description": "confirmation / record-locator / booking code shown to the traveller", "examples": ["H4X9Q2"] },
+    "booking_id": { "type": "string", "description": "groups segments of one itinerary/trip (a multi-leg booking, a flight-emails booking ref)", "examples": ["trip-298104"] },
+    "status": { "type": "string", "description": "source-native state (open string: confirmed, canceled, completed, delayed, …)", "examples": ["confirmed"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (seat, terminal, gate, room, address, car class, amount, delay minutes, aircraft, weather, …)", "examples": [{ "seat": "14C", "cabin": "Economy", "departure_terminal": "3", "aircraft": "Boeing 737-900" }] }
+  }
+}

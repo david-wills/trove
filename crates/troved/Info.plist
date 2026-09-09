@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Embedded into the troved binary as a __TEXT,__info_plist section (see
+  build.rs). A bare binary is its own TCC "responsible process": without
+  these usage strings macOS will never render the Calendar/Reminders/Media
+  Library consent prompts — and those panes have no manual-add button, so
+  the prompt is the only path to a grant.
+-->
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>com.davidwills.troved</string>
+	<key>CFBundleName</key>
+	<string>troved</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>The Trove collector reads your calendars to keep your local data vault's event history current.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>The Trove collector reads your calendars to keep your local data vault's event history current.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>The Trove collector reads your reminders to keep your local data vault's task history current.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>The Trove collector reads your reminders to keep your local data vault's task history current.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>The Trove collector reads your Apple Music library to record play-count and rating changes in your local data vault.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The Trove collector uses your approximate location to record local weather conditions in your data vault. Only coordinates rounded to about 1 km ever leave this Mac.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>The Trove collector uses your approximate location to record local weather conditions in your data vault. Only coordinates rounded to about 1 km ever leave this Mac.</string>
+</dict>
+</plist>

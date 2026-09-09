@@ -1,0 +1,2 @@
+{"ts":"2026-06-10T14:03:00-07:00","source":"imessage","chat":"+15551234567","sender":"+15551234567","from_me":false,"kind":"message","text":"running late, omw","service":"iMessage","guid":"ABC-123","rowid":88412}
+{"ts":"2026-06-10T09:12:00-07:00","source":"email","chat":"trip planning","sender":"ana@example.com","sender_name":"Ana","from_me":false,"kind":"message","text":"Flights are booked!","to":["you@example.com"],"subject":"Trip planning","service":"you@example.com","labels":["INBOX"],"guid":"<msg-1@example.com>"}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/environment.almanac.schema.json",
+  "title": "Trove environment almanac",
+  "description": "One line of environment/<source>/almanac/YYYY-MM.jsonl: one day of solar/lunar geometry for a location — sunrise, sunset, twilight stages, day length, moon. Keyed by date (+ rounded lat/lon). Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["date", "source"],
+  "additionalProperties": true,
+  "properties": {
+    "date": { "type": "string", "format": "date", "description": "the local calendar day (YYYY-MM-DD)", "examples": ["2026-06-10"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["usno"] },
+    "lat": { "type": "number", "description": "latitude the geometry was computed for, in degrees", "examples": [34.05] },
+    "lon": { "type": "number", "description": "longitude the geometry was computed for, in degrees", "examples": [-118.25] },
+    "sunrise": { "type": "string", "format": "date-time", "description": "RFC3339 local time of sunrise", "examples": ["2026-06-10T05:42:00-07:00"] },
+    "sunset": { "type": "string", "format": "date-time", "description": "RFC3339 local time of sunset", "examples": ["2026-06-10T20:03:00-07:00"] },
+    "solar_noon": { "type": "string", "format": "date-time", "description": "RFC3339 local time of solar noon", "examples": ["2026-06-10T12:52:00-07:00"] },
+    "civil_twilight_begin": { "type": "string", "format": "date-time", "description": "RFC3339 local time civil twilight begins", "examples": ["2026-06-10T05:14:00-07:00"] },
+    "civil_twilight_end": { "type": "string", "format": "date-time", "description": "RFC3339 local time civil twilight ends", "examples": ["2026-06-10T20:31:00-07:00"] },
+    "nautical_twilight_begin": { "type": "string", "format": "date-time", "description": "RFC3339 local time nautical twilight begins", "examples": ["2026-06-10T04:39:00-07:00"] },
+    "nautical_twilight_end": { "type": "string", "format": "date-time", "description": "RFC3339 local time nautical twilight ends", "examples": ["2026-06-10T21:06:00-07:00"] },
+    "astronomical_twilight_begin": { "type": "string", "format": "date-time", "description": "RFC3339 local time astronomical twilight begins", "examples": ["2026-06-10T03:58:00-07:00"] },
+    "astronomical_twilight_end": { "type": "string", "format": "date-time", "description": "RFC3339 local time astronomical twilight ends", "examples": ["2026-06-10T21:47:00-07:00"] },
+    "day_length": { "type": "string", "description": "duration of daylight, source-native (\"14:21\")", "examples": ["14:21"] },
+    "golden_hour": { "type": "string", "format": "date-time", "description": "RFC3339 local; start of evening golden hour where the source reports it", "examples": ["2026-06-10T19:39:00-04:00"] },
+    "moonrise": { "type": "string", "format": "date-time", "description": "RFC3339 local time of moonrise", "examples": ["2026-06-10T01:18:00-07:00"] },
+    "moonset": { "type": "string", "format": "date-time", "description": "RFC3339 local time of moonset", "examples": ["2026-06-10T13:47:00-07:00"] },
+    "moon_phase": { "type": "string", "description": "named moon phase (\"Waning Gibbous\")", "examples": ["Waning Gibbous"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (illumination fraction, named moon-phase times, …)", "examples": [{ "illumination": 0.78 }] }
+  }
+}

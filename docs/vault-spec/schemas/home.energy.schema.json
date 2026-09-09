@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/home.energy.schema.json",
+  "title": "Trove home energy interval",
+  "description": "One line of home/<source>/energy/YYYY-MM.jsonl: metered consumption or production over an interval beginning at ts. Electricity fills kwh; other commodities (gas, water) use value + unit. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the interval starts", "examples": ["2026-06-10T13:00:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["tesla-energy"] },
+    "device": { "type": "string", "description": "site/meter/monitor id or name", "examples": ["site-228841"] },
+    "circuit": { "type": "string", "description": "sub-channel within the device: a circuit (Emporia), a plug, a commodity meter (\"gas-meter\")", "examples": ["gas-meter"] },
+    "kwh": { "type": "number", "description": "electricity for the interval, in kilowatt-hours (the named common case)", "examples": [2.74] },
+    "value": { "type": "number", "description": "quantity when the commodity isn't electricity (gas, water), paired with unit", "examples": [0.42] },
+    "unit": { "type": "string", "description": "unit of value: therm, ccf, gal, m3, wh (omit when kwh carries it)", "examples": ["therm"] },
+    "interval_secs": { "type": "integer", "minimum": 0, "description": "length of the bucket in seconds (3600 = hourly, 900 = 15-min)", "examples": [3600] },
+    "direction": { "type": "string", "enum": ["consumption", "production", "import", "export"], "description": "flow direction of the metered quantity", "examples": ["production"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key; else the natural key (device/circuit + metric + ts) keeps re-runs from duplicating", "examples": ["meter-77100-2026061013"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (cost estimate, voltage, tariff, …)", "examples": [{ "cost_usd": 0.21 }] }
+  }
+}

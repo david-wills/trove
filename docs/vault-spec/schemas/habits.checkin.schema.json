@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/habits.checkin.schema.json",
+  "title": "Trove habit check-in",
+  "description": "One line of habits/<source>/checkins/YYYY-MM.jsonl: one habit-day record, append-only. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["date", "source", "habit", "status"],
+  "additionalProperties": true,
+  "properties": {
+    "date": { "type": "string", "format": "date", "description": "the day checked, date-only YYYY-MM-DD (local); the dedupe key (source + habit + date)", "examples": ["2026-06-10"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["ticktick"] },
+    "habit": { "type": "string", "description": "the habit id this check-in belongs to", "examples": ["6247e8f0b3a1c2"] },
+    "status": { "type": "string", "enum": ["done", "skipped", "missed"], "description": "coarse outcome: \"done\" | \"skipped\" (deliberately excused — a vacation day) | \"missed\"; never guessed from a partial value", "examples": ["done"] },
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local moment of the check-in, when the source records one", "examples": ["2026-06-10T21:14:00-07:00"] },
+    "value": { "type": "number", "description": "logged amount for a measurable habit (8 glasses, 30 minutes) — the per-day total", "examples": [8] },
+    "note": { "type": "string", "description": "free-form note attached to the check-in", "examples": ["travel day"] },
+    "guid": { "type": "string", "description": "source-native check-in id, where one exists", "examples": ["ci_20260610_6247e8f0b3a1c2"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (goal-at-the-time, raw stamp, mood, …)", "examples": [{ "goal": 8, "stamp": 20260610 }] }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/reading.highlight.schema.json",
+  "title": "Trove reading highlight",
+  "description": "One line of reading/<source>/highlights/YYYY-MM.jsonl: a highlighted passage or annotation, with its parent document referenced inline. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the highlight was made / added", "examples": ["2026-06-08T20:11:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["readwise"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key (Readwise/Hypothesis annotation id, or hash(title,location,added) for Kindle clippings)", "examples": ["rw-hl-884412"] },
+    "text": { "type": "string", "description": "the highlighted passage (omitted for bookmarks / capped clippings)", "examples": ["Attention is the rarest and purest form of generosity."] },
+    "note": { "type": "string", "description": "the user's annotation / note on the passage", "examples": ["cf. Weil on prayer"] },
+    "title": { "type": "string", "description": "parent document title (book or page)", "examples": ["Gravity and Grace"] },
+    "author": { "type": "string", "description": "parent author, for books", "examples": ["Simone Weil"] },
+    "url": { "type": "string", "description": "parent page URL, for web annotations", "examples": ["https://example.com/korzybski-essay"] },
+    "location": { "type": "string", "description": "page / Kindle location range / position / CFI / in-episode timestamp", "examples": ["142"] },
+    "color": { "type": "string", "description": "highlight color, where the source has one", "examples": ["yellow"] },
+    "tags": { "type": "array", "items": { "type": "string" }, "description": "tags on the highlight", "examples": [["attention", "ethics"]] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (AI summary, group id, category, highlighted_at, clipping-limit flag, …)", "examples": [{ "category": "books", "highlighted_at": "2026-06-08T20:11:00-07:00" }] }
+  }
+}

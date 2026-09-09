@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/health-nutrition.entry.schema.json",
+  "title": "Trove nutrition entry",
+  "description": "One line of health/nutrition/<source>/YYYY-MM.jsonl: one logged food entry. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "source", "guid"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "anyOf": [{ "format": "date-time" }, { "format": "date" }], "description": "RFC3339 local time the food was eaten/logged, or a date-only YYYY-MM-DD for a day-precision diary row the source never timestamped", "examples": ["2026-06-10T08:14:00-07:00", "2026-06-11"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["cronometer"] },
+    "guid": { "type": "string", "description": "source-unique id, the dedupe key: a source log id where one exists, else a content hash of date+meal+food+amount", "examples": ["33f1c0a7e2"] },
+    "meal": { "type": "string", "enum": ["breakfast", "lunch", "dinner", "snack"], "description": "the meal slot, where the source records one", "examples": ["breakfast"] },
+    "food": { "type": "string", "description": "food / item name, verbatim", "examples": ["Oats, Rolled, Dry"] },
+    "brand": { "type": "string", "description": "brand or manufacturer, where the source carries one", "examples": ["Bob's Red Mill"] },
+    "amount": { "type": "number", "description": "quantity consumed, paired with unit", "examples": [80] },
+    "unit": { "type": "string", "description": "unit for amount, verbatim (g, oz, cup, serving, …)", "examples": ["g"] },
+    "energy_kcal": { "type": "number", "description": "food energy, in kilocalories (the consumer \"Calories\")", "examples": [311] },
+    "protein_g": { "type": "number", "description": "protein, in grams", "examples": [10.7] },
+    "carb_g": { "type": "number", "description": "total carbohydrate, in grams", "examples": [54.8] },
+    "fat_g": { "type": "number", "description": "total fat, in grams", "examples": [5.3] },
+    "fiber_g": { "type": "number", "description": "dietary fiber, in grams", "examples": [8.0] },
+    "sugar_g": { "type": "number", "description": "total sugars, in grams", "examples": [0.8] },
+    "added_sugar_g": { "type": "number", "description": "added sugars, in grams", "examples": [2.0] },
+    "saturated_fat_g": { "type": "number", "description": "saturated fat, in grams", "examples": [0.9] },
+    "polyunsaturated_fat_g": { "type": "number", "description": "polyunsaturated fat, in grams", "examples": [1.2] },
+    "monounsaturated_fat_g": { "type": "number", "description": "monounsaturated fat, in grams", "examples": [1.8] },
+    "sodium_mg": { "type": "number", "description": "sodium, in milligrams", "examples": [4] },
+    "cholesterol_mg": { "type": "number", "description": "cholesterol, in milligrams", "examples": [0] },
+    "nutrients": { "type": "object", "additionalProperties": true, "description": "the long micronutrient/extended-macro tail: source-native nutrient label (unit in the key, e.g. \"Vitamin C (mg)\") → number; names normalize at read time", "examples": [{ "Vitamin C (mg)": 0.0, "Iron (mg)": 3.5, "Magnesium (mg)": 138.0 }] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific, full fidelity (Levels Zone score, MacroFactor expenditure / trend weight, food notes, source-native food/recipe ids, …)", "examples": [{ "expenditure_kcal": 2640, "trend_weight_kg": 81.4 }] }
+  }
+}

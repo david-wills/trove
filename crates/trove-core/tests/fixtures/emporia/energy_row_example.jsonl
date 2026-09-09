@@ -1,0 +1,4 @@
+{"ts":"2026-06-10T13:00:00Z","source":"emporia","device":"12345","circuit":"Dryer","kwh":0.013,"interval_secs":60,"direction":"consumption","guid":"emporia:12345:2:1781096400:1MIN"}
+{"ts":"2026-06-10T13:01:00Z","source":"emporia","device":"12345","circuit":"Dryer","kwh":0.017,"interval_secs":60,"direction":"consumption","guid":"emporia:12345:2:1781096460:1MIN"}
+{"ts":"2026-06-10T13:03:00Z","source":"emporia","device":"12345","circuit":"Dryer","kwh":0.021,"interval_secs":60,"direction":"consumption","guid":"emporia:12345:2:1781096580:1MIN"}
+{"ts":"2026-06-10T13:00:00Z","source":"emporia","device":"12345","circuit":"Main","kwh":0.18,"interval_secs":60,"direction":"consumption","guid":"emporia:12345:1:1781096400:1MIN"}

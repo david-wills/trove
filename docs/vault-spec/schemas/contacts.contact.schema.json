@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/contacts.contact.schema.json",
+  "title": "Trove contact",
+  "description": "One line of contacts/<source>/<account>.jsonl. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["source", "id"],
+  "additionalProperties": true,
+  "properties": {
+    "source": { "type": "string", "pattern": "^[a-z0-9-]*$", "description": "collector id; identical to the source folder name (lowercase/digits/dash; may be \"\" in sparse lines, the folder then names it)", "examples": ["google-contacts"] },
+    "id": { "type": "string", "description": "source-native stable contact id, the dedupe key (Google resourceName, CNContact.identifier, vCard UID, a CRM row id, or a name+email composite where the export carries none)", "examples": ["people/c8523451"] },
+    "account": { "type": "string", "description": "the connected account this contact belongs to (Google account address; absent for single-store imports)", "examples": ["me@gmail.com"] },
+    "name": { "type": "string", "description": "display name, from the primary name entry", "examples": ["Alice Example"] },
+    "given": { "type": "string", "description": "given name", "examples": ["Alice"] },
+    "family": { "type": "string", "description": "family name", "examples": ["Example"] },
+    "emails": { "type": "array", "items": { "type": "string" }, "description": "email handles, lowercased, in source order, dupes removed", "examples": [["alice@example.com", "alice@work.com"]] },
+    "phones": { "type": "array", "items": { "type": "string" }, "description": "phone handles, E.164 where derivable, else verbatim", "examples": [["+14155550142"]] },
+    "orgs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "name": { "type": "string", "description": "organization / company name (LinkedIn Company, vCard ORG)", "examples": ["Example Corp"] },
+          "title": { "type": "string", "description": "job title / position at the organization (LinkedIn Position, vCard TITLE)", "examples": ["CTO"] }
+        },
+        "description": "one organization / job-title entry: {name?, title?}",
+        "examples": [{ "name": "Example Corp", "title": "CTO" }]
+      },
+      "description": "organizations / job titles: {name?, title?} (LinkedIn Company/Position, vCard ORG/TITLE)",
+      "examples": [[{ "name": "Example Corp", "title": "CTO" }]]
+    },
+    "photo": { "type": "string", "description": "profile photo URL (real photos only; base64 blobs are stripped, never inlined)", "examples": ["https://lh3.googleusercontent.com/contacts/real.jpg"] },
+    "other": { "type": "boolean", "description": "auto-collected rather than user-saved (Google's \"Other contacts\" — everyone you've corresponded with)", "examples": [true] },
+    "updated": { "type": "string", "format": "date-time", "description": "RFC3339 local time the contact last changed at the source, if known", "examples": ["2026-06-02T00:00:00Z"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific — birthdays, addresses, URLs, notes, relationship context (connected_on, last_talked_to), CRM tags/enrichment — full fidelity", "examples": [{ "birthdays": [{ "date": { "month": 3, "day": 14 } }], "urls": [{ "value": "https://alice.example" }] }] }
+  }
+}

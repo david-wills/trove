@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/tasks.task.schema.json",
+  "title": "Trove task",
+  "description": "One line of tasks/<source>/tasks.jsonl. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["source", "id", "title"],
+  "additionalProperties": true,
+  "properties": {
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["ticktick"] },
+    "id": { "type": "string", "description": "source-native task id, the dedupe key", "examples": ["6f1a"] },
+    "title": { "type": "string", "description": "task title", "examples": ["Renew passport"] },
+    "project": { "type": "string", "description": "project/list name, verbatim", "examples": ["Errands"] },
+    "notes": { "type": "string", "description": "free-form body", "examples": ["Bring two passport photos"] },
+    "status": { "type": "string", "enum": ["open", "done"], "description": "task state: \"open\" (default) | \"done\"", "examples": ["open"] },
+    "priority": { "type": "integer", "description": "TickTick scale: 0 none, 1 low, 3 medium, 5 high — map yours in", "examples": [5] },
+    "due": { "type": "string", "format": "date-time", "description": "RFC3339 local due time", "examples": ["2026-07-01T09:00:00-07:00"] },
+    "start": { "type": "string", "format": "date-time", "description": "RFC3339 local start time", "examples": ["2026-06-25T09:00:00-07:00"] },
+    "all_day": { "type": "boolean", "description": "whether due/start mark a whole day rather than a time", "examples": [true] },
+    "recurrence": { "type": "string", "description": "raw RRULE", "examples": ["FREQ=WEEKLY;BYDAY=MO"] },
+    "tags": { "type": "array", "items": { "type": "string" }, "description": "task tags/labels", "examples": [["admin"]] },
+    "subtasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title"],
+        "additionalProperties": true,
+        "properties": {
+          "title": { "type": "string", "description": "subtask title", "examples": ["Find passport photos"] },
+          "done": { "type": "boolean", "description": "whether the subtask is completed", "examples": [false] },
+          "completed": { "type": "string", "format": "date-time", "description": "RFC3339 local time the subtask was completed", "examples": ["2026-06-09T12:00:00-07:00"] }
+        }
+      },
+      "description": "checklist of subtasks, each {title, done, completed?}",
+      "examples": [[{ "title": "Find passport photos", "done": false }]]
+    },
+    "created": { "type": "string", "format": "date-time", "description": "RFC3339 local time the task was created", "examples": ["2026-06-01T10:00:00-07:00"] },
+    "modified": { "type": "string", "format": "date-time", "description": "RFC3339 local time the task was last modified", "examples": ["2026-06-05T11:30:00-07:00"] },
+    "completed": { "type": "string", "format": "date-time", "description": "RFC3339 local completion time; for a recurring task, the last instance completion", "examples": ["2026-06-10T17:29:12-07:00"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (full fidelity)", "examples": [{ "projectId": "inbox123" }] }
+  }
+}

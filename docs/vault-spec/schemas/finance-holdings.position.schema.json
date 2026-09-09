@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/finance-holdings.position.schema.json",
+  "title": "Trove holdings position",
+  "description": "One line of finance/holdings/<source>/YYYY-MM.jsonl: one investment position at a point in time, keyed by as_of + account + symbol. A dated snapshot appended per sync so a position history accrues. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["as_of", "source", "account", "symbol", "quantity"],
+  "additionalProperties": true,
+  "properties": {
+    "as_of": { "type": "string", "format": "date-time", "description": "RFC3339 local time the snapshot was taken (the brokerage's \"as of\", else the sync time); date-only sources use local midnight", "examples": ["2026-06-12T16:05:00-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; identical to the source folder name (lowercase/digits/dash)", "examples": ["schwab"] },
+    "account": { "type": "string", "description": "account this position sits in: a masked number (\"...7421\") or a name (\"Roth IRA\") — never the full account number", "examples": ["...7421"] },
+    "symbol": { "type": "string", "description": "ticker / asset code as the source gives it (AAPL, VTSAX, BTC, USD for a cash sweep)", "examples": ["AAPL"] },
+    "name": { "type": "string", "description": "human name of the instrument (Apple Inc, Bitcoin)", "examples": ["Apple Inc"] },
+    "quantity": { "type": "number", "description": "units held; fractional for crypto and fractional-share brokerages; for cash, the cash amount", "examples": [120] },
+    "price": { "type": "number", "description": "per-unit market price at as_of (currency is the separate currency field)", "examples": [214.29] },
+    "value": { "type": "number", "description": "market value of the position at as_of (quantity × price; currency is the separate currency field)", "examples": [25714.8] },
+    "cost_basis": { "type": "number", "description": "total acquisition cost of the position (currency is the separate currency field); omit when the source doesn't report basis", "examples": [18204] },
+    "currency": { "type": "string", "description": "currency of price/value/cost_basis; omit when unknown", "examples": ["USD"] },
+    "asset_class": { "type": "string", "description": "instrument type, source vocabulary normalized where clear (equity, etf, fund, crypto, cash, option, bond, future, forex, …; open set)", "examples": ["equity"] },
+    "institution": { "type": "string", "description": "display name of the custodian (Charles Schwab, Coinbase)", "examples": ["Charles Schwab"] },
+    "extra": { "type": "object", "additionalProperties": true, "description": "everything source-specific (account type, lot detail, unrealized gain, day change, …)", "examples": [{ "account_type": "Roth IRA", "day_change": 312.45 }] }
+  }
+}

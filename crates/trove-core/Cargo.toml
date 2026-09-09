@@ -1,0 +1,160 @@
+[package]
+name = "trove-core"
+description = "Core vault logic shared by the Trove app and the troved collector daemon"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+anyhow.workspace = true
+dirs = "5"
+# Pure-Rust gzip decompressor for apple-notes body decoding (ZDATA =
+# gzip+protobuf). miniz_oxide backend — no C/cmake/openssl (standalone rule).
+# Already a transitive dep via ureq and zip; adding explicitly for direct use.
+flate2 = { version = "1", default-features = true }
+quick-xml = "0.40.1"
+chrono = "0.4.45"
+csv = "1.4.0"
+zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
+serde_json.workspace = true
+ureq = { version = "2.12", features = ["json"] }
+sha2 = "0.10"
+# Pure-Rust MD5 (RustCrypto) — used for Subsonic salted-token auth
+# (md5(password + salt) as specified in the Subsonic REST API). No C/cmake/
+# system libs (standalone rule).
+md5 = "0.7"
+# HMAC-SHA256 for Coinbase API request signing (coinbase.rs). Part of the
+# RustCrypto family — pure Rust, no C/cmake/system libs (standalone rule).
+hmac = "0.12"
+base64 = "0.22"
+getrandom = { version = "0.2", features = ["std"] }
+# Pure-Rust arbitrary-precision integers for the AWS Cognito SRP (Secure Remote
+# Password) authentication used by Emporia Vue's unofficial cloud API (emporia.rs).
+# The SRP protocol requires BigInteger exponentiation mod N over a 3072-bit prime.
+# num-bigint is the canonical RustCrypto BigInt crate — pure Rust, no C/cmake/
+# system libs (standalone rule). Signed arithmetic (BigInt) is not needed here;
+# only unsigned (BigUint) is used.
+num-bigint = "0.4"
+rusqlite = { version = "0.40.1", features = ["bundled-sqlcipher"] }
+# Pure-Rust hex codec for the Signal key derivation path (hex-decode
+# encryptedKey from config.json, hex-encode the PRAGMA key value).
+hex = "0.4"
+# Pure-Rust AES block cipher (RustCrypto) — used for AES-128-CBC decryption
+# of the Signal Desktop encryptedKey in signal.rs. No C/cmake/system libs;
+# uses hardware AES-NI on x86/ARM when available.
+aes = "0.8"
+# Pure-Rust PBKDF2 key-derivation function (RustCrypto) — used with SHA-1
+# to derive the AES key from the macOS Keychain password for Signal's
+# encryptedKey decryption in signal.rs.
+pbkdf2 = { version = "0.12", features = ["hmac"] }
+# Pure-Rust SHA-1 (RustCrypto) — required for pbkdf2_hmac::<Sha1> in the
+# Signal key derivation (Signal Desktop uses PBKDF2-SHA1 on macOS).
+sha1 = "0.10"
+mail-parser = "0.11.3"
+# Generic IMAP collector (crates/trove-core/src/imap.rs): a SYNC IMAP client
+# (the pull hooks are sync fn(&Vault)->…) over pure-Rust TLS. default-features
+# OFF drops the crate's `native-tls`/OpenSSL default — we hand `Client::new` a
+# `rustls::StreamOwned` we build ourselves, so no system TLS / OpenSSL is
+# linked (the standalone rule). rustls uses the `ring` crypto backend (no
+# aws-lc-rs → no cmake/C-toolchain build step), vendored & compiled into the
+# binary like rusqlite's bundled SQLite. webpki-roots supplies the trust store
+# (no reliance on the OS keychain). NOTE the module/extern-crate name clash:
+# `crate::imap` (the module) vs the `imap` crate — the module aliases the crate
+# as `imap_client` (`use ::imap as imap_client`).
+imap = { version = "2.4.1", default-features = false }
+rustls = { version = "0.23.40", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+webpki-roots = "1.0.7"
+# Pure-Rust E.164 phone normalization for the `contacts` domain — the Google
+# and Apple contact collectors share `contacts::normalize_phone`. Parsing and
+# formatting only (no network); falls back to the verbatim string when a
+# number can't be parsed into a region.
+phonenumber = "0.3.9"
+# Pure-Rust git (gitoxide) for the local-git collector — read-only commit
+# traversal + tree diff, no network. default-features=false drops the http/
+# async/worktree-mutation/credential stacks; we keep only sha1 (object ids),
+# the pure-Rust zlib-rs backend (read packed objects, no C), and blob-diff
+# (per-commit insertions/deletions).
+gix = { version = "0.84", default-features = false, features = ["sha1", "zlib-rs", "blob-diff"] }
+# Pure-Rust ANT FIT decoder for the Garmin bulk-export import
+# (crates/trove-core/src/garmin.rs): decodes the binary `.fit` activity files
+# in a Garmin Connect export into serde-serializable records. Dependency tree is
+# pure Rust — chrono + nom (parser combinators) + serde, no C/cmake/system libs
+# (the standalone rule). We never hand-parse the FIT binary; this crate does it.
+fitparser = "0.11.0"
+# Pure-Rust EXIF / media-metadata reader for the exif-import collector
+# (crates/trove-core/src/exif_import.rs): parses image EXIF (JPEG/HEIC/HEIF/
+# AVIF/TIFF/PNG + CR3/RAF/IIQ) and video container metadata (MOV/MP4/3GP). The
+# dependency tree is pure Rust — bytes/chrono/iso6709parse/nom (parser
+# combinators)/regex/thiserror/tracing — no C/cmake/system libs and no libheif
+# (HEIC EXIF is parsed from the ISO-BMFF boxes directly), so it keeps the
+# standalone rule. Metadata only; image/video bytes are never read into the vault.
+nom-exif = "3.6.1"
+# Pure-Rust iCalendar (RFC 5545) parser for the CalDAV collector
+# (crates/trove-core/src/caldav.rs): parses VEVENT objects from the `.ics`
+# calendar-data payloads returned by CalDAV REPORT requests. Dependency tree is
+# pure Rust — no C/cmake/system libs — keeping the standalone rule.
+ical = "0.11.0"
+# IANA timezone database for the CalDAV TZID resolution (DTSTART;TZID=America/Los_Angeles
+# → correct UTC instant). Pure Rust — embeds the tz database at compile time,
+# no system zoneinfo, no C/cmake — keeping the standalone rule.
+chrono-tz = "0.10"
+specta = { version = "=2.0.0-rc.22", features = ["derive", "serde_json"], optional = true }
+# Pure-Rust tar reader for the Skype archival importer (skype.rs): unpacks the
+# official .tar export to extract messages.json. No C/cmake/system libs
+# (standalone rule). xattr feature disabled (not needed for read-only extraction).
+tar = { version = "0.4", default-features = false }
+# Pure-Rust PDF text-extraction for lab-pdf-import (lab_pdf_import.rs): walks
+# the content streams of a PDF and concatenates the visible text. Dependencies
+# are all pure Rust (lopdf / encoding_rs / adobe-cmap-parser / postscript /
+# euclid — no openssl, no cmake, no native-tls). Standalone-clean.
+pdf-extract = "0.10.0"
+rustls-pemfile = "2.2.0"
+# Pure-Rust Realm database reader for the Reeder 5 integration (reeder.rs):
+# reads Realm Core v9.9 Group B+-tree format — the exact format used by
+# Reeder 5's `default.realm`. Dependency tree is all pure Rust
+# (byteorder/chrono/memmap2/hex/thiserror/tracing — no C/cmake/system libs),
+# so it satisfies the standalone rule. Published 2025-08 by Maarten Staa (MIT).
+realm-db-reader = "0.2.1"
+# Pure-Rust Zstandard decompressor for the Zed editor threads.db collector
+# (zed.rs): Zed stores thread data blobs as zstd-compressed JSON
+# (data_type="zstd") inside its SQLite threads.db. ruzstd is a complete
+# pure-Rust implementation — no C/cmake/system libs (standalone rule). Used
+# only for decompression; Zed writes the blobs, Trove only reads them.
+ruzstd = "0.8.3"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = "0.10"
+objc2 = "0.6"
+block2 = "0.6"
+objc2-foundation = { version = "0.3", features = ["NSArray", "NSCalendar", "NSDate", "NSDictionary", "NSEnumerator", "NSError", "NSPredicate", "NSString", "NSURL", "NSValue"] }
+objc2-itunes-library = { version = "0.3.2", features = ["ITLibAlbum", "ITLibArtist", "ITLibDefines", "ITLibMediaEntity", "ITLibMediaItem", "ITLibrary"] }
+objc2-event-kit = { version = "0.3.2", features = ["EKCalendar", "EKCalendarItem", "EKError", "EKEvent", "EKEventStore", "EKObject", "EKParticipant", "EKReminder", "EKSource", "EKTypes"] }
+# Contacts.framework binding for the apple-contacts collector (CNContactStore) —
+# the macOS unified address book, federating iCloud/Google/Exchange/CardDAV in
+# one TCC-gated store. Same objc2 family as objc2-event-kit; default features
+# (33/34) bring every CN* type, the CNContact*Key constants, and block2 for the
+# auth-request completion handler. Read-only; no network. NSDateComponents
+# (birthdays/dates) rides objc2-foundation's already-enabled NSCalendar feature.
+objc2-contacts = "0.3.2"
+objc2-core-location = { version = "0.3.2", features = ["CLLocation", "CLLocationManager", "CLLocationManagerDelegate"] }
+# Vision framework for on-device OCR in the macos-screenshots collector. Uses
+# VNRecognizeTextRequest (macOS 10.15+) to extract text from screenshot PNGs.
+# Pure Apple framework — no network, no external process (standalone rule).
+# Features: VNRequestHandler = VNImageRequestHandler + performRequests:error:;
+#   VNRecognizeTextRequest = text-recognition request + results property;
+#   VNRequest = base type for the NSArray<VNRequest> performRequests: argument;
+#   VNObservation = VNRecognizedTextObservation + topCandidates: method.
+# NSDictionary added to objc2-foundation for the empty options dict.
+objc2-vision = { version = "0.3.2", features = ["VNRequestHandler", "VNRecognizeTextRequest", "VNRequest", "VNObservation"] }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+jsonschema = { version = "0.46.5", default-features = false, features = ["resolve-file"] }
+tempfile = "3"
+
+[features]
+specta = ["dep:specta"]

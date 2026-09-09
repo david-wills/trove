@@ -1,0 +1,27 @@
+[package]
+name = "trove-app"
+description = "Trove — your data, in your hands"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[lib]
+name = "trove_app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+trove-core = { path = "../crates/trove-core", features = ["specta"] }
+tauri-plugin-dialog = "2.7.1"
+chrono = "0.4.45"
+tauri-specta = { version = "=2.0.0-rc.21", features = ["derive", "typescript"] }
+specta-typescript = "=0.0.9"
+specta = { version = "=2.0.0-rc.22", features = ["derive"] }
