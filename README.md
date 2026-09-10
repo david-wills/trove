@@ -1,10 +1,31 @@
 # trove
 
-A local-first vault for your own data: a Mac app and a background daemon that pull your personal data out of the apps and services that hold it, write it to plain files on your disk, and keep it there.
+A local-first vault for your own data: a Mac app and a background daemon that pull your personal data out of the apps and services that hold it, write it to plain files on your disk, and keep it there — so that you can finally ask questions of it.
+
+The arc is **collect → store → see → ask**. Collection and storage work. Seeing is thin. Asking — pointing a language model, ideally one running on your own machine, at the whole corpus — is the point of the project and is *not built yet*. This README is specific about which is which.
 
 **Status: prototype, paused.** Six weeks of concentrated work in mid-2026, then I moved to shipping Beat Journal. The importers listed below work and are tested; the ones marked planned are not written. I expect to come back to it.
 
 The thesis is short. The companies that hold your data have every incentive to keep it, and the exports they offer are an afterthought. The counter-move is a program on your own machine that collects everything, writes it in formats any tool can read, and never sends it anywhere unless you say so. Trove is that program, or the start of one.
+
+But collection is the prerequisite, not the goal. The reason to want every message, play, visit, workout, purchase and calendar occurrence in one folder in one set of shapes is that a corpus like that is *answerable*. Each company holding a piece of your life can answer a sliver of a question about it, and does — that is what their models are trained to do. Nobody can answer across the pieces, and you least of all: your own life is the one corpus you cannot query. A complete vault on your disk plus a model you control is the only arrangement where questions like *what actually preceded the months I slept badly*, or *which people drop out of my life when work gets heavy*, or *what did I spend the year of my attention on* can be asked at all without handing the answer's raw material to somebody else in order to get the answer back.
+
+## Where this is going
+
+The end state is a place where your data lives *and* where you interrogate it. Four parts, and the honest status of each:
+
+| | | Status |
+|---|---|---|
+| **Collect** | 24/7 daemon plus one-shot importers, pulling from the services and files that hold your life | **Works.** The tiers below say exactly which sources have been run against real data |
+| **Store** | plain JSONL, CSV and markdown in a folder you own, under an open spec any program can write to | **Works.** This is the strongest part of the project |
+| **See** | charts, tables and per-domain views over the streams | **Thin.** Functional, one dark theme, a generic table for anything without a bespoke view |
+| **Ask** | a language model pointed at the whole vault — search, a unified timeline, entity resolution, then analysis | **Not built.** This is the destination |
+
+The last row is the reason for the other three. Collection came first because you cannot analyze what you have not gathered, and gathering turned out to be most of the work — but a vault you can only browse is a filing cabinet, and a new user today gets impressive breadth and a weak "so what."
+
+**On which model.** The bias is local — a model running on your own machine, over a corpus that never leaves it, is the only configuration where the privacy claim in this README survives contact with the analysis step. That is the default the design aims at. It is a bias, not a restriction: the vault is plain files, so you can point anything at it, and if you would rather send a scoped slice to a frontier API because it answers better, that is your call to make explicitly. The commitment is that the choice is yours and the default is the private one, never that some capable model is off-limits.
+
+This is a stated goal with a design behind it, not a shipped feature. The sequencing lives in [`docs/post-wave-roadmap.md`](docs/post-wave-roadmap.md): read-path foundation, then the drop-in normalizer, then registry generalization, then the read layer — vault-wide search (R4a), unified timeline, entity resolution, and LLM analysis (R4d) built on the search index. Nothing in that last phase is written. Judge the repo on the first three rows; the fourth is what it is for.
 
 ## What is here
 
@@ -103,9 +124,9 @@ Cloud sources need their own app registration: set `TROVE_<SERVICE>_CLIENT_ID` a
 
 - **No network by default.** The app makes no calls of its own. Data crosses the wire only when you connect a cloud source (and then it flows in), plus three narrow cases: the weather collector's Open-Meteo request, an off-by-default lookup that resolves who paid for an ad the extension's observer saw, and the normalizer's opt-in Claude suggestion, which needs your own API key.
 - **No sync, no accounts, no telemetry.** The vault is a folder. Back it up like one.
-- **No runtime dependency on another app.** No Ollama, no ActivityWatch install, no sidecar processes. Capabilities are absorbed as libraries compiled into the binary: an IMAP client, a FIT parser, an EXIF reader, a Realm reader, a git reader, a PDF extractor, EventKit and iTunesLibrary bindings.
+- **No runtime dependency on another app.** No Ollama, no ActivityWatch install, no sidecar processes. Capabilities are absorbed as libraries compiled into the binary: an IMAP client, a FIT parser, an EXIF reader, a Realm reader, a git reader, a PDF extractor, EventKit and iTunesLibrary bindings. This rule survives the local-inference goal above rather than being an exception to it: when a model is wired to the vault it should be compiled in the same way, so a default install has working local analysis with nothing else to install. Pointing an external runtime you already run at the vault stays possible — the files are plain — but it is not to become a prerequisite for the feature to work.
 - **No encryption at rest.** Files are plain on purpose; that is what makes them readable by everything. Disk encryption is FileVault's job, secrets live under `.trove/` with `0600`, and the SQLCipher dependency in the tree is for reading Signal Desktop's archive, not for writing ours.
-- **No analysis.** Collection came first by decision. There is no vault-wide search, no unified timeline, no local model. The roadmap for those is [`docs/post-wave-roadmap.md`](docs/post-wave-roadmap.md); the app today is a good collector and a thin viewer.
+- **No analysis _yet_ — and this one is not a non-goal.** Everything else in this list is a standing design decision. This is sequencing: there is no vault-wide search, no unified timeline, no entity resolution and no model wired to the vault, because collection had to come first. It is the intended destination, not something ruled out — see [Where this is going](#where-this-is-going). The app today is a good collector and a thin viewer.
 
 ## Limitations
 
