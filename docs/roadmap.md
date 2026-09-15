@@ -79,8 +79,8 @@ going"). Two things were wrong with the shape it paused in:
 | Step | What | Status |
 |---|---|---|
 | S1 | Double-clickable `Trove.app` + `Trove Dev.app` launcher | ✅ 2026-09-14 |
-| S2 | Prune the catalog to the keep list; INDEX records restore commits | in progress |
-| S3 | Catalog view in the hub, rendered from INDEX at build time | next |
+| S2 | Prune the catalog to the keep list; INDEX records restore commits | ✅ 2026-09-14 (`b0e2bce`) |
+| S3 | Catalog view in the hub, rendered from INDEX at build time | ✅ 2026-09-14 (`60bc571`) |
 | S4 | Extract the watcher to its own project; delete `troved`; app syncs on open | paused 2026-09-14: `~/Local/trove-collector` scaffolded (standalone binary + extension, compiles, 36 tests; local repo, not pushed). Trove side untouched — still carries troved + watcher modules |
 | S5 | Measure each periodic sync's memory in isolation; fix what the daemon leaked | |
 | S6 | UI baseline: navigation, theme, layout | |
