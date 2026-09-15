@@ -47,13 +47,13 @@ fn detect_ranks_social_post_top_for_pubops_fixture() {
 }
 
 #[test]
-fn detect_routes_imdb_fixture_to_built_importer() {
-    let path = fixtures_dir().join("imdb-list.csv");
+fn detect_routes_letterboxd_fixture_to_built_importer() {
+    let path = fixtures_dir().join("letterboxd-diary.csv");
     let det = detect(&path).unwrap();
     match det.outcome {
         DetectOutcome::Route(route) => {
-            assert_eq!(route.integration_id, "imdb");
-            assert_eq!(route.name, "IMDb");
+            assert_eq!(route.integration_id, "letterboxd");
+            assert_eq!(route.name, "Letterboxd");
         }
         other => panic!("expected a route-to-built-importer offer, got {other:?}"),
     }

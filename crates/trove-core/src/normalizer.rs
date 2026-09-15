@@ -3443,53 +3443,23 @@ mod tests {
 
     // ---- detect (Step 2) ----------------------------------------------------
 
-    // Real IMDb export headers (from imdb.rs — the built importer's own shapes).
-    const IMDB_RATINGS_HDR: &str =
-        "Const,Your Rating,Date Rated,Title,URL,Title Type,IMDb Rating,Runtime (mins),Year,Genres,Num Votes,Release Date,Directors\r\n\
-tt0110912,10,2024-03-15,Pulp Fiction,https://www.imdb.com/title/tt0110912/,movie,8.9,154,1994,\"Crime, Drama\",2100000,1994-10-14,Quentin Tarantino\r\n";
-    const IMDB_LIST_HDR: &str =
-        "Position,Const,Created,Modified,Description,Title,URL,Title Type,IMDb Rating,Runtime (mins),Year,Genres,Num Votes,Release Date,Directors,Your Rating,Date Rated\r\n\
-1,tt0816692,2023-01-15,2023-01-15,,Interstellar,https://www.imdb.com/title/tt0816692/,movie,8.7,169,2014,\"Adventure, Drama, Sci-Fi\",2000000,2014-11-07,Christopher Nolan,,\r\n";
-
-    #[test]
-    fn detect_routes_imdb_exports_to_the_built_importer() {
-        let v = temp_vault("detect-imdb");
-        // Ratings export → path 1 (route to imdb), distinguished from a list.
-        let p = write_file(&v, "ratings.csv", IMDB_RATINGS_HDR);
-        let d = detect(&p).unwrap();
-        match d.outcome {
-            DetectOutcome::Route(r) => {
-                assert_eq!(r.integration_id, "imdb");
-                assert_eq!(r.shape_label, "IMDb ratings");
-            }
-            other => panic!("expected route to imdb, got {other:?}"),
-        }
-        // Watchlist/custom-list export → also path 1 (the list signature).
-        let p2 = write_file(&v, "WATCHLIST.csv", IMDB_LIST_HDR);
-        match detect(&p2).unwrap().outcome {
-            DetectOutcome::Route(r) => {
-                assert_eq!(r.integration_id, "imdb");
-                assert_eq!(r.shape_label, "IMDb watchlist / custom list");
-            }
-            other => panic!("expected route to imdb list, got {other:?}"),
-        }
-    }
-
     #[test]
     fn importer_signatures_tolerate_reorder_case_and_extra_columns() {
         // Reordered, re-cased, and with an unknown trailing column — the marker
-        // subset still claims it (name-based, not positional).
+        // subset still claims it (name-based, not positional). Letterboxd is
+        // the reference import (letterboxd.rs SIGNATURES).
         let headers: Vec<String> = vec![
-            "TITLE".into(), "url".into(), "const".into(), "  Your   Rating ".into(),
-            "date rated".into(), "title type".into(), "Some New Column".into(),
+            "WATCHED DATE".into(), "year".into(), "  Letterboxd   URI ".into(),
+            "name".into(), "rating".into(), "Some New Column".into(),
         ];
-        let route = importer_route(&headers, Format::Csv).expect("ratings markers present");
-        assert_eq!(route.integration_id, "imdb");
+        let route = importer_route(&headers, Format::Csv).expect("diary markers present");
+        assert_eq!(route.integration_id, "letterboxd");
+        assert_eq!(route.shape_label, "Letterboxd diary");
         // JSONL never routes to a CSV-header importer.
         assert!(importer_route(&headers, Format::Jsonl).is_none());
         // Missing a required marker → no claim.
         let missing: Vec<String> =
-            vec!["Const".into(), "Title".into(), "URL".into()]; // no Your Rating/Date Rated
+            vec!["Name".into(), "Year".into(), "Rating".into()]; // no Letterboxd URI/Watched Date
         assert!(importer_route(&missing, Format::Csv).is_none());
     }
 

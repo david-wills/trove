@@ -13,7 +13,6 @@ dirs = "5"
 # Pure-Rust gzip decompressor for apple-notes body decoding (ZDATA =
 # gzip+protobuf). miniz_oxide backend — no C/cmake/openssl (standalone rule).
 # Already a transitive dep via ureq and zip; adding explicitly for direct use.
-flate2 = { version = "1", default-features = true }
 quick-xml = "0.40.1"
 chrono = "0.4.45"
 csv = "1.4.0"
@@ -24,10 +23,8 @@ sha2 = "0.10"
 # Pure-Rust MD5 (RustCrypto) — used for Subsonic salted-token auth
 # (md5(password + salt) as specified in the Subsonic REST API). No C/cmake/
 # system libs (standalone rule).
-md5 = "0.7"
 # HMAC-SHA256 for Coinbase API request signing (coinbase.rs). Part of the
 # RustCrypto family — pure Rust, no C/cmake/system libs (standalone rule).
-hmac = "0.12"
 base64 = "0.22"
 getrandom = { version = "0.2", features = ["std"] }
 # Pure-Rust arbitrary-precision integers for the AWS Cognito SRP (Secure Remote
@@ -36,7 +33,6 @@ getrandom = { version = "0.2", features = ["std"] }
 # num-bigint is the canonical RustCrypto BigInt crate — pure Rust, no C/cmake/
 # system libs (standalone rule). Signed arithmetic (BigInt) is not needed here;
 # only unsigned (BigUint) is used.
-num-bigint = "0.4"
 rusqlite = { version = "0.40.1", features = ["bundled-sqlcipher"] }
 # Pure-Rust hex codec for the Signal key derivation path (hex-decode
 # encryptedKey from config.json, hex-encode the PRAGMA key value).
@@ -44,14 +40,11 @@ hex = "0.4"
 # Pure-Rust AES block cipher (RustCrypto) — used for AES-128-CBC decryption
 # of the Signal Desktop encryptedKey in signal.rs. No C/cmake/system libs;
 # uses hardware AES-NI on x86/ARM when available.
-aes = "0.8"
 # Pure-Rust PBKDF2 key-derivation function (RustCrypto) — used with SHA-1
 # to derive the AES key from the macOS Keychain password for Signal's
 # encryptedKey decryption in signal.rs.
-pbkdf2 = { version = "0.12", features = ["hmac"] }
 # Pure-Rust SHA-1 (RustCrypto) — required for pbkdf2_hmac::<Sha1> in the
 # Signal key derivation (Signal Desktop uses PBKDF2-SHA1 on macOS).
-sha1 = "0.10"
 mail-parser = "0.11.3"
 # Generic IMAP collector (crates/trove-core/src/imap.rs): a SYNC IMAP client
 # (the pull hooks are sync fn(&Vault)->…) over pure-Rust TLS. default-features
@@ -63,9 +56,6 @@ mail-parser = "0.11.3"
 # (no reliance on the OS keychain). NOTE the module/extern-crate name clash:
 # `crate::imap` (the module) vs the `imap` crate — the module aliases the crate
 # as `imap_client` (`use ::imap as imap_client`).
-imap = { version = "2.4.1", default-features = false }
-rustls = { version = "0.23.40", default-features = false, features = ["ring", "std", "tls12", "logging"] }
-webpki-roots = "1.0.7"
 # Pure-Rust E.164 phone normalization for the `contacts` domain — the Google
 # and Apple contact collectors share `contacts::normalize_phone`. Parsing and
 # formatting only (no network); falls back to the verbatim string when a
@@ -76,13 +66,11 @@ phonenumber = "0.3.9"
 # async/worktree-mutation/credential stacks; we keep only sha1 (object ids),
 # the pure-Rust zlib-rs backend (read packed objects, no C), and blob-diff
 # (per-commit insertions/deletions).
-gix = { version = "0.84", default-features = false, features = ["sha1", "zlib-rs", "blob-diff"] }
 # Pure-Rust ANT FIT decoder for the Garmin bulk-export import
 # (crates/trove-core/src/garmin.rs): decodes the binary `.fit` activity files
 # in a Garmin Connect export into serde-serializable records. Dependency tree is
 # pure Rust — chrono + nom (parser combinators) + serde, no C/cmake/system libs
 # (the standalone rule). We never hand-parse the FIT binary; this crate does it.
-fitparser = "0.11.0"
 # Pure-Rust EXIF / media-metadata reader for the exif-import collector
 # (crates/trove-core/src/exif_import.rs): parses image EXIF (JPEG/HEIC/HEIF/
 # AVIF/TIFF/PNG + CR3/RAF/IIQ) and video container metadata (MOV/MP4/3GP). The
@@ -90,39 +78,31 @@ fitparser = "0.11.0"
 # combinators)/regex/thiserror/tracing — no C/cmake/system libs and no libheif
 # (HEIC EXIF is parsed from the ISO-BMFF boxes directly), so it keeps the
 # standalone rule. Metadata only; image/video bytes are never read into the vault.
-nom-exif = "3.6.1"
 # Pure-Rust iCalendar (RFC 5545) parser for the CalDAV collector
 # (crates/trove-core/src/caldav.rs): parses VEVENT objects from the `.ics`
 # calendar-data payloads returned by CalDAV REPORT requests. Dependency tree is
 # pure Rust — no C/cmake/system libs — keeping the standalone rule.
-ical = "0.11.0"
 # IANA timezone database for the CalDAV TZID resolution (DTSTART;TZID=America/Los_Angeles
 # → correct UTC instant). Pure Rust — embeds the tz database at compile time,
 # no system zoneinfo, no C/cmake — keeping the standalone rule.
-chrono-tz = "0.10"
 specta = { version = "=2.0.0-rc.22", features = ["derive", "serde_json"], optional = true }
 # Pure-Rust tar reader for the Skype archival importer (skype.rs): unpacks the
 # official .tar export to extract messages.json. No C/cmake/system libs
 # (standalone rule). xattr feature disabled (not needed for read-only extraction).
-tar = { version = "0.4", default-features = false }
 # Pure-Rust PDF text-extraction for lab-pdf-import (lab_pdf_import.rs): walks
 # the content streams of a PDF and concatenates the visible text. Dependencies
 # are all pure Rust (lopdf / encoding_rs / adobe-cmap-parser / postscript /
 # euclid — no openssl, no cmake, no native-tls). Standalone-clean.
-pdf-extract = "0.10.0"
-rustls-pemfile = "2.2.0"
 # Pure-Rust Realm database reader for the Reeder 5 integration (reeder.rs):
 # reads Realm Core v9.9 Group B+-tree format — the exact format used by
 # Reeder 5's `default.realm`. Dependency tree is all pure Rust
 # (byteorder/chrono/memmap2/hex/thiserror/tracing — no C/cmake/system libs),
 # so it satisfies the standalone rule. Published 2025-08 by Maarten Staa (MIT).
-realm-db-reader = "0.2.1"
 # Pure-Rust Zstandard decompressor for the Zed editor threads.db collector
 # (zed.rs): Zed stores thread data blobs as zstd-compressed JSON
 # (data_type="zstd") inside its SQLite threads.db. ruzstd is a complete
 # pure-Rust implementation — no C/cmake/system libs (standalone rule). Used
 # only for decompression; Zed writes the blobs, Trove only reads them.
-ruzstd = "0.8.3"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 core-foundation = "0.10"

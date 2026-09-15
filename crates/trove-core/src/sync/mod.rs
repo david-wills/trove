@@ -6,14 +6,10 @@
 //! stay safe to share or commit. Pulled data is written to normal vault
 //! folders (e.g. `tasks/ticktick/`) and each pull replaces the previous
 //! snapshot, mirroring how health re-imports replace.
-
-pub mod fitbit;
 pub mod google;
 pub mod oauth;
 pub mod oura;
 pub mod ticktick;
-pub mod whoop;
-pub mod withings;
 
 use std::collections::BTreeMap;
 use std::fs;
