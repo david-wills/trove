@@ -105,9 +105,11 @@ macOS only. You need Rust via `rustup` (built with 1.96), Node 22 or newer (buil
 git clone https://github.com/david-wills/trove
 cd trove
 npm install
-npm run tauri dev            # the app; creates ~/Documents/Trove on first launch
+scripts/build-app.sh         # builds, signs, and installs Trove.app (/Applications and ./Trove.app)
 cargo test -p trove-core     # the core tests
 ```
+
+The first build compiles all of the Rust and takes a while; later builds only recompile what changed. For day-to-day hacking, `npm run tauri dev` runs the app with live reload instead, and `scripts/make-dev-launcher.sh` wraps that in a double-clickable `Trove Dev.app` so you never need a terminal open. The app creates `~/Documents/Trove` on first launch.
 
 The daemon, if you want collection to continue when the app is closed:
 

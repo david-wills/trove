@@ -26,3 +26,7 @@ dist-ssr
 
 # Personal brainstorm notes (local only, not repo docs)
 claude-files/
+
+# Local app bundles (built by scripts/build-app.sh and scripts/make-dev-launcher.sh)
+/Trove.app
+/Trove Dev.app
