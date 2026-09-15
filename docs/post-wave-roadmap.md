@@ -1,5 +1,8 @@
 # Trove — Post-Wave Roadmap
 
+> **Superseded 2026-09-14 by [`roadmap.md`](./roadmap.md).** Kept for the
+> record; R1 shipped, R2 is built, R3/R4 are re-sequenced there.
+
 *2026-07-16, designed with David. The successor to
 `docs/integration-pipeline.md` for **sequencing**: the wave that doc governed
 is complete, and this doc governs what comes next. The pipeline doc's
