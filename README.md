@@ -4,7 +4,7 @@ A local-first vault for your own data: a Mac app and a background daemon that pu
 
 The arc is **collect → store → see → ask**. Collection and storage work. Seeing is thin. Asking — pointing a language model, ideally one running on your own machine, at the whole corpus — is the point of the project and is *not built yet*. This README is specific about which is which.
 
-**Status: prototype, paused.** Six weeks of concentrated work in mid-2026, then I moved to shipping Beat Journal. The importers listed below work and are tested; the ones marked planned are not written. I expect to come back to it.
+**Status: prototype, resumed September 2026.** Six weeks of concentrated work in mid-2026, a pause to ship Beat Journal, and now a second pass with a narrower brief: a baseline collect/store/analyze app built out one data type at a time ([`docs/roadmap.md`](docs/roadmap.md)). The importers listed below work and are tested; the ones marked planned are not written.
 
 The thesis is short. The companies that hold your data have every incentive to keep it, and the exports they offer are an afterthought. The counter-move is a program on your own machine that collects everything, writes it in formats any tool can read, and never sends it anywhere unless you say so. Trove is that program, or the start of one.
 
@@ -25,13 +25,13 @@ The last row is the reason for the other three. Collection came first because yo
 
 **On which model.** The bias is local — a model running on your own machine, over a corpus that never leaves it, is the only configuration where the privacy claim in this README survives contact with the analysis step. That is the default the design aims at. It is a bias, not a restriction: the vault is plain files, so you can point anything at it, and if you would rather send a scoped slice to a frontier API because it answers better, that is your call to make explicitly. The commitment is that the choice is yours and the default is the private one, never that some capable model is off-limits.
 
-This is a stated goal with a design behind it, not a shipped feature. The sequencing lives in [`docs/post-wave-roadmap.md`](docs/post-wave-roadmap.md): read-path foundation, then the drop-in normalizer, then registry generalization, then the read layer — vault-wide search (R4a), unified timeline, entity resolution, and LLM analysis (R4d) built on the search index. Nothing in that last phase is written. Judge the repo on the first three rows; the fourth is what it is for.
+This is a stated goal with a design behind it, not a shipped feature. The sequencing lives in [`docs/roadmap.md`](docs/roadmap.md): split the always-on watcher into its own project, settle a UI baseline, then one deliberate pass per data type, and after that the read layer — vault-wide search, unified timeline, entity resolution, and LLM analysis built on the search index. Nothing in that last phase is written. Judge the repo on the first three rows; the fourth is what it is for.
 
 ## What is here
 
 A Rust workspace and a Tauri app:
 
-- [`crates/trove-core/`](crates/trove-core/) is everything: the vault, every collector and importer, the integration registry, the read paths. About 330k lines of Rust, most of it integration modules.
+- [`crates/trove-core/`](crates/trove-core/) is everything: the vault, every collector and importer, the integration registry, the read paths. About 54k lines of Rust after the September 2026 prune (it was 330k; see the next tier below).
 - [`crates/troved/`](crates/troved/) is the always-on collector daemon, a small headless binary registered with `launchd`. It and the app share the core crate and coordinate through a file lock so exactly one process collects at a time.
 - [`src-tauri/`](src-tauri/) and [`src/`](src/) are the desktop app: Tauri 2, React 19, a thin command layer over the core crate with TypeScript bindings generated from the Rust types.
 - [`extension/`](extension/) is a Chrome extension that streams tab activity to the daemon over native messaging. Local-only; it has no network permission.
@@ -77,9 +77,11 @@ These were built first, one at a time, and each was validated against the real t
 
 Apple Music library, Apple Podcasts and Apple Books readers were also written against my real databases (the schema findings are in each module's header comment); their scheduled snapshot-and-diff path was not exercised live before the pause.
 
-### Built from documentation and fixtures, never run against a real account
+### Built from documentation and fixtures, never run against a real account — now pruned from the tree
 
 After the core above existed, I wrote the file-format spec, ratified a shared record contract for each domain, and then built out the catalog: **279 provider modules** across health, finance, media, reading, notes, home, developer tools, social, travel and more, each one module plus one registration line. They were written against official API docs and community-documented export formats, and each has fixture tests; 4,400-odd test functions in the crate, most of them here. None of them has been connected to a live account by me. The Google pulls (Gmail, Calendar, Contacts, Tasks, YouTube, Books) and Oura, SimpleFIN and the other OAuth connectors are in this tier: the flows are implemented and unit-tested but no client credentials are compiled in and no real backfill has run. Treat every module here as a starting point that a first real user will find bugs in.
+
+On 2026-09-14 I removed 248 of these from the build (commit `b0e2bce`) to keep Trove to sources that have touched real data. Their code lives at commit `33bda15`, the briefs stay in `docs/integrations/`, and the INDEX marks each one 📦 with the checkout command that brings it back. The app lists them too, under Integrations → Catalog. The Google pulls, Oura, Fathom and SimpleFIN stayed because I have connected them.
 
 The full list, with status per provider, is [`docs/integrations/INDEX.md`](docs/integrations/INDEX.md); each row links to a brief that records the evidence it was built from.
 
@@ -134,7 +136,7 @@ Cloud sources need their own app registration: set `TROVE_<SERVICE>_CLIENT_ID` a
 
 - **No CI.** Tests run on my machine. `cargo test -p trove-core` and `npm run build` were green at the pause.
 - **macOS only, single user, dev builds.** There are no signed or notarized builds and no installer; you build it. Windows and Linux are architecturally possible through Tauri and were never attempted. Apple Health is only reachable through the iPhone's export zip, because HealthKit has no Mac API.
-- **Breadth ran ahead of depth.** 279 provider modules is a lot of code that has never seen a real account. They were produced in a batched, agent-driven build loop against documented API shapes ([`docs/integration-pipeline.md`](docs/integration-pipeline.md) is the doctrine, [`docs/integrations/`](docs/integrations/) the briefs). I reviewed the mechanism closely and the leaf modules lightly; the registry design is what lets any one of them be removed with one line.
+- **Breadth ran ahead of depth, then got cut back.** 279 provider modules that had never seen a real account were produced in a batched, agent-driven build loop against documented API shapes ([`docs/integration-pipeline.md`](docs/integration-pipeline.md) is the doctrine, [`docs/integrations/`](docs/integrations/) the briefs). I reviewed the mechanism closely and the leaf modules lightly; the registry design is what lets any one of them be removed with one line.
 - **The permission story is rough.** Grants are per-binary, some panes have no manual-add button so the prompt is the only path, and the fixes for that (embedded usage strings in the daemon, the signing script) came late and were not all validated live. Expect to visit System Settings more than once.
 - **Read paths were the last thing fixed.** The Health tab used to hang the app on open; it was refactored to rebuildable indexes and async commands just before the pause, and that convention has not been applied to every view.
 - **The frontend is functional, not designed.** One dark theme, one chart wrapper over uPlot, a generic table for any stream without a bespoke view.

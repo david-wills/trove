@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/gen-catalog.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/gen-catalog.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"

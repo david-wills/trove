@@ -1,0 +1,5382 @@
+{
+ "generated_from": "docs/integrations/INDEX.md",
+ "rows": [
+  {
+   "id": "lastfm",
+   "name": "Last.fm",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "The original music scrobbling service: any player that scrobbles (Spotify plugin, the Last.fm apps, Navidrome, Tidal's built-in scrobbler, Trove's own…",
+   "brief": "docs/integrations/lastfm.md",
+   "modules": [
+    "lastfm.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "listenbrainz",
+   "name": "ListenBrainz",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "",
+   "summary": "The open-source scrobbling service from MetaBrainz (the MusicBrainz people): the community-governed alternative to Last.fm, with MusicBrainz…",
+   "brief": "docs/integrations/listenbrainz.md",
+   "modules": [
+    "listenbrainz.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "trakt",
+   "name": "Trakt",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "The Last.fm of TV and movies: a watch-history aggregator that media players (Plex, Kodi, Infuse, Emby) scrobble into automatically, plus manual check-ins.",
+   "brief": "docs/integrations/trakt.md",
+   "modules": [
+    "trakt.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "claude-code",
+   "name": "Claude Code",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Claude Code session history: every AI-assisted coding session, as plain JSONL in the home directory.",
+   "brief": "docs/integrations/claude-code.md",
+   "modules": [
+    "claude_code.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "github",
+   "name": "GitHub",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "The cloud half of developer activity: commits on repos you don't have cloned, PRs, issues, stars, and gists.",
+   "brief": "docs/integrations/github.md",
+   "modules": [
+    "github.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "local-git",
+   "name": "Local Git Activity",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "",
+   "summary": "The commit history of every repository on the user's machine — the \"what did I build\" trail.",
+   "brief": "docs/integrations/local-git.md",
+   "modules": [
+    "local_git.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "shell-history",
+   "name": "Shell History",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "The terminal command log — ~/.zsh_history and friends.",
+   "brief": "docs/integrations/shell-history.md",
+   "modules": [
+    "shell_history.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "apple-contacts",
+   "name": "Apple Contacts",
+   "status": "pruned",
+   "domain": "contacts",
+   "priority": "P0",
+   "effort": "M",
+   "needs": "Needs-David",
+   "summary": "The macOS address book — the anchor of Trove's whole person layer.",
+   "brief": "docs/integrations/apple-contacts.md",
+   "modules": [
+    "apple_contacts.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "imap",
+   "name": "IMAP Email (any provider)",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P0",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "The universal email protocol: one generic collector serves iCloud Mail, Yahoo, Zoho, Fastmail (as fallback), self-hosted, and any custom-domain mailbox —…",
+   "brief": "docs/integrations/imap.md",
+   "modules": [
+    "imap.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "outlook",
+   "name": "Microsoft Outlook",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P0",
+   "effort": "M",
+   "needs": "🔒 Needs-login Needs-David",
+   "summary": "Microsoft email — Outlook.com personal, Hotmail, and Microsoft 365 work/school accounts — via the Graph API.",
+   "brief": "docs/integrations/outlook.md",
+   "modules": [
+    "outlook.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "nws",
+   "name": "National Weather Service",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The US National Weather Service's official public API.",
+   "brief": "docs/integrations/nws.md",
+   "modules": [
+    "nws.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "simkl",
+   "name": "Simkl",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-login Needs-David",
+   "summary": "TV/film/anime watch tracker and universal scrobble hub — the Trakt alternative, with notably better anime ID mapping (AniDB/AniList).",
+   "brief": "docs/integrations/simkl.md",
+   "modules": [
+    "simkl.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "todoist",
+   "name": "Todoist",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "One of the most widely used cross-platform task managers: projects, sections, labels, tasks with due dates, priorities, sub-tasks, reminders, and comments.",
+   "brief": "docs/integrations/todoist.md",
+   "modules": [
+    "todoist.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "discord",
+   "name": "Discord",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "One of the highest-usage chat platforms (communities, gaming, increasingly group DMs).",
+   "brief": "docs/integrations/discord.md",
+   "modules": [
+    "discord.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "mediaremote",
+   "name": "Mac Now Playing (MediaRemote)",
+   "status": "queued",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "Needs-sample Needs-David (parked)",
+   "summary": "Universal now-playing capture for the Mac itself: whatever any app tells macOS it is playing (Spotify desktop, Music, Safari video, IINA, …) surfaces…",
+   "brief": "docs/integrations/mediaremote.md",
+   "modules": [
+    "mediaremote.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "garmin",
+   "name": "Garmin Connect",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "The dominant GPS sports-watch ecosystem; many users have years (often a decade+) of activity history here.",
+   "brief": "docs/integrations/garmin.md",
+   "modules": [
+    "garmin.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "apple-voice-memos",
+   "name": "Apple Voice Memos",
+   "status": "pruned",
+   "domain": "voice",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-David",
+   "summary": "Apple's built-in recorder. iCloud sync means iPhone memos land in the same Mac-local directory — so this one collector captures every voice note the user…",
+   "brief": "docs/integrations/apple-voice-memos.md",
+   "modules": [
+    "apple_voice_memos.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "bear",
+   "name": "Bear",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-David",
+   "summary": "Markdown notes app for Mac/iOS with a tag-based organization model, popular with writers and developers.",
+   "brief": "docs/integrations/bear.md",
+   "modules": [
+    "bear.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "boardgamegeek",
+   "name": "BoardGameGeek",
+   "status": "pruned",
+   "domain": "gaming",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The canonical board-game database and community.",
+   "brief": "docs/integrations/boardgamegeek.md",
+   "modules": [
+    "boardgamegeek.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "dropbox",
+   "name": "Dropbox",
+   "status": "built",
+   "domain": "files",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-David",
+   "summary": "The most widely-installed third-party cloud drive.",
+   "brief": "docs/integrations/dropbox.md",
+   "modules": [
+    "dropbox.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "facebook",
+   "name": "Facebook",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "The largest social network's comprehensive personal export: posts, photos/videos metadata, comments, reactions, friends, search history, marketplace,…",
+   "brief": "docs/integrations/facebook.md",
+   "modules": [
+    "facebook.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "fathom",
+   "name": "Fathom",
+   "status": "built",
+   "domain": "meetings",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "AI video notetaker that records calls (Zoom/Meet/Teams) and produces transcripts with speaker labels and timestamps, plus highlights and summaries.",
+   "brief": "docs/integrations/fathom.md",
+   "modules": [
+    "fathom.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "exif-import",
+   "name": "Image Files (EXIF)",
+   "status": "pruned",
+   "domain": "photos",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "EXIF metadata extraction for image and video files managed *outside* Apple Photos — drag a folder of JPEGs/HEICs, import a camera SD card, and Trove indexes…",
+   "brief": "docs/integrations/exif-import.md",
+   "modules": [
+    "exif_import.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "readwise",
+   "name": "Readwise + Readwise Reader",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "The reading hub: Readwise aggregates highlights from Kindle, Apple Books, web articles, and PDFs into one account; Reader is its companion read-later app…",
+   "brief": "docs/integrations/readwise.md",
+   "modules": [
+    "readwise.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "toggl-track",
+   "name": "Toggl Track",
+   "status": "pruned",
+   "domain": "time-entries",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "One of the most popular manual time trackers: the user starts/stops timers or logs entries against projects, tasks, tags, and clients. First collector in the `time-entries` domain (contract ratified).",
+   "brief": "docs/integrations/toggl-track.md",
+   "modules": [
+    "toggl_track.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "airnow",
+   "name": "AirNow (EPA AQI)",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "AirNow is the US EPA's official air-quality service: authoritative AQI from actual ground-level monitors (PM2.5, PM10, ozone, CO, NO2, SO2), plus forecast…",
+   "brief": "docs/integrations/airnow.md",
+   "modules": [
+    "airnow.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "asana",
+   "name": "Asana",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Asana is a widely-used task / project-management service common in professional teams.",
+   "brief": "docs/integrations/asana.md",
+   "modules": [
+    "asana.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "bitcoin",
+   "name": "Bitcoin Wallet (Blockstream)",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "Full transaction history for any Bitcoin address via Blockstream's free, keyless Esplora API. First collector in the `finance-purchases` domain (contract ratified; on-chain value transfers as dated purchase line items).",
+   "brief": "docs/integrations/bitcoin.md",
+   "modules": [
+    "bitcoin.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "chess-com",
+   "name": "Chess.com",
+   "status": "pruned",
+   "domain": "gaming",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "The largest online chess platform. Every game a user plays is published with full PGN (the complete move record), time control, result, ratings, opening,…",
+   "brief": "docs/integrations/chess-com.md",
+   "modules": [
+    "chess_com.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "day-one",
+   "name": "Day One",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "The dominant journaling app (~10M users). Entries are markdown with rich first-class metadata: creation/modified timestamps, location, weather, tags, and…",
+   "brief": "docs/integrations/day-one.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "drafts",
+   "name": "Drafts",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Drafts (Agiletortoise) is a \"capture first, act later\" notes app for Mac and iOS: everything starts in one frictionless text field, then gets tagged, filed,…",
+   "brief": "docs/integrations/drafts.md",
+   "modules": [
+    "drafts.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "fastmail",
+   "name": "Fastmail",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "A privacy-focused paid email provider, popular with exactly the audience a local-first vault attracts.",
+   "brief": "docs/integrations/fastmail.md",
+   "modules": [
+    "fastmail.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "fidelity",
+   "name": "Fidelity",
+   "status": "built",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Largest US retail brokerage by assets. Trade history, settlements, and position snapshots for brokerage/retirement accounts.",
+   "brief": "docs/integrations/fidelity.md",
+   "modules": [
+    "fidelity.rs",
+    "finance/import.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "fireflies",
+   "name": "Fireflies.ai",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "AI meeting assistant that joins meetings as a bot participant, records, and transcribes.",
+   "brief": "docs/integrations/fireflies.md",
+   "modules": [
+    "fireflies.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "github-copilot",
+   "name": "GitHub Copilot",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "GitHub Copilot Chat conversations as stored locally by VS Code — the largest-userbase AI coding assistant, so the broadest-reach AI-sessions source after…",
+   "brief": "docs/integrations/github-copilot.md",
+   "modules": [
+    "github_copilot.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "gitlab",
+   "name": "GitLab",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "The second developer platform after GitHub: commits, merge requests, issues, and the user activity event feed, for both gitlab.com and self-hosted instances.",
+   "brief": "docs/integrations/gitlab.md",
+   "modules": [
+    "gitlab.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-drive",
+   "name": "Google Drive",
+   "status": "built",
+   "domain": "files",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Google's cloud drive via the Drive for Desktop app.",
+   "brief": "docs/integrations/google-drive.md",
+   "modules": [
+    "google_drive.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "google-voice",
+   "name": "Google Voice",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Google's virtual phone number service: calls, SMS, and transcribed voicemails.",
+   "brief": "docs/integrations/google-voice.md",
+   "modules": [
+    "google_voice.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "granola",
+   "name": "Granola",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "AI meeting-notes app: joins/listens to meetings and produces AI summaries, and (on paid plans) full transcripts with speaker attribution.",
+   "brief": "docs/integrations/granola.md",
+   "modules": [
+    "granola.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "icloud-drive",
+   "name": "iCloud Drive",
+   "status": "built",
+   "domain": "files",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Apple's cloud file storage, on by default for most Mac users.",
+   "brief": "docs/integrations/icloud-drive.md",
+   "modules": [
+    "icloud_drive.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "imdb",
+   "name": "IMDb",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The default movie-rating tool for a huge share of casual film watchers — many users have years of star ratings on IMDb and nowhere else.",
+   "brief": "docs/integrations/imdb.md",
+   "modules": [
+    "imdb.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "instagram",
+   "name": "Instagram",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Meta's photo/video network. The official JSON export is one ZIP covering posts (captions, timestamps, location tags), stories, reels, DMs,…",
+   "brief": "docs/integrations/instagram.md",
+   "modules": [
+    "instagram.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "lichess",
+   "name": "Lichess",
+   "status": "pruned",
+   "domain": "gaming",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The open-source, nonprofit online chess platform — second only to Chess.com in reach, and the ethos match for Trove (open API, no ads, no paywalls on data).",
+   "brief": "docs/integrations/lichess.md",
+   "modules": [
+    "lichess.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "linear",
+   "name": "Linear",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Linear is a fast, opinionated issue tracker popular with software teams and indie developers.",
+   "brief": "docs/integrations/linear.md",
+   "modules": [
+    "linear.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "linkedin",
+   "name": "LinkedIn",
+   "status": "pruned",
+   "domain": "contacts",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "The professional network — where most professional contacts originate.",
+   "brief": "docs/integrations/linkedin.md",
+   "modules": [
+    "linkedin.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "logseq",
+   "name": "Logseq",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Logseq is a local-first outliner / knowledge base storing a \"graph\" as a folder of plain markdown (.md, optionally .org) files on disk.",
+   "brief": "docs/integrations/logseq.md",
+   "modules": [
+    "logseq.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "netflix",
+   "name": "Netflix",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The largest streaming video service, and the first streaming import worth building: the only major streamer with an *instant*, official viewing history export.",
+   "brief": "docs/integrations/netflix.md",
+   "modules": [
+    "netflix.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "noaa-swpc",
+   "name": "NOAA Space Weather",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "NOAA's Space Weather Prediction Center — near-real-time geomagnetic and solar data: the planetary Kp index, geomagnetic storm alerts, and the OVATION aurora…",
+   "brief": "docs/integrations/noaa-swpc.md",
+   "modules": [
+    "noaa_swpc.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "obsidian",
+   "name": "Obsidian",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Obsidian is a popular local-first Markdown knowledge base.",
+   "brief": "docs/integrations/obsidian.md",
+   "modules": [
+    "obsidian.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "onedrive",
+   "name": "OneDrive",
+   "status": "pruned",
+   "domain": "files",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Microsoft's cloud drive, ubiquitous for anyone in the Microsoft 365 ecosystem (less common than iCloud/Dropbox on personal Macs, but a large population).",
+   "brief": "docs/integrations/onedrive.md",
+   "modules": [
+    "onedrive.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "prime-video",
+   "name": "Prime Video",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Amazon's streaming video service — bundled with Prime, so the audience is enormous and most users have history they've never seen.",
+   "brief": "docs/integrations/prime-video.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "protonmail",
+   "name": "ProtonMail",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-sample",
+   "summary": "Proton's encrypted email service — disproportionately popular with exactly the privacy-conscious audience Trove targets.",
+   "brief": "docs/integrations/protonmail.md",
+   "modules": [
+    "protonmail.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "robinhood",
+   "name": "Robinhood",
+   "status": "queued",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Hugely popular US retail brokerage, especially with younger investors — stocks, options, and crypto trades.",
+   "brief": "docs/integrations/robinhood.md",
+   "modules": [
+    "robinhood.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "steam",
+   "name": "Steam",
+   "status": "pruned",
+   "domain": "gaming",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "The dominant PC game store/launcher. The Web API is the gold standard of the gaming domain — official, free, stable, no scraping — and yields the user's…",
+   "brief": "docs/integrations/steam.md",
+   "modules": [
+    "steam.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "things",
+   "name": "Things 3",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Things 3 (Cultured Code) is the highest-value local-first task manager on the Mac: a polished GTD app used heavily by individuals.",
+   "brief": "docs/integrations/things.md",
+   "modules": [
+    "things.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "threads",
+   "name": "Threads",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Meta's microblogging platform (the X competitor), attached to Instagram accounts.",
+   "brief": "docs/integrations/threads.md",
+   "modules": [
+    "threads.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "usgs-earthquakes",
+   "name": "USGS Earthquakes",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The USGS Earthquake Catalog is the authoritative, government-maintained global record of seismic events.",
+   "brief": "docs/integrations/usgs-earthquakes.md",
+   "modules": [
+    "usgs_earthquakes.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "usno",
+   "name": "USNO Astronomy",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The US Naval Observatory Astronomical Applications API is the authoritative, keyless source for daily solar and lunar data: sunrise, sunset, solar noon, civil twilight, moonrise/set, phase, illumination. First collector to bind the environment *almanac* shape.",
+   "brief": "docs/integrations/usno.md",
+   "modules": [
+    "usno.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "vanguard",
+   "name": "Vanguard",
+   "status": "built",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "🔒 Needs-sample",
+   "summary": "The largest US retirement/mutual-fund custodian — Vanguard dominates 401k and IRA assets, so for many users it holds the bulk of their net worth.",
+   "brief": "docs/integrations/vanguard.md",
+   "modules": [
+    "vanguard.rs",
+    "finance/import.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "vcard",
+   "name": "vCard Import (.vcf)",
+   "status": "pruned",
+   "domain": "contacts",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The universal contact interchange format — every contact service exports to .vcf: iCloud.com, Google Contacts / Takeout (contacts.vcf), Outlook, any CardDAV…",
+   "brief": "docs/integrations/vcard.md",
+   "modules": [
+    "vcard.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "waqi",
+   "name": "World Air Quality Index",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "WAQI / aqicn.org aggregates ground-monitor air quality from 10,000+ stations worldwide, returning AQI, dominant pollutant, and station name from a single…",
+   "brief": "docs/integrations/waqi.md",
+   "modules": [
+    "waqi.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "youtube-music",
+   "name": "YouTube Music",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Google's music-streaming service. Listening history is complete back to account creation but has no API — Takeout is the only path.",
+   "brief": "docs/integrations/youtube-music.md",
+   "modules": [
+    "youtube_music.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "apple-mail",
+   "name": "Apple Mail",
+   "status": "built",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The Mail.app local store: every account the user has configured (iCloud, Gmail, Outlook, custom IMAP) keeps a cached copy on disk.",
+   "brief": "docs/integrations/apple-mail.md",
+   "modules": [
+    "apple_mail.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "apple-notes",
+   "name": "Apple Notes",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "Apple's built-in Notes app — where most Mac/iPhone users keep freeform notes, checklists, and clippings.",
+   "brief": "docs/integrations/apple-notes.md",
+   "modules": [
+    "apple_notes.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "apple-photos",
+   "name": "Apple Photos",
+   "status": "pruned",
+   "domain": "photos",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The richest local photo source on a Mac. Photos.sqlite holds per-asset metadata for the whole library — timestamps, GPS, favorites, albums, face/ people…",
+   "brief": "docs/integrations/apple-photos.md",
+   "modules": [
+    "apple_photos.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "caldav",
+   "name": "CalDAV (any server)",
+   "status": "pruned",
+   "domain": "calendar",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "The protocol under iCloud Calendar, Fastmail, Nextcloud, Proton Calendar (via Bridge, 2024+), Radicale/Baikal self-hosting, and Google Calendar's alternate…",
+   "brief": "docs/integrations/caldav.md",
+   "modules": [
+    "caldav.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "schwab",
+   "name": "Charles Schwab",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "One of the largest US retail brokerages (equities, options, mutual funds, ETFs, retirement accounts), with an official, free, individual-developer API —…",
+   "brief": "docs/integrations/schwab.md",
+   "modules": [
+    "schwab.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "coinbase",
+   "name": "Coinbase",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The largest US crypto exchange. Buys, sells, sends, receives, staking, and Advanced Trade (ex-Pro) orders.",
+   "brief": "docs/integrations/coinbase.md",
+   "modules": [
+    "coinbase.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "cursor",
+   "name": "Cursor",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Cursor's AI chat and agent session history — the AI-pairing trail for one of the most popular AI IDEs.",
+   "brief": "docs/integrations/cursor.md",
+   "modules": [
+    "cursor.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "dexcom",
+   "name": "Dexcom",
+   "status": "pruned",
+   "domain": "health/medical",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Dexcom makes the dominant continuous glucose monitors (G6, G7, ONE, ONE+): a sensor reading blood glucose every 5 minutes, ~288 readings/day. First collector in the `health-medical` domain — binds `health-medical.observation`.",
+   "brief": "docs/integrations/dexcom.md",
+   "modules": [
+    "dexcom.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "ethereum",
+   "name": "Ethereum Wallet (Etherscan)",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "On-chain transaction history for Ethereum and EVM-compatible chains (Polygon, Arbitrum, Optimism, Base, …) via the Etherscan API.",
+   "brief": "docs/integrations/ethereum.md",
+   "modules": [
+    "ethereum.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "facebook-messenger",
+   "name": "Facebook Messenger",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "One of the most used messengers globally. The official Meta export is well-structured JSON covering all DMs and group chats (both sides of every…",
+   "brief": "docs/integrations/facebook-messenger.md",
+   "modules": [
+    "facebook_messenger.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "fitbit",
+   "name": "Fitbit",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "Fitness trackers with tens of millions of users; many early wearable adopters have years of Fitbit history that never reached Apple Health.",
+   "brief": "docs/integrations/fitbit.md",
+   "modules": [
+    "fitbit.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-chat",
+   "name": "Google Chat",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Google's team-chat product (successor to Hangouts), ubiquitous in Google Workspace orgs and present on every personal Google account.",
+   "brief": "docs/integrations/google-chat.md",
+   "modules": [
+    "google_chat.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-takeout",
+   "name": "Google Takeout (My Activity)",
+   "status": "pruned",
+   "domain": "browser-searches",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "Google's data-export archive. Built: the My Activity **Search** query log → `browser-searches` (first collector of the domain). YouTube watch history is a separate slice, deferred.",
+   "brief": "docs/integrations/google-takeout.md",
+   "modules": [
+    "google_takeout.rs",
+    "browser_searches.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-timeline",
+   "name": "Google Timeline",
+   "status": "pruned",
+   "domain": "location",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒 Needs-sample",
+   "summary": "Google's continuous location-history trail — the place visits and movement segments Google Maps records as you go about your day. Built: **first collector of the `location/` domain** (binds the `Fix` contract); the Timeline.json import scaffold + lossless raw preservation are live, the trail-row mapping is parked for a real per-platform export.",
+   "brief": "docs/integrations/google-timeline.md",
+   "modules": [
+    "google_timeline.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "interactive-brokers",
+   "name": "Interactive Brokers",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Interactive Brokers — the brokerage of choice for active traders and international users; covers equities, options, futures, forex, and crypto.",
+   "brief": "docs/integrations/interactive-brokers.md",
+   "modules": [
+    "interactive_brokers.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "jira",
+   "name": "Jira",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "Atlassian's issue tracker / project-management tool, ubiquitous in engineering and corporate teams.",
+   "brief": "docs/integrations/jira.md",
+   "modules": [
+    "jira.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "kraken",
+   "name": "Kraken",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Major US crypto exchange — largest by volume for many asset pairs.",
+   "brief": "docs/integrations/kraken.md",
+   "modules": [
+    "kraken.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "labcorp",
+   "name": "Labcorp",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Labcorp is the other half of the US lab duopoly with Quest.",
+   "brief": "docs/integrations/labcorp.md",
+   "modules": [
+    "labcorp.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "nasa-firms",
+   "name": "NASA FIRMS Wildfire",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "NASA's Fire Information for Resource Management System — satellite active-fire detections (thermal anomalies) from MODIS and VIIRS, available globally…",
+   "brief": "docs/integrations/nasa-firms.md",
+   "modules": [
+    "nasa_firms.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "outlook-calendar",
+   "name": "Outlook Calendar",
+   "status": "pruned",
+   "domain": "calendar",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "Microsoft's calendar, read via the Graph API — covers both personal Outlook.com / Microsoft accounts and M365 / enterprise tenants.",
+   "brief": "docs/integrations/outlook-calendar.md",
+   "modules": [
+    "outlook_calendar.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "quest-diagnostics",
+   "name": "Quest Diagnostics",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Quest is the largest US lab network; most Americans who've had bloodwork have results in MyQuest.",
+   "brief": "docs/integrations/quest-diagnostics.md",
+   "modules": [
+    "quest_diagnostics.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "reddit",
+   "name": "Reddit",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The dominant forum/communities platform. A heavy user's comment and submission history is a longitudinal record of interests, opinions, and communities over…",
+   "brief": "docs/integrations/reddit.md",
+   "modules": [
+    "reddit.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "spotify",
+   "name": "Spotify",
+   "status": "queued",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "The dominant music streaming service. Its GDPR \"Extended Streaming History\" export is the gold standard of listening data: complete lifetime history with…",
+   "brief": "docs/integrations/spotify.md",
+   "modules": [
+    "spotify.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "strava",
+   "name": "Strava",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "The de facto social home for GPS workouts, with an enormous user base.",
+   "brief": "docs/integrations/strava.md",
+   "modules": [
+    "strava.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "telegram",
+   "name": "Telegram",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "One of the largest messengers worldwide. Telegram Desktop ships an official, full-history export with a stable documented JSON schema — unusually good for a…",
+   "brief": "docs/integrations/telegram.md",
+   "modules": [
+    "telegram.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "apple-voicemail",
+   "name": "Visual Voicemail (iPhone backup)",
+   "status": "pruned",
+   "domain": "voice",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒 Needs-sample",
+   "summary": "iPhone Visual Voicemail, surfaced via the local Finder/iTunes backup on the Mac.",
+   "brief": "docs/integrations/apple-voicemail.md",
+   "modules": [
+    "apple_voicemail.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "whoop",
+   "name": "WHOOP",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "Needs-login Needs-sample",
+   "summary": "Screenless fitness/recovery band with a popular subscriber base.",
+   "brief": "docs/integrations/whoop.md",
+   "modules": [
+    "whoop.rs",
+    "sync/whoop.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "withings",
+   "name": "Withings",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "Connected-health device maker: smart scales (Body/Body+/Body Cardio/Body Scan), ScanWatch, blood-pressure monitors, sleep mat, thermometer — all under one API.",
+   "brief": "docs/integrations/withings.md",
+   "modules": [
+    "withings.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "x-twitter",
+   "name": "X (Twitter)",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The user's complete Twitter/X history in one official ZIP: full tweet text (full_text, untruncated), media, likes, followers/following, lists, ad…",
+   "brief": "docs/integrations/x-twitter.md",
+   "modules": [
+    "x_twitter.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "zoom",
+   "name": "Zoom",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "The dominant work meeting platform. Two distinct mechanisms, one entry: cloud recordings + VTT transcripts + AI Companion summaries via the REST API (Pro…",
+   "brief": "docs/integrations/zoom.md",
+   "modules": [
+    "zoom.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "epic-mychart",
+   "name": "Epic MyChart",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "L",
+   "needs": "🔒 Needs-login",
+   "summary": "Epic is the dominant US hospital EHR; MyChart is its patient portal.",
+   "brief": "docs/integrations/epic-mychart.md",
+   "modules": [
+    "epic_mychart.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "smart-on-fhir",
+   "name": "Medical Records (SMART on FHIR)",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P1",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "The generic SMART-on-FHIR patient-access client — the canonical Mac-native path for structured clinical records in the US.",
+   "brief": "docs/integrations/smart-on-fhir.md",
+   "modules": [
+    "smart_on_fhir.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "amazon-alexa",
+   "name": "Amazon Alexa",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Amazon Alexa logs every voice interaction with Echo/Alexa devices: the timestamp, the device, the spoken command transcription, and Alexa's response text.",
+   "brief": "docs/integrations/amazon-alexa.md",
+   "modules": [
+    "amazon_alexa.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "habitica",
+   "name": "Habitica",
+   "status": "pruned",
+   "domain": "habits",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Gamified habit-and-task tracker: habits, dailies, and to-dos earn XP, gold, and streaks in an RPG frame.",
+   "brief": "docs/integrations/habitica.md",
+   "modules": [
+    "habitica.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "23andme",
+   "name": "23andMe",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Consumer genetic-testing service. The \"Download Raw Data\" file is a tab-delimited table of the user's measured SNP genotypes — the foundational layer for…",
+   "brief": "docs/integrations/23andme.md",
+   "modules": [
+    "genetics.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "alfred",
+   "name": "Alfred Clipboard",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Alfred's Powerpack clipboard history: everything the user copied, with timestamp and source app, sitting in a plain SQLite database.",
+   "brief": "docs/integrations/alfred.md",
+   "modules": [
+    "alfred.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "ambient-weather",
+   "name": "Ambient Weather",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Ambient Weather personal weather stations (WS-2902 family and kin), read through the ambientweather.net cloud. First collector in the `home` domain — binds `home.reading`.",
+   "brief": "docs/integrations/ambient-weather.md",
+   "modules": [
+    "ambient_weather.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "pinboard",
+   "name": "Pinboard",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Minimalist paid bookmarking service beloved by a small, long-tenured audience — dedicated users hold 15+ years of bookmark history with tags and descriptions.",
+   "brief": "docs/integrations/pinboard.md",
+   "modules": [
+    "pinboard.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "skype",
+   "name": "Skype (archival)",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Skype shut down in May 2025 (accounts migrated to Teams).",
+   "brief": "docs/integrations/skype.md",
+   "modules": [
+    "skype.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "tldv",
+   "name": "tl;dv",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "Meeting recorder/notetaker covering Zoom, Google Meet, and Teams with 40+ language support; large integration surface via Zapier/n8n.",
+   "brief": "docs/integrations/tldv.md",
+   "modules": [
+    "tldv.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-meet",
+   "name": "Google Meet",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Google's meeting platform. When the organizer enables transcription, Meet produces utterance-level transcripts retrievable via the Meet REST API v2 and a…",
+   "brief": "docs/integrations/google-meet.md",
+   "modules": [
+    "google_meet.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "home-assistant",
+   "name": "Home Assistant",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "The self-hosted smart-home hub. For users who already run Home Assistant, one integration pulls state history for every device HA knows about — Zigbee,…",
+   "brief": "docs/integrations/home-assistant.md",
+   "modules": [
+    "home_assistant.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "krisp",
+   "name": "Krisp",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-sample",
+   "summary": "Krisp is primarily a system-wide noise-cancellation tool that added meeting notetaking (transcripts, notes, outlines) as a secondary feature.",
+   "brief": "docs/integrations/krisp.md",
+   "modules": [
+    "krisp.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "macos-microphone",
+   "name": "Mac Microphone Ambient Sound",
+   "status": "queued",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-David",
+   "summary": "Samples the built-in Mac microphone to log an *ambient loudness level* (dB) — quiet office vs.",
+   "brief": "docs/integrations/macos-microphone.md",
+   "modules": [
+    "macos_microphone.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "overland",
+   "name": "Overland (iOS GPS Logger)",
+   "status": "queued",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Overland is the canonical open-source always-on iOS GPS logger (IndieWeb favorite).",
+   "brief": "docs/integrations/overland.md",
+   "modules": [
+    "overland.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "owntracks",
+   "name": "OwnTracks",
+   "status": "pruned",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "OwnTracks is an open-source iOS/Android GPS logger, the other half of the self-hosted-location pair with Overland.",
+   "brief": "docs/integrations/owntracks.md",
+   "modules": [
+    "owntracks.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "pocket-casts",
+   "name": "Pocket Casts",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "A major cross-platform podcast app (owned by Automattic).",
+   "brief": "docs/integrations/pocket-casts.md",
+   "modules": [
+    "pocket_casts.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "ring",
+   "name": "Ring",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Doorbell and security-camera event logs from Ring (Amazon): who rang, when motion was detected, which device fired.",
+   "brief": "docs/integrations/ring.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "smartcar",
+   "name": "Smartcar",
+   "status": "pruned",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Connected-car API broker (successor to Automatic) that normalizes 40+ OEMs — Tesla, GM/Chevy/GMC, Ford, BMW, Hyundai/Kia, Toyota, VW, Mercedes-Benz,…",
+   "brief": "docs/integrations/smartcar.md",
+   "modules": [
+    "smartcar.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "coros",
+   "name": "COROS",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "GPS sports watches with a growing base among runners and triathletes.",
+   "brief": "docs/integrations/coros.md",
+   "modules": [
+    "coros.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "signal",
+   "name": "Signal",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "The privacy-first messenger. By design it has no export feature and no API — the only access path is Signal Desktop's local SQLCipher-encrypted SQLite DB.",
+   "brief": "docs/integrations/signal.md",
+   "modules": [
+    "signal.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "tesla",
+   "name": "Tesla (vehicle)",
+   "status": "pruned",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒 Needs-login",
+   "summary": "Tesla's Fleet API exposes a connected vehicle's state, including location.",
+   "brief": "docs/integrations/tesla.md",
+   "modules": [
+    "tesla.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "airbnb",
+   "name": "Airbnb",
+   "status": "pruned",
+   "domain": "travel",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-sample",
+   "summary": "Airbnb is a lodging marketplace; guest booking history records where a user stayed, the dates, the city/country, the confirmation code, and the amount paid.",
+   "brief": "docs/integrations/airbnb.md",
+   "modules": [
+    "travel.rs",
+    "airbnb.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "wakatime",
+   "name": "WakaTime",
+   "status": "pruned",
+   "domain": "activity",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "The standard cloud coding-time tracker: editor plugins send heartbeats (file, project, language, editor, OS) to WakaTime, which aggregates them into…",
+   "brief": "docs/integrations/wakatime.md",
+   "modules": [
+    "wakatime.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "airthings",
+   "name": "Airthings",
+   "status": "queued",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Airthings (Wave / Wave Plus / View) is an indoor air quality monitor line whose standout is radon — continuous Bq/m³ measurement that no other consumer…",
+   "brief": "docs/integrations/airthings.md",
+   "modules": [
+    "airthings.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "amazing-marvin",
+   "name": "Amazing Marvin",
+   "status": "queued",
+   "domain": "tasks",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Amazing Marvin is a highly customizable to-do/productivity app with an enthusiastic ADHD/power-user base.",
+   "brief": "docs/integrations/amazing-marvin.md",
+   "modules": [
+    "amazing_marvin.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "ancestrydna",
+   "name": "AncestryDNA",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Consumer genetic-testing service focused on ethnicity estimates and family trees.",
+   "brief": "docs/integrations/ancestrydna.md",
+   "modules": [
+    "ancestrydna.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "apple-card",
+   "name": "Apple Card, Cash & Savings",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-sample",
+   "summary": "Apple's consumer financial products: Apple Card (credit card), Apple Cash (P2P balance), and Apple Savings.",
+   "brief": "docs/integrations/apple-card.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "awair",
+   "name": "Awair",
+   "status": "queued",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Awair (Element / 2nd Edition / Omni) is a popular prosumer indoor air quality monitor: CO2, VOC, PM2.5, temperature, humidity, plus Awair's composite score.",
+   "brief": "docs/integrations/awair.md",
+   "modules": [
+    "awair.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "bearable",
+   "name": "Bearable",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Symptom/mood/medication tracker. The user logs mood ratings, pain/fatigue scores, symptoms, medications taken, and lifestyle factors per entry with timestamps.",
+   "brief": "docs/integrations/bearable.md",
+   "modules": [
+    "bearable.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "bitbucket",
+   "name": "Bitbucket",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Atlassian's git hosting platform. Declining market share versus GitHub/GitLab but still common in Atlassian-shop workplaces, so some users' \"what did I…",
+   "brief": "docs/integrations/bitbucket.md",
+   "modules": [
+    "bitbucket.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "bumble",
+   "name": "Bumble",
+   "status": "queued",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-sample Needs-David",
+   "summary": "Dating app (the \"women message first\" one). The export covers account data, match history, and full message threads — relationship-formation history that…",
+   "brief": "docs/integrations/bumble.md",
+   "modules": [
+    "bumble.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "cal-com",
+   "name": "Cal.com",
+   "status": "pruned",
+   "domain": "calendar",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Open-source Calendly alternative for booking pages and scheduled meetings.",
+   "brief": "docs/integrations/cal-com.md",
+   "modules": [
+    "cal_com.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "calendly",
+   "name": "Calendly",
+   "status": "pruned",
+   "domain": "calendar",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Scheduling tool: people book time on the user's Calendly links and the booked meetings accumulate as a scheduling history.",
+   "brief": "docs/integrations/calendly.md",
+   "modules": [
+    "calendly.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "capacities",
+   "name": "Capacities",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Object-based notes / personal-knowledge-base app.",
+   "brief": "docs/integrations/capacities.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "cash-app",
+   "name": "Cash App",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Cash App account history — peer payments, Cash App Card purchases, and Bitcoin buys/sells — via the official all-time CSV export.",
+   "brief": "docs/integrations/cash-app.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "chatgpt",
+   "name": "ChatGPT",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "OpenAI's chat assistant — for many users the single largest record of what they were thinking about, asking, and working on.",
+   "brief": "docs/integrations/chatgpt.md",
+   "modules": [
+    "chatgpt.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "clay",
+   "name": "Clay (Mesh)",
+   "status": "pruned",
+   "domain": "contacts",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Clay (partially rebranded \"Mesh\" at clay.earth) is a personal CRM that enriches the user's address book by pulling from email, calendar, LinkedIn, Twitter,…",
+   "brief": "docs/integrations/clay.md",
+   "modules": [
+    "clay.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "clockify",
+   "name": "Clockify",
+   "status": "pruned",
+   "domain": "time-entries",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Time-tracking tool: the user manually starts/stops timers or logs entries against projects and tasks.",
+   "brief": "docs/integrations/clockify.md",
+   "modules": [
+    "clockify.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "craft",
+   "name": "Craft",
+   "status": "queued",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Polished document/notes app (Mac App Store, CloudKit backend).",
+   "brief": "docs/integrations/craft.md",
+   "modules": [
+    "craft.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "cronometer",
+   "name": "Cronometer",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Cronometer is the nutrition tracker for people who care about *micronutrients* — widely regarded as having the most complete micronutrient database of any…",
+   "brief": "docs/integrations/cronometer.md",
+   "modules": [
+    "cronometer.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "dex",
+   "name": "Dex (Personal CRM)",
+   "status": "queued",
+   "domain": "contacts",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "A personal CRM oriented around LinkedIn: it auto-logs interactions from LinkedIn, Gmail, Calendar, iMessage, and Twitter, and layers on tags, notes,…",
+   "brief": "docs/integrations/dex.md",
+   "modules": [
+    "dex.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "evernote",
+   "name": "Evernote",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Evernote is one of the original cloud note-taking apps — notebooks, web clips, scanned documents, and tagged notes accumulated by a large legacy user base…",
+   "brief": "docs/integrations/evernote.md",
+   "modules": [
+    "evernote.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "flighty",
+   "name": "Flighty",
+   "status": "pruned",
+   "domain": "travel",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Flight-tracker app (iOS-first, with a Mac App Store build).",
+   "brief": "docs/integrations/flighty.md",
+   "modules": [
+    "flighty.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "goodreads",
+   "name": "Goodreads",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "The dominant social-reading service (Amazon-owned): shelves, star ratings, reviews, and read-dates for tens of millions of readers, often going back 15+ years.",
+   "brief": "docs/integrations/goodreads.md",
+   "modules": [
+    "goodreads.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-keep",
+   "name": "Google Keep",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Google's lightweight notes/checklist app. Holds short notes, checklists, colors, pins/archives, and image attachments.",
+   "brief": "docs/integrations/google-keep.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-maps",
+   "name": "Google Maps Saved Places",
+   "status": "pruned",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "A user's curated Google Maps places — Starred, Labeled (Home/Work), Want to go, and other saved lists.",
+   "brief": "docs/integrations/google-maps.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "habitify",
+   "name": "Habitify",
+   "status": "queued",
+   "domain": "habits",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Cross-platform habit tracker with a clean, minimalist log.",
+   "brief": "docs/integrations/habitify.md",
+   "modules": [
+    "habitify.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "hardcover",
+   "name": "Hardcover",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "A rising Goodreads alternative that — unlike Goodreads, StoryGraph, and Literal — ships a real, officially documented API: the same GraphQL endpoint its own…",
+   "brief": "docs/integrations/hardcover.md",
+   "modules": [
+    "hardcover.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "harvest",
+   "name": "Harvest",
+   "status": "pruned",
+   "domain": "time-entries",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Time-tracking and invoicing tool popular with freelancers and agencies: clock hours against clients, projects, and tasks.",
+   "brief": "docs/integrations/harvest.md",
+   "modules": [
+    "harvest.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "hinge",
+   "name": "Hinge",
+   "status": "queued",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-David",
+   "summary": "Major dating app (\"designed to be deleted\") owned by Match Group.",
+   "brief": "docs/integrations/hinge.md",
+   "modules": [
+    "hinge.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "hypothesis",
+   "name": "Hypothesis",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Hypothesis is the open-source (AGPL) web-annotation layer: users highlight and annotate any web page or PDF, publicly or in private groups.",
+   "brief": "docs/integrations/hypothesis.md",
+   "modules": [
+    "hypothesis.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "irc",
+   "name": "IRC Logs (ZNC / WeeChat / Irssi)",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-sample",
+   "summary": "Plaintext chat logs left on disk by the three IRC setups still in use in 2026: a ZNC bouncer, WeeChat, and Irssi.",
+   "brief": "docs/integrations/irc.md",
+   "modules": [
+    "irc.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "jetbrains",
+   "name": "JetBrains IDEs",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "The JetBrains IDE family (IntelliJ IDEA, WebStorm, PyCharm, GoLand, etc.) — the most popular non-VS-Code IDE line.",
+   "brief": "docs/integrations/jetbrains.md",
+   "modules": [
+    "jetbrains.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "kindle",
+   "name": "Kindle Highlights",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Highlights, notes, and bookmarks made on a physical Kindle e-reader, accumulated in one plain-text file on the device.",
+   "brief": "docs/integrations/kindle.md",
+   "modules": [
+    "kindle.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "crypto-tax-exports",
+   "name": "Koinly / CoinTracker Exports",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Koinly and CoinTracker are crypto tax aggregators: users wire up all their exchanges and wallets once, and the service produces a normalized,…",
+   "brief": "docs/integrations/crypto-tax-exports.md",
+   "modules": [
+    "crypto_tax_exports.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "levels-health",
+   "name": "Levels",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "Levels is a metabolic-health subscription app ($200+/yr) that pairs a continuous glucose monitor (CGM) with food logging and computes proprietary Zones…",
+   "brief": "docs/integrations/levels-health.md",
+   "modules": [
+    "levels.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "libby",
+   "name": "Libby / OverDrive",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Libby (by OverDrive) is the dominant app for borrowing ebooks and audiobooks from public libraries.",
+   "brief": "docs/integrations/libby.md",
+   "modules": [
+    "libby.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "lifesum",
+   "name": "Lifesum",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Popular nutrition/meal-logging app (strong in Europe).",
+   "brief": "docs/integrations/lifesum.md",
+   "modules": [
+    "lifesum.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "macos-downloads",
+   "name": "macOS Downloads",
+   "status": "built",
+   "domain": "files",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "macOS's quarantine system logs every file downloaded by Safari, Chrome, Firefox, Mail, and any quarantine-aware app into a single home-dir SQLite database —…",
+   "brief": "docs/integrations/macos-downloads.md",
+   "modules": [
+    "macos_downloads.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "macrofactor",
+   "name": "MacroFactor",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "MacroFactor is a popular adherence-neutral macro/calorie tracker with an adaptive-expenditure algorithm (TDEE estimated from intake + weight trend).",
+   "brief": "docs/integrations/macrofactor.md",
+   "modules": [
+    "macrofactor.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "medisafe",
+   "name": "Medisafe",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-login",
+   "summary": "Medication-reminder app; its export carries what almost nothing else does: adherence — doses taken vs.",
+   "brief": "docs/integrations/medisafe.md",
+   "modules": [
+    "medisafe.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "monica",
+   "name": "Monica (Personal CRM)",
+   "status": "queued",
+   "domain": "contacts",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Open-source personal CRM with a niche but dedicated user base, cloud or self-hosted.",
+   "brief": "docs/integrations/monica.md",
+   "modules": [
+    "monica.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "motion",
+   "name": "Motion",
+   "status": "queued",
+   "domain": "tasks",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Motion is an AI calendar/task app: you add tasks with durations, deadlines, and priorities, and it auto-schedules them into open calendar slots.",
+   "brief": "docs/integrations/motion.md",
+   "modules": [
+    "motion.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "myfitnesspal",
+   "name": "MyFitnessPal",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "MyFitnessPal is the biggest consumer food-logging app.",
+   "brief": "docs/integrations/myfitnesspal.md",
+   "modules": [
+    "myfitnesspal.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "myflightradar24",
+   "name": "myFlightRadar24",
+   "status": "pruned",
+   "domain": "travel",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "myFlightRadar24 is Flightradar24's personal flight-logbook feature: users record the flights they've taken and export the log as a CSV.",
+   "brief": "docs/integrations/myflightradar24.md",
+   "modules": [
+    "myflightradar24.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "netatmo",
+   "name": "Netatmo Weather Station",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Popular prosumer personal weather station: outdoor temperature, humidity, pressure, rain, wind, plus indoor temperature, humidity, CO2 and noise from the…",
+   "brief": "docs/integrations/netatmo.md",
+   "modules": [
+    "netatmo.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "nightscout",
+   "name": "Nightscout",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Nightscout is the self-hosted, open-source CGM aggregator run by the T1D community: users deploy it themselves (cloud host or local machine) and feed it…",
+   "brief": "docs/integrations/nightscout.md",
+   "modules": [
+    "nightscout.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "noaa-co-ops",
+   "name": "NOAA Tides & Currents",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "NOAA's Center for Operational Oceanographic Products and Services — tide predictions and water-level/met observations from 3,000+ US coastal stations.",
+   "brief": "docs/integrations/noaa-co-ops.md",
+   "modules": [
+    "noaa_co_ops.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "omnivore",
+   "name": "Omnivore (historical import)",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Omnivore was a beloved open-source read-later app, shut down November 2024 after the ElevenLabs acquihire; all hosted data was deleted.",
+   "brief": "docs/integrations/omnivore.md",
+   "modules": [
+    "omnivore.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "password-manager",
+   "name": "Password Manager Metadata (1Password, Bitwarden)",
+   "status": "queued",
+   "domain": "files",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-David",
+   "summary": "Password managers hold the canonical inventory of every service and account a person has: item names, categories, URLs, tags, notes, creation/modified dates.",
+   "brief": "docs/integrations/password-manager.md",
+   "modules": [
+    "password_manager.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "paypal",
+   "name": "PayPal",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-sample",
+   "summary": "PayPal account activity — purchases, peer payments, refunds, balance transfers — via the official CSV activity download.",
+   "brief": "docs/integrations/paypal.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "pharmacy-prescriptions",
+   "name": "Pharmacy Prescriptions",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-sample Needs-David",
+   "summary": "Your prescription/medication history. There is no consumer-facing pharmacy API in 2026 — the chains' developer programs are B2B refill-ordering, not…",
+   "brief": "docs/integrations/pharmacy-prescriptions.md",
+   "modules": [
+    "pharmacy.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "philips-hue",
+   "name": "Philips Hue",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "Philips Hue is the dominant consumer smart-lighting system: a LAN bridge that controls lights, plus Hue motion/temperature/daylight sensors, rooms, zones,…",
+   "brief": "docs/integrations/philips-hue.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "pinterest",
+   "name": "Pinterest",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Visual bookmarking: boards of saved pins representing the user's interests, plans, and taste over time.",
+   "brief": "docs/integrations/pinterest.md",
+   "modules": [
+    "pinterest.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "pocket",
+   "name": "Pocket (historical import)",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample",
+   "summary": "Pocket was the dominant read-later service until Mozilla shut it down on July 8, 2025; the export portal and API closed November 12, 2025.",
+   "brief": "docs/integrations/pocket.md",
+   "modules": [
+    "pocket.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "raindrop",
+   "name": "Raindrop.io",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Bookmark manager with collections, tags, and notes — one of the main landing spots for users displaced by the Pocket shutdown (July 2025), so the user base…",
+   "brief": "docs/integrations/raindrop.md",
+   "modules": [
+    "raindrop.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "read-ai",
+   "name": "Read.ai",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-login Needs-David",
+   "summary": "AI meeting notetaker popular in enterprise Zoom/Teams/Google Meet workflows: joins meetings, produces transcripts, summaries, action items, and speaker…",
+   "brief": "docs/integrations/read-ai.md",
+   "modules": [
+    "read_ai.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "reflect",
+   "name": "Reflect",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-sample Needs-David",
+   "summary": "Reflect is a networked-thought / daily-notes app (the Roam/Obsidian lineage), end-to-end encrypted by design.",
+   "brief": "docs/integrations/reflect.md",
+   "modules": [
+    "reflect.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "retroachievements",
+   "name": "RetroAchievements",
+   "status": "pruned",
+   "domain": "gaming",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-login",
+   "summary": "The retro-gaming achievement service: emulator users earn community-authored achievements across classic consoles (NES through PS2-era).",
+   "brief": "docs/integrations/retroachievements.md",
+   "modules": [
+    "retroachievements.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "roam",
+   "name": "Roam Research",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Roam Research is the original networked-thought outliner — pages and nested blocks with bidirectional links, daily notes, and a graph database underneath.",
+   "brief": "docs/integrations/roam.md",
+   "modules": [
+    "roam.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "shazam",
+   "name": "Shazam",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Apple's music-identification app. Every \"what song is this?\" moment is a timestamped discovery event — a log of when and where the user *encountered* music,…",
+   "brief": "docs/integrations/shazam.md",
+   "modules": [
+    "shazam.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "simplenote",
+   "name": "Simplenote",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Simplenote is Automattic's free, minimalist plain-text note app — fast sync, tags, no formatting overhead.",
+   "brief": "docs/integrations/simplenote.md",
+   "modules": [
+    "simplenote.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "snapchat",
+   "name": "Snapchat",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Ephemeral messaging + photo app. Ephemeral snap *content* is gone by design — the export yields snap metadata only — but two assets matter: Memories…",
+   "brief": "docs/integrations/snapchat.md",
+   "modules": [
+    "snapchat.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "standard-notes",
+   "name": "Standard Notes",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "End-to-end-encrypted notes app (open source, AGPL; self-hostable sync server).",
+   "brief": "docs/integrations/standard-notes.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "stoic",
+   "name": "Stoic",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "iOS-first journaling app (Mac app arrived 2025) blending guided journaling with mood/metric tracking.",
+   "brief": "docs/integrations/stoic.md",
+   "modules": [
+    "stoic.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "storygraph",
+   "name": "StoryGraph",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "The de-facto Goodreads replacement: an independent (non-Amazon) social-reading tracker known for mood/pace stats and half-star ratings, growing fast since 2020.",
+   "brief": "docs/integrations/storygraph.md",
+   "modules": [
+    "storygraph.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "stripe",
+   "name": "Stripe Billing",
+   "status": "queued",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-David",
+   "summary": "Stripe is the billing backend behind a huge share of SaaS subscriptions — but most consumers only ever see it as an email receipt.",
+   "brief": "docs/integrations/stripe.md",
+   "modules": [
+    "stripe.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "substack",
+   "name": "Substack",
+   "status": "queued",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "Needs-David",
+   "summary": "Newsletter publishing. For users who write on Substack, the export is their complete published archive plus audience/revenue stats.",
+   "brief": "docs/integrations/substack.md",
+   "modules": [
+    "substack.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "sunrise-sunset",
+   "name": "Sunrise-Sunset.org",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "A keyless public REST feed of daily solar geometry — sunrise, sunset, solar noon, civil/nautical/astronomical twilight, day length, and (via the…",
+   "brief": "docs/integrations/sunrise-sunset.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "switchbot",
+   "name": "SwitchBot",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "SwitchBot is the popular affordable sensor ecosystem: Hub 2 (with built-in temperature/humidity), Meter Plus, outdoor meters, motion sensors, contact…",
+   "brief": "docs/integrations/switchbot.md",
+   "modules": [
+    "switchbot.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "tiktok",
+   "name": "TikTok",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Short-form video. The headline asset isn't the user's posts — it's the watch history: 10k–50k+ timestamped video views for active users, one of the densest…",
+   "brief": "docs/integrations/tiktok.md",
+   "modules": [
+    "tiktok.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "timery",
+   "name": "Timery",
+   "status": "pruned",
+   "domain": "time-entries",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Timery is a popular Apple-platform frontend (iOS/macOS) for Toggl Track.",
+   "brief": "docs/integrations/timery.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "tinder",
+   "name": "Tinder",
+   "status": "queued",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒 Needs-David",
+   "summary": "The largest dating app. Its export is a candid behavioral record — daily swipe counts, every match, and full message threads — that exists nowhere else on…",
+   "brief": "docs/integrations/tinder.md",
+   "modules": [
+    "tinder.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "tplink-kasa",
+   "name": "TP-Link Kasa / Tapo",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Per-plug energy monitoring from TP-Link's Kasa and Tapo smart plugs: watts right now, daily and monthly kWh per device.",
+   "brief": "docs/integrations/tplink-kasa.md",
+   "modules": [
+    "tplink_kasa.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "trello",
+   "name": "Trello",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Kanban-style task/project tool: boards → lists → cards, with due dates, checklists, labels, members, attachments, and comments.",
+   "brief": "docs/integrations/trello.md",
+   "modules": [
+    "trello.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "tumblr",
+   "name": "Tumblr",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Long-form/multimedia blogging platform with a dedicated (if smaller) user base.",
+   "brief": "docs/integrations/tumblr.md",
+   "modules": [
+    "tumblr.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "ulysses",
+   "name": "Ulysses",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Ulysses is a subscription Markdown writing app for Mac/iOS popular with long-form writers, bloggers, and students.",
+   "brief": "docs/integrations/ulysses.md",
+   "modules": [
+    "ulysses.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "venmo",
+   "name": "Venmo",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Venmo peer-payment history — who paid whom, when, how much, and the note attached to each payment — via the official data export.",
+   "brief": "docs/integrations/venmo.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "vscode",
+   "name": "VS Code",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "VS Code's recently-opened workspaces and file-activity state — \"what projects and files did I open in VS Code, when\" without installing WakaTime.",
+   "brief": "docs/integrations/vscode.md",
+   "modules": [
+    "vscode.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "way-of-life",
+   "name": "Way of Life",
+   "status": "pruned",
+   "domain": "habits",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Way of Life is a long-running iOS/Android habit tracker (no Mac app): the user marks each habit yes / no / skip per day and the app surfaces streaks and chains.",
+   "brief": "docs/integrations/way-of-life.md",
+   "modules": [
+    "way_of_life.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "weatherflow-tempest",
+   "name": "WeatherFlow Tempest",
+   "status": "queued",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Personal weather station (the Tempest unit + Wi-Fi hub).",
+   "brief": "docs/integrations/weatherflow-tempest.md",
+   "modules": [
+    "weatherflow_tempest.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "wikipedia",
+   "name": "Wikipedia Contributions",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Edit history for Wikipedia (and any MediaWiki wiki, including Wikidata).",
+   "brief": "docs/integrations/wikipedia.md",
+   "modules": [
+    "wikipedia.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "actual-budget",
+   "name": "Actual Budget",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "A local-first, open-source envelope-budgeting app — its users are exactly Trove's audience (privacy-minded, files-on-my-machine people).",
+   "brief": "docs/integrations/actual-budget.md",
+   "modules": [
+    "actual_budget.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "amazon",
+   "name": "Amazon Orders",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Amazon order history — the most common retail purchase source for most users.",
+   "brief": "docs/integrations/amazon.md",
+   "modules": [
+    "amazon.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "apple-app-store",
+   "name": "App Store & iTunes Purchases",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Lifetime purchase history across Apple's storefronts: App Store, iTunes, Apple TV+, Apple Music, Apple Arcade — apps, media, subscriptions, in-app purchases.",
+   "brief": "docs/integrations/apple-app-store.md",
+   "modules": [
+    "apple_app_store.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "apple-homekit",
+   "name": "Apple HomeKit",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "HomeKit's local daemon (homed) keeps the user's entire smart-home configuration in a CoreData SQLite database: every accessory, room, zone, scene, and…",
+   "brief": "docs/integrations/apple-homekit.md",
+   "modules": [
+    "apple_homekit.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "aranet",
+   "name": "Aranet4",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "The Aranet4 is the gold-standard consumer CO2 monitor — a battery-powered BLE sensor reporting CO2, temperature, humidity, and pressure.",
+   "brief": "docs/integrations/aranet.md",
+   "modules": [
+    "aranet.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "audible",
+   "name": "Audible",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Amazon's audiobook platform — for audiobook listeners it holds the entire library, purchase dates, finish status, and last listening position per title.",
+   "brief": "docs/integrations/audible.md",
+   "modules": [
+    "audible.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "august-yale",
+   "name": "August / Yale Smart Lock",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Entry/exit log from August and Yale smart locks: every lock/unlock event with who did it and how (app, keypad code, auto-lock).",
+   "brief": "docs/integrations/august-yale.md",
+   "modules": [
+    "august_yale.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "awardwallet",
+   "name": "AwardWallet",
+   "status": "pruned",
+   "domain": "travel",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "Loyalty-program aggregator: tracks miles and hotel points across 700+ programs (Marriott Bonvoy, Hilton Honors, IHG, Hyatt, American AAdvantage, United…",
+   "brief": "docs/integrations/awardwallet.md",
+   "modules": [
+    "awardwallet.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "bandcamp",
+   "name": "Bandcamp",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-sample",
+   "summary": "Bandcamp is where people *buy* music — DRM-free albums downloaded and played in local apps.",
+   "brief": "docs/integrations/bandcamp.md",
+   "modules": [
+    "bandcamp.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "beeper",
+   "name": "Beeper",
+   "status": "queued",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Paid unified-messaging app bridging WhatsApp, Signal, Telegram, Instagram, Google Messages, LinkedIn, X, Discord, Slack and more into one client — and…",
+   "brief": "docs/integrations/beeper.md",
+   "modules": [
+    "beeper.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "bereal",
+   "name": "BeReal",
+   "status": "pruned",
+   "domain": "photos",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "Dual-camera daily-photo social app: one front + one back photo per day at a random prompt time.",
+   "brief": "docs/integrations/bereal.md",
+   "modules": [
+    "bereal.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "bluesky",
+   "name": "Bluesky",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Open-protocol microblogging on AT Protocol. The user's entire repo — posts, likes, follows — is a content-addressed archive that anyone can fetch by DID…",
+   "brief": "docs/integrations/bluesky.md",
+   "modules": [
+    "bluesky.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "box",
+   "name": "Box",
+   "status": "pruned",
+   "domain": "files",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Enterprise-leaning cloud storage. Rare on personal Macs (the research doc recommends icebox for the API path), but when the Box Drive desktop app *is*…",
+   "brief": "docs/integrations/box.md",
+   "modules": [
+    "box_drive.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "deezer",
+   "name": "Deezer",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Music streaming service with a large, EU-centric user base (France especially) — less common on North American Macs but a real Spotify alternative for a…",
+   "brief": "docs/integrations/deezer.md",
+   "modules": [
+    "deezer.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "docusign",
+   "name": "DocuSign / e-signed documents",
+   "status": "pruned",
+   "domain": "files",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "DocuSign (and peers — Dropbox Sign, Adobe Sign) is where life's signed paperwork lives: leases, contracts, employment agreements, closings.",
+   "brief": "docs/integrations/docusign.md",
+   "modules": [
+    "docusign.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "emporia",
+   "name": "Emporia Vue",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Emporia Vue is a panel-mounted home energy monitor that measures usage per circuit via clamp sensors (up to 16 circuits on Vue 2, 18 on the 2026 Vue 3) —…",
+   "brief": "docs/integrations/emporia.md",
+   "modules": [
+    "emporia.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "enphase",
+   "name": "Enphase Solar",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Enphase microinverter solar systems, fronted by the IQ Gateway (Envoy) on the home LAN plus the Enlighten cloud.",
+   "brief": "docs/integrations/enphase.md",
+   "modules": [
+    "enphase.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "feedly",
+   "name": "Feedly",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Feedly is the largest cloud RSS service post-Google-Reader.",
+   "brief": "docs/integrations/feedly.md",
+   "modules": [
+    "feedly.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "flickr",
+   "name": "Flickr",
+   "status": "pruned",
+   "domain": "photos",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Long-running photo-hosting service; the audience is photographers with years-deep libraries (often pre-dating smartphone photos), rich tags, album…",
+   "brief": "docs/integrations/flickr.md",
+   "modules": [
+    "flickr.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "flight-emails",
+   "name": "Flight Confirmation Emails (derived)",
+   "status": "pruned",
+   "domain": "travel",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "A derived source: rather than connecting to an airline, this is an extractor pass that reads confirmation emails the user already imported and turns them…",
+   "brief": "docs/integrations/flight-emails.md",
+   "modules": [
+    "flight_emails.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "freestyle-libre",
+   "name": "FreeStyle Libre (LibreView)",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Abbott's FreeStyle Libre is the other major consumer CGM (market share roughly even with Dexcom in some demographics); readings flow sensor → LibreLink app…",
+   "brief": "docs/integrations/freestyle-libre.md",
+   "modules": [
+    "freestyle_libre.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "genetics-variants",
+   "name": "Genetic Variant Analysis (derived)",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "A derived feature, not a new data source: it reads an already-imported raw genome (23andMe / AncestryDNA 4-column TSV), extracts rsIDs, and cross-references…",
+   "brief": "docs/integrations/genetics-variants.md",
+   "modules": [
+    "genetics_variants.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "gog-galaxy",
+   "name": "GOG Galaxy",
+   "status": "pruned",
+   "domain": "gaming",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "GOG's launcher for DRM-free PC games — and, more importantly, a *multi-platform aggregator*: its integration plugins pull Steam, Epic, and other launchers'…",
+   "brief": "docs/integrations/gog-galaxy.md",
+   "modules": [
+    "gog_galaxy.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-nest",
+   "name": "Google Nest",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Nest thermostats, cameras, displays, and doorbells via Google's Smart Device Management API.",
+   "brief": "docs/integrations/google-nest.md",
+   "modules": [
+    "google_nest.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-photos",
+   "name": "Google Photos",
+   "status": "pruned",
+   "domain": "photos",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Google's cloud photo library — for many users their *primary* photo archive, with a decade-plus of timestamps, GPS points, and face tags.",
+   "brief": "docs/integrations/google-photos.md",
+   "modules": [
+    "google_photos.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "google-pollen",
+   "name": "Google Pollen",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Google's pollen-forecast API: daily tree / grass / weed forecasts with species-level breakdown and a UPI (Universal Pollen Index), covering 65+ countries…",
+   "brief": "docs/integrations/google-pollen.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "groupme",
+   "name": "GroupMe",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "Microsoft-owned group-messaging app, popular with US universities, sports teams, and clubs.",
+   "brief": "docs/integrations/groupme.md",
+   "modules": [
+    "groupme.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "hacker-news",
+   "name": "Hacker News",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "The tech-community forum. For HN regulars, submitted stories and comments are a public intellectual trail; favorites are a curated reading record.",
+   "brief": "docs/integrations/hacker-news.md",
+   "modules": [
+    "hacker_news.rs",
+    "social.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "honeywell-resideo",
+   "name": "Honeywell Home (Resideo)",
+   "status": "queued",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Resideo's Honeywell Home cloud API for the large Honeywell Wi-Fi thermostat installed base — T-Series (T9/T10), Lyric Round, and other Honeywell Home models.",
+   "brief": "docs/integrations/honeywell-resideo.md",
+   "modules": [
+    "honeywell_resideo.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "inoreader",
+   "name": "Inoreader",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Inoreader is a power-user cloud RSS service, second to Feedly in user base.",
+   "brief": "docs/integrations/inoreader.md",
+   "modules": [
+    "inoreader.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "instapaper",
+   "name": "Instapaper",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "The original read-later service, still active with a large long-tenured installed base — many users have a decade-plus of saved articles.",
+   "brief": "docs/integrations/instapaper.md",
+   "modules": [
+    "instapaper.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "iterm2",
+   "name": "iTerm2",
+   "status": "queued",
+   "domain": "developer",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-sample Needs-David",
+   "summary": "The dominant third-party macOS terminal. With Shell Integration enabled and \"Save copy/paste history and command history to disk\" turned on, it keeps…",
+   "brief": "docs/integrations/iterm2.md",
+   "modules": [
+    "iterm2.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "jellyfin",
+   "name": "Jellyfin",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Free, open-source self-hosted media server — the community alternative to Plex, growing on macOS.",
+   "brief": "docs/integrations/jellyfin.md",
+   "modules": [
+    "jellyfin.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "lab-pdf-import",
+   "name": "Lab Results (PDF)",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "The universal non-FHIR fallback for lab results: any lab or hospital portal (MyQuest, patient.labcorp.com, hospital portals, international/specialty labs)…",
+   "brief": "docs/integrations/lab-pdf-import.md",
+   "modules": [
+    "lab_pdf.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "linkding",
+   "name": "Linkding",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Linkding and Shiori are the two popular self-hosted bookmark managers — lightweight, Docker-friendly, open source.",
+   "brief": "docs/integrations/linkding.md",
+   "modules": [
+    "sync/linkding.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "literal",
+   "name": "Literal",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "A smaller, design-forward Goodreads competitor popular with indie-reading circles.",
+   "brief": "docs/integrations/literal.md",
+   "modules": [
+    "literal.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "lunch-money",
+   "name": "Lunch Money",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Lunch Money is a web-first personal-finance app with the best-in-class API among PF apps (the research doc's words).",
+   "brief": "docs/integrations/lunch-money.md",
+   "modules": [
+    "lunch_money.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "lutron-caseta",
+   "name": "Lutron Caséta",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Lutron Caséta is a popular US smart-lighting / shade system.",
+   "brief": "docs/integrations/lutron-caseta.md",
+   "modules": [
+    "lutron_caseta.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "mastodon",
+   "name": "Mastodon",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "The flagship Fediverse/ActivityPub microblogging network — thousands of independent instances, one open API.",
+   "brief": "docs/integrations/mastodon.md",
+   "modules": [
+    "mastodon.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "matrix",
+   "name": "Matrix / Element",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The open, federated messaging protocol; Element is its flagship client.",
+   "brief": "docs/integrations/matrix.md",
+   "modules": [
+    "matrix.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "cms-blue-button",
+   "name": "Medicare Blue Button",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "CMS Blue Button 2.0 is Medicare's official claims API: a beneficiary authorizes an app with their Medicare.gov login and it returns Part A (inpatient), Part…",
+   "brief": "docs/integrations/cms-blue-button.md",
+   "modules": [
+    "cms_blue_button.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "microsoft-teams",
+   "name": "Microsoft Teams",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "Microsoft's team-chat + meetings platform, dominant in enterprise.",
+   "brief": "docs/integrations/microsoft-teams.md",
+   "modules": [
+    "microsoft_teams.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "microsoft-todo",
+   "name": "Microsoft To Do",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Microsoft's task manager (the ex-Wunderlist successor), bundled into the Microsoft 365 / Outlook ecosystem and surfaced in Outlook, Teams, and Windows.",
+   "brief": "docs/integrations/microsoft-todo.md",
+   "modules": [
+    "microsoft_todo.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "moen-flo",
+   "name": "Moen Flo",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Whole-home smart water monitor (shutoff valve + flow sensor): flow rate, water temperature, pressure, daily/weekly/monthly consumption, leak-detection…",
+   "brief": "docs/integrations/moen-flo.md",
+   "modules": [
+    "moen_flo.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "monarch-money",
+   "name": "Monarch Money",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "A popular subscription personal-finance app (the main Mint successor).",
+   "brief": "docs/integrations/monarch-money.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "navidrome",
+   "name": "Navidrome / Subsonic",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Self-hosted music servers speaking the Subsonic REST API — Navidrome is the modern flagship; Airsonic-Advanced, Funkwhale, and Ampache speak the same…",
+   "brief": "docs/integrations/navidrome.md",
+   "modules": [
+    "navidrome.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "netnewswire",
+   "name": "NetNewsWire",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "The flagship free, open-source, macOS-native RSS reader, with a large Mac user base.",
+   "brief": "docs/integrations/netnewswire.md",
+   "modules": [
+    "netnewswire.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "noaa-ndbc",
+   "name": "NOAA Buoys (NDBC)",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "NOAA's National Data Buoy Center — real-time observations from ~1,000 physical buoys and coastal stations across US waters and the Great Lakes: wave height,…",
+   "brief": "docs/integrations/noaa-ndbc.md",
+   "modules": [
+    "noaa_ndbc.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "noaa-cdo",
+   "name": "NOAA Climate Data Online",
+   "status": "queued",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-David",
+   "summary": "NOAA's Climate Data Online — daily historical weather observations from actual ground stations (GHCND, the Global Historical Climatology Network): temp…",
+   "brief": "docs/integrations/noaa-cdo.md",
+   "modules": [
+    "noaa_cdo.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "notion",
+   "name": "Notion",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Notion is a hugely popular block-based workspace: pages, wikis, and databases that double as task managers.",
+   "brief": "docs/integrations/notion.md",
+   "modules": [
+    "notion.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "notion-airtable",
+   "name": "Notion / Airtable Contacts",
+   "status": "queued",
+   "domain": "contacts",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-David",
+   "summary": "Many people keep their personal CRM as a hand-rolled Notion database or Airtable base.",
+   "brief": "docs/integrations/notion-airtable.md",
+   "modules": [
+    "notion_airtable.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "okcupid",
+   "name": "OkCupid",
+   "status": "queued",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-sample Needs-David",
+   "summary": "Dating app (Match Group, like Tinder and Hinge) built around long-form profiles and match questions.",
+   "brief": "docs/integrations/okcupid.md",
+   "modules": [
+    "okcupid.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "omron",
+   "name": "Omron",
+   "status": "unavailable",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Omron is the dominant consumer blood-pressure-monitor brand.",
+   "brief": "docs/integrations/omron.md",
+   "modules": [],
+   "unavailable_reason": "OMRON Connect Create API is B2B/partner-gated",
+   "restore_commit": ""
+  },
+  {
+   "id": "onenote",
+   "name": "OneNote",
+   "status": "pruned",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "OneNote is Microsoft's free-form notebook app, popular in enterprise and education.",
+   "brief": "docs/integrations/onenote.md",
+   "modules": [
+    "onenote.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "org-mode",
+   "name": "Org-mode / Plain-text task files",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Org-mode is Emacs's plain-text outliner/task format — .org files with TODO keywords, priorities, tags, and SCHEDULED/DEADLINE/DONE timestamps.",
+   "brief": "docs/integrations/org-mode.md",
+   "modules": [
+    "org_mode.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "otter",
+   "name": "Otter.ai",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The most widely used meeting notetaker among individuals and academics — which makes the manual-export path worth shipping even though Otter offers no…",
+   "brief": "docs/integrations/otter.md",
+   "modules": [
+    "otter.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "overcast",
+   "name": "Overcast",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "The leading iOS podcast app for power users — and per the research doc's podcast hierarchy, the best podcast listening history available from any app:…",
+   "brief": "docs/integrations/overcast.md",
+   "modules": [
+    "overcast.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "playstation",
+   "name": "PlayStation Network",
+   "status": "pruned",
+   "domain": "gaming",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Sony's network for PS4/PS5. Yields the played-titles list with playtime and the full trophy history with unlock timestamps — console gaming that no…",
+   "brief": "docs/integrations/playstation.md",
+   "modules": [
+    "playstation.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "plex",
+   "name": "Plex",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Self-hosted media server: movies, TV, and music the user owns, served to their devices.",
+   "brief": "docs/integrations/plex.md",
+   "modules": [
+    "plex.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "polar",
+   "name": "Polar",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Polar makes sports watches and heart-rate monitors with a large base among serious endurance athletes.",
+   "brief": "docs/integrations/polar.md",
+   "modules": [
+    "polar.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "purpleair",
+   "name": "PurpleAir",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "PurpleAir is a network of community-run laser particle-counter sensors that report hyperlocal PM2.5.",
+   "brief": "docs/integrations/purpleair.md",
+   "modules": [
+    "purpleair.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "qbserve",
+   "name": "Qbserve",
+   "status": "pruned",
+   "domain": "activity",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "Qbserve is a one-time-purchase macOS time tracker that automatically logs app/website usage and assigns productivity categories, entirely locally (no cloud).",
+   "brief": "docs/integrations/qbserve.md",
+   "modules": [
+    "qbserve.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "reeder",
+   "name": "Reeder",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "Reeder is a popular paid (~$9.99) macOS/iOS RSS reader.",
+   "brief": "docs/integrations/reeder.md",
+   "modules": [
+    "reeder.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "roborock",
+   "name": "Roborock",
+   "status": "queued",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Robot-vacuum cleaning history: when each clean ran, how long, area covered, errors, and map snapshots.",
+   "brief": "docs/integrations/roborock.md",
+   "modules": [
+    "roborock.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "samsung-health",
+   "name": "Samsung Health",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-sample",
+   "summary": "Samsung Health is the Android-world counterpart to Apple Health: the aggregation hub for Galaxy Watch wearables, Samsung scales, and HealthKit-style app writes.",
+   "brief": "docs/integrations/samsung-health.md",
+   "modules": [
+    "samsung_health.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "macos-screenshots",
+   "name": "Screenshots",
+   "status": "built",
+   "domain": "photos",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "A passive watcher on the user's saved screenshots: every screenshot already deliberately taken gets its text extracted on-device and made searchable — code…",
+   "brief": "docs/integrations/macos-screenshots.md",
+   "modules": [
+    "macos_screenshots.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "sense-energy",
+   "name": "Sense Energy Monitor",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Sense is a whole-home energy monitor that clips onto the electrical panel and — its unique trick — disaggregates usage by appliance from electrical…",
+   "brief": "docs/integrations/sense-energy.md",
+   "modules": [
+    "sense_energy.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "smugmug",
+   "name": "SmugMug",
+   "status": "queued",
+   "domain": "photos",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-David",
+   "summary": "Photo hosting/portfolio service used mainly by professional and serious hobbyist photographers.",
+   "brief": "docs/integrations/smugmug.md",
+   "modules": [
+    "smugmug.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "snipd",
+   "name": "Snipd",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Snipd is an AI-first podcast player whose signature feature is \"snips\" — clipped moments from episodes with an AI summary, transcript excerpt, and user notes.",
+   "brief": "docs/integrations/snipd.md",
+   "modules": [
+    "snipd.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "swarm",
+   "name": "Swarm (Foursquare)",
+   "status": "pruned",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "Swarm is Foursquare's surviving check-in app: a manual \"I'm here\" log of venues the user visits.",
+   "brief": "docs/integrations/swarm.md",
+   "modules": [
+    "swarm.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "tidal",
+   "name": "Tidal",
+   "status": "pruned",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "Hi-fi music streaming service (lossless/Atmos catalog), a meaningful Spotify alternative especially among audiophiles.",
+   "brief": "docs/integrations/tidal.md",
+   "modules": [
+    "tidal.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "timing",
+   "name": "Timing",
+   "status": "pruned",
+   "domain": "activity",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample Needs-login",
+   "summary": "Timing is a subscription macOS automatic time tracker (~$10/mo) popular with freelancers: it observes app, document, and URL usage and rolls it into projects.",
+   "brief": "docs/integrations/timing.md",
+   "modules": [
+    "timing.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "tripit",
+   "name": "TripIt",
+   "status": "pruned",
+   "domain": "travel",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "Trip-itinerary aggregator: users forward booking confirmation emails (or auto-import them) and TripIt assembles trips with flight, hotel, car-rental, and…",
+   "brief": "docs/integrations/tripit.md",
+   "modules": [
+    "tripit.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "twitch",
+   "name": "Twitch",
+   "status": "pruned",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "Live-streaming platform. For streamers, the account data and Helix API carry channel/creator history (clips, videos, subscriptions, analytics); for viewers…",
+   "brief": "docs/integrations/twitch.md",
+   "modules": [
+    "twitch.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "usgs-water",
+   "name": "USGS Water Data",
+   "status": "pruned",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "USGS Water Services exposes ~10,000 active US stream gauges with real-time gage height and discharge plus official flood-stage thresholds…",
+   "brief": "docs/integrations/usgs-water.md",
+   "modules": [
+    "usgs_water.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "green-button",
+   "name": "Utility Smart Meter (Green Button)",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-sample",
+   "summary": "Green Button is the US-standard export of utility smart-meter data: hourly or 15-minute electricity usage (kWh), often gas, occasionally water.",
+   "brief": "docs/integrations/green-button.md",
+   "modules": [
+    "green_button.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "wahoo",
+   "name": "Wahoo Fitness",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-login",
+   "summary": "Wahoo makes ELEMNT GPS bike computers and KICKR smart trainers.",
+   "brief": "docs/integrations/wahoo.md",
+   "modules": [
+    "wahoo.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "wallabag",
+   "name": "Wallabag",
+   "status": "pruned",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Wallabag is the open-source, self-hostable read-later service (also hosted at wallabag.it for ~11 EUR/yr) — it stores the full article text of everything…",
+   "brief": "docs/integrations/wallabag.md",
+   "modules": [
+    "sync/wallabag.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "webex",
+   "name": "Webex",
+   "status": "pruned",
+   "domain": "meetings",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-login Needs-David",
+   "summary": "Cisco's enterprise meeting platform. Primarily corporate use, but free personal accounts exist and the transcript API covers both.",
+   "brief": "docs/integrations/webex.md",
+   "modules": [
+    "webex.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "whatsapp",
+   "name": "WhatsApp",
+   "status": "pruned",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-sample",
+   "summary": "The world's largest messenger. On macOS it is effectively a web wrapper: no complete local message DB exists on the Mac — the full database lives on the…",
+   "brief": "docs/integrations/whatsapp.md",
+   "modules": [
+    "whatsapp.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "windsurf",
+   "name": "Windsurf",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-sample",
+   "summary": "Windsurf's Cascade chat history: the AI pair-programming conversations from the Codeium-built, VS Code-based editor.",
+   "brief": "docs/integrations/windsurf.md",
+   "modules": [
+    "windsurf.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "xbox",
+   "name": "Xbox",
+   "status": "pruned",
+   "domain": "gaming",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "Needs-login",
+   "summary": "Microsoft's gaming network spanning console and PC Game Pass.",
+   "brief": "docs/integrations/xbox.md",
+   "modules": [
+    "xbox.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "ynab",
+   "name": "YNAB",
+   "status": "pruned",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "You Need A Budget — the long-running envelope-budgeting app.",
+   "brief": "docs/integrations/ynab.md",
+   "modules": [
+    "ynab.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "zed",
+   "name": "Zed",
+   "status": "pruned",
+   "domain": "developer",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "🔒 Needs-sample",
+   "summary": "Zed's AI assistant conversation history: the prompts, responses, and thread metadata from the editor's agent panel.",
+   "brief": "docs/integrations/zed.md",
+   "modules": [
+    "zed.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "arc-timeline",
+   "name": "Arc Timeline",
+   "status": "pruned",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒 Needs-sample",
+   "summary": "Arc Timeline (bigpaua.com, iOS-only) automatically classifies continuous GPS into visits (with place names — \"home\", \"office\") and trips (with detected…",
+   "brief": "docs/integrations/arc-timeline.md",
+   "modules": [
+    "arc_timeline.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "clip-embeddings",
+   "name": "CLIP Image Embeddings (derived)",
+   "status": "queued",
+   "domain": "photos",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "Needs-David",
+   "summary": "Not a data source — a local ML enrichment layer.",
+   "brief": "docs/integrations/clip-embeddings.md",
+   "modules": [
+    "clip_embeddings.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "eight-sleep",
+   "name": "Eight Sleep",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "Needs-login",
+   "summary": "Smart-mattress cover (\"Pod\") that records sleep biometrics every ~2 seconds: beat-by-beat HR, HRV, breath rate, toss/turn events, bed/room temperature.",
+   "brief": "docs/integrations/eight-sleep.md",
+   "modules": [
+    "eight_sleep.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "gocardless",
+   "name": "GoCardless Bank Account Data (EU/UK)",
+   "status": "queued",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒 Needs-David",
+   "summary": "The EU/UK answer to SimpleFIN. SimpleFIN is US-centric, which leaves European users of Trove without live bank sync — a real gap for the \"built for anyone\"…",
+   "brief": "docs/integrations/gocardless.md",
+   "modules": [
+    "gocardless.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "icloud-contacts",
+   "name": "iCloud Contacts (CardDAV)",
+   "status": "pruned",
+   "domain": "contacts",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "Needs-login",
+   "summary": "iCloud's contact store over the standard CardDAV protocol.",
+   "brief": "docs/integrations/icloud-contacts.md",
+   "modules": [
+    "icloud_contacts.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "omnifocus",
+   "name": "OmniFocus",
+   "status": "pruned",
+   "domain": "tasks",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "Needs-sample",
+   "summary": "OmniFocus is a heavyweight Mac/iOS GTD task manager favored by power users.",
+   "brief": "docs/integrations/omnifocus.md",
+   "modules": [
+    "omnifocus.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "renpho",
+   "name": "Renpho",
+   "status": "queued",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "Needs-sample Needs-David",
+   "summary": "Renpho makes inexpensive Bluetooth smart scales with a companion app that records weight plus bioimpedance body composition (fat %, muscle mass, bone mass,…",
+   "brief": "docs/integrations/renpho.md",
+   "modules": [
+    "renpho.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "suunto",
+   "name": "Suunto",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "GPS sports watches (diving, trail, multisport heritage).",
+   "brief": "docs/integrations/suunto.md",
+   "modules": [
+    "suunto.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "tesla-energy",
+   "name": "Tesla Powerwall + Solar",
+   "status": "pruned",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "Needs-login",
+   "summary": "Solar production and Powerwall battery storage telemetry for Tesla Energy owners: generation, home consumption, grid import/export, battery…",
+   "brief": "docs/integrations/tesla-energy.md",
+   "modules": [
+    "tesla_energy.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "ultrahuman",
+   "name": "Ultrahuman",
+   "status": "pruned",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒 Needs-login",
+   "summary": "Ultrahuman Ring AIR — smart ring in the Oura segment, growing base.",
+   "brief": "docs/integrations/ultrahuman.md",
+   "modules": [
+    "ultrahuman.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": "33bda15"
+  },
+  {
+   "id": "amazfit",
+   "name": "Amazfit (Zepp)",
+   "status": "queued",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "🔒 Needs-David",
+   "summary": "Amazfit smartwatches (Zepp Health, Xiaomi ecosystem) — large budget-watch user base.",
+   "brief": "docs/integrations/amazfit.md",
+   "modules": [
+    "amazfit.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "apple-books",
+   "name": "Apple Books",
+   "status": "built",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Apple's built-in ebook reader on macOS/iOS. Its local SQLite databases hold the user's library, per-book reading progress and finish dates, and every…",
+   "brief": "docs/integrations/apple-books.md",
+   "modules": [
+    "books.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "apple-health",
+   "name": "Apple Health",
+   "status": "built",
+   "domain": "health",
+   "priority": "P0",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The platform health hub: iPhone Health app → Export All Health Data → export.zip, the single richest health artifact most users can produce.",
+   "brief": "docs/integrations/apple-health.md",
+   "modules": [
+    "health.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "apple-podcasts",
+   "name": "Apple Podcasts",
+   "status": "built",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Apple's built-in podcast app — the default for Mac/iPhone users who never chose a player, so it covers the broadest slice of podcast listeners with zero…",
+   "brief": "docs/integrations/apple-podcasts.md",
+   "modules": [
+    "podcasts.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "bank-statements",
+   "name": "Bank Statement Import (CSV/OFX/QFX)",
+   "status": "built",
+   "domain": "finance",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "File import for bank and card statements downloaded from any bank portal.",
+   "brief": "docs/integrations/bank-statements.md",
+   "modules": [
+    "finance/import.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "calls",
+   "name": "Calls & FaceTime",
+   "status": "built",
+   "domain": "correspondence",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "",
+   "summary": "The Mac's local call-history database: iPhone calls (synced via Continuity), FaceTime video and audio, and Mac cellular-relay calls.",
+   "brief": "docs/integrations/calls.md",
+   "modules": [
+    "calls.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "copilot-money",
+   "name": "Copilot Money",
+   "status": "built",
+   "domain": "finance",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Copilot Money is a popular iOS/Mac personal-finance app.",
+   "brief": "docs/integrations/copilot-money.md",
+   "modules": [
+    "finance/import.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "email",
+   "name": "Email Import (.mbox / .eml)",
+   "status": "built",
+   "domain": "correspondence",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "The universal email backstop: any RFC 4155-ish .mbox export — Google Takeout (one .mbox per label), Apple Mail File → Export Mailbox, Thunderbird,…",
+   "brief": "docs/integrations/email.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "fantastical",
+   "name": "Fantastical",
+   "status": "built",
+   "domain": "calendar",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Fantastical (Flexibits) is a popular Mac/iOS calendar-and-tasks client.",
+   "brief": "docs/integrations/fantastical.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "google-gmail",
+   "name": "Gmail",
+   "status": "built",
+   "domain": "correspondence",
+   "priority": "P0",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The world's largest consumer email service. Email is the densest single correspondence source most users have — decades of conversations, receipts,…",
+   "brief": "docs/integrations/google-gmail.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "google-calendar",
+   "name": "Google Calendar",
+   "status": "built",
+   "domain": "calendar",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "Google's calendar service — one of the two most common personal calendars (with Apple Calendar).",
+   "brief": "docs/integrations/google-calendar.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "google-contacts",
+   "name": "Google Contacts",
+   "status": "built",
+   "domain": "contacts",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "Google's address book — for many users the primary contact store, and it often does *not* sync to macOS Contacts unless the Google account is added in…",
+   "brief": "docs/integrations/google-contacts.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "google-tasks",
+   "name": "Google Tasks",
+   "status": "built",
+   "domain": "tasks",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Google's lightweight to-do list, surfaced inside Gmail and Google Calendar.",
+   "brief": "docs/integrations/google-tasks.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "imessage",
+   "name": "iMessage / SMS",
+   "status": "built",
+   "domain": "correspondence",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Apple Messages — iMessage, SMS, and RCS (iOS 18+) — read straight from the local ~/Library/Messages/chat.db.",
+   "brief": "docs/integrations/imessage.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "letterboxd",
+   "name": "Letterboxd",
+   "status": "built",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "S",
+   "needs": "",
+   "summary": "The dominant film-diary app: users log every film they watch with a date, star rating, rewatch flag, and review.",
+   "brief": "docs/integrations/letterboxd.md",
+   "modules": [
+    "letterboxd.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "loseit",
+   "name": "Lose It!",
+   "status": "built",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Calorie/nutrition tracker with a crowdsourced food database.",
+   "brief": "docs/integrations/loseit.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "open-meteo",
+   "name": "Open-Meteo",
+   "status": "built",
+   "domain": "environment",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "Free, keyless weather and environmental forecast API (Copernicus CAMS / ERA5 under the hood).",
+   "brief": "docs/integrations/open-meteo.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "oura",
+   "name": "Oura Ring",
+   "status": "built",
+   "domain": "health",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "",
+   "summary": "Smart-ring health tracker: sleep, readiness, activity, continuous heart rate, SpO2, stress, and a stack of Oura-computed composite scores.",
+   "brief": "docs/integrations/oura.md",
+   "modules": [
+    "oura.rs",
+    "sync/oura.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "safari",
+   "name": "Safari",
+   "status": "built",
+   "domain": "browser",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Apple's default Mac browser, read entirely from its local container.",
+   "brief": "docs/integrations/safari.md",
+   "modules": [
+    "safari_history.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "simplefin",
+   "name": "SimpleFIN (Bank Sync)",
+   "status": "built",
+   "domain": "finance",
+   "priority": "P0",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "SimpleFIN Bridge is a bank/card aggregator (~16k institutions via the MX network) where each user owns their credential (~$1.50/mo) — the only aggregator…",
+   "brief": "docs/integrations/simplefin.md",
+   "modules": [
+    "finance/simplefin.rs"
+   ],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "slack",
+   "name": "Slack",
+   "status": "built",
+   "domain": "correspondence",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "🔒",
+   "summary": "The dominant team-chat platform; for many users the bulk of their work conversations live nowhere else.",
+   "brief": "docs/integrations/slack.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "google-youtube",
+   "name": "YouTube",
+   "status": "built",
+   "domain": "media",
+   "priority": "P1",
+   "effort": "M",
+   "needs": "",
+   "summary": "The user's video life: subscriptions, playlists, liked videos, and — the crown jewel — complete watch history back to account creation.",
+   "brief": "docs/integrations/google-youtube.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "zelle",
+   "name": "Zelle",
+   "status": "built",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "Zelle is the bank-embedded US peer-to-peer payment network.",
+   "brief": "docs/integrations/zelle.md",
+   "modules": [],
+   "unavailable_reason": "",
+   "restore_commit": ""
+  },
+  {
+   "id": "500px",
+   "name": "500px",
+   "status": "unavailable",
+   "domain": "photos",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "",
+   "summary": "Photo-sharing/portfolio community for photographers, acquired by Visual China Group; significantly declined in Western markets since.",
+   "brief": "docs/integrations/500px.md",
+   "modules": [],
+   "unavailable_reason": "500px shut down its public API in 2018 and offers",
+   "restore_commit": ""
+  },
+  {
+   "id": "apple-journal",
+   "name": "Apple Journal",
+   "status": "unavailable",
+   "domain": "notes",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Apple Journal is Apple's first-party journaling app — iOS/iPadOS-only since December 2023, coming to the Mac with macOS Tahoe 26 (fall 2026).",
+   "brief": "docs/integrations/apple-journal.md",
+   "modules": [
+    "apple_journal.rs"
+   ],
+   "unavailable_reason": "Apple Journal only arrives on the Mac with macOS 26",
+   "restore_commit": ""
+  },
+  {
+   "id": "apple-maps",
+   "name": "Apple Maps Visited Places",
+   "status": "unavailable",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "🔒",
+   "summary": "iOS 26's opt-in \"Visited Places\" log in the Maps app (Profile → Places → Visited Places): a private, on-device record of places the user has been.",
+   "brief": "docs/integrations/apple-maps.md",
+   "modules": [],
+   "unavailable_reason": "Apple end-to-end encrypts Visited Places on the",
+   "restore_commit": ""
+  },
+  {
+   "id": "apple-significant-locations",
+   "name": "Apple Significant Locations",
+   "status": "unavailable",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "🔒",
+   "summary": "macOS/iOS \"Significant Locations\": the OS's private log of frequently visited places, encrypted with Secure-Enclave keys — unreadable by any other process even with Full Disk Access.",
+   "brief": "docs/integrations/apple-significant-locations.md",
+   "modules": [],
+   "unavailable_reason": "Apple encrypts Significant Locations with keys locked",
+   "restore_commit": ""
+  },
+  {
+   "id": "blitzortung",
+   "name": "Blitzortung Lightning",
+   "status": "unavailable",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "",
+   "summary": "Community volunteer network of ~3,000 lightning-detection sensors globally, producing excellent open lightning-strike data.",
+   "brief": "docs/integrations/blitzortung.md",
+   "modules": [],
+   "unavailable_reason": "Blitzortung's usage policy forbids direct",
+   "restore_commit": ""
+  },
+  {
+   "id": "dental-records",
+   "name": "Dental Records",
+   "status": "unavailable",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "🔒",
+   "summary": "The dental slice of personal medical history — treatment notes, perio charts, X-rays.",
+   "brief": "docs/integrations/dental-records.md",
+   "modules": [],
+   "unavailable_reason": "No practical patient-accessible structured path in",
+   "restore_commit": ""
+  },
+  {
+   "id": "disney-hulu-max",
+   "name": "Disney+ / Hulu / Max",
+   "status": "unavailable",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "The big three subscription video streamers (Disney+, Hulu, HBO Max/Max), grouped because they share the same non-situation: large watch histories locked…",
+   "brief": "docs/integrations/disney-hulu-max.md",
+   "modules": [],
+   "unavailable_reason": "No API and no documented export. Privacy-portal",
+   "restore_commit": ""
+  },
+  {
+   "id": "ecobee",
+   "name": "Ecobee",
+   "status": "unavailable",
+   "domain": "home",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "",
+   "summary": "Ecobee makes smart thermostats with rich runtime, setpoint, and occupancy- sensor history — premium features (energy reports, runtime history) are…",
+   "brief": "docs/integrations/ecobee.md",
+   "modules": [],
+   "unavailable_reason": "Ecobee has paused new developer registrations (since",
+   "restore_commit": ""
+  },
+  {
+   "id": "epic-games",
+   "name": "Epic Games Store",
+   "status": "unavailable",
+   "domain": "gaming",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "PC game library and playtime from the Epic Games Store launcher.",
+   "brief": "docs/integrations/epic-games.md",
+   "modules": [],
+   "unavailable_reason": "Epic offers no personal API or playtime export.",
+   "restore_commit": ""
+  },
+  {
+   "id": "macos-fsevents",
+   "name": "FSEvents Journal",
+   "status": "unavailable",
+   "domain": "files",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "",
+   "summary": "The on-disk FSEvents journal each APFS volume keeps at /.fseventsd/ — a binary log of every file create/modify/delete/rename on the volume.",
+   "brief": "docs/integrations/macos-fsevents.md",
+   "modules": [],
+   "unavailable_reason": "Reading the raw /.fseventsd/ journal requires",
+   "restore_commit": ""
+  },
+  {
+   "id": "google-analytics",
+   "name": "Google Analytics (GA4)",
+   "status": "unavailable",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Google's website-analytics product. The GA4 Data API returns the site *owner's* aggregate visitor statistics — sessions, pageviews, traffic sources, countries.",
+   "brief": "docs/integrations/google-analytics.md",
+   "modules": [],
+   "unavailable_reason": "Out of scope: Trove is a vault for your personal",
+   "restore_commit": ""
+  },
+  {
+   "id": "grocery-loyalty",
+   "name": "Grocery & Retail Loyalty Programs",
+   "status": "unavailable",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "🔒",
+   "summary": "The itemized record of what you actually bought at the grocery store — arguably the most detailed spending data that exists about a person (Kroger earned…",
+   "brief": "docs/integrations/grocery-loyalty.md",
+   "modules": [],
+   "unavailable_reason": "Kroger, Safeway and other loyalty programs offer",
+   "restore_commit": ""
+  },
+  {
+   "id": "kagi",
+   "name": "Kagi",
+   "status": "unavailable",
+   "domain": "browser",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "",
+   "summary": "Kagi is a paid, privacy-first search engine. Its privacy model intentionally prevents any server-side search history from existing: no export, no history…",
+   "brief": "docs/integrations/kagi.md",
+   "modules": [],
+   "unavailable_reason": "Kagi deliberately stores no search history",
+   "restore_commit": ""
+  },
+  {
+   "id": "life360",
+   "name": "Life360",
+   "status": "unavailable",
+   "domain": "location",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "Life360 is a family location-sharing app: circles of family members sharing continuous precise location.",
+   "brief": "docs/integrations/life360.md",
+   "modules": [],
+   "unavailable_reason": "Life360 offers no data export and no official API.",
+   "restore_commit": ""
+  },
+  {
+   "id": "line",
+   "name": "LINE",
+   "status": "unavailable",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "The dominant messenger of Japan, Thailand, and Taiwan (~200M users).",
+   "brief": "docs/integrations/line.md",
+   "modules": [],
+   "unavailable_reason": "LINE offers no personal export or API, and its",
+   "restore_commit": ""
+  },
+  {
+   "id": "macos-barometer",
+   "name": "Mac Barometer",
+   "status": "unavailable",
+   "domain": "environment",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "",
+   "summary": "Apple-Silicon Macs contain barometer hardware, but macOS provides no public API to read it.",
+   "brief": "docs/integrations/macos-barometer.md",
+   "modules": [],
+   "unavailable_reason": "Apple does not expose the Mac's barometer to apps —",
+   "restore_commit": ""
+  },
+  {
+   "id": "macos-recent-files",
+   "name": "macOS Recent Files",
+   "status": "unavailable",
+   "domain": "files",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "",
+   "summary": "The \"Recent Documents\" lists macOS keeps per app and globally (com.apple.sharedfilelist SFL2 files) — in principle a record of which files the user opened…",
+   "brief": "docs/integrations/macos-recent-files.md",
+   "modules": [],
+   "unavailable_reason": "macOS stores recent-file lists as opaque",
+   "restore_commit": ""
+  },
+  {
+   "id": "matter",
+   "name": "Matter",
+   "status": "unavailable",
+   "domain": "reading",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Matter is a polished iOS-first read-later app with a sizable user base, which grew further after Pocket's 2025 shutdown.",
+   "brief": "docs/integrations/matter.md",
+   "modules": [],
+   "unavailable_reason": "Matter has no public API, no programmatic export,",
+   "restore_commit": ""
+  },
+  {
+   "id": "nintendo-switch",
+   "name": "Nintendo Switch",
+   "status": "unavailable",
+   "domain": "gaming",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "",
+   "summary": "Console gaming playtime from Nintendo's Switch ecosystem.",
+   "brief": "docs/integrations/nintendo-switch.md",
+   "modules": [],
+   "unavailable_reason": "Nintendo has no official playtime API; the only",
+   "restore_commit": ""
+  },
+  {
+   "id": "noom",
+   "name": "Noom",
+   "status": "unavailable",
+   "domain": "health",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Weight-loss / behavioral-coaching app with meal logging.",
+   "brief": "docs/integrations/noom.md",
+   "modules": [],
+   "unavailable_reason": "Noom has no self-serve export or API — data arrives",
+   "restore_commit": ""
+  },
+  {
+   "id": "pandora",
+   "name": "Pandora",
+   "status": "unavailable",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "",
+   "summary": "Radio-style music streaming (stations seeded from artists/songs, tuned by thumbs).",
+   "brief": "docs/integrations/pandora.md",
+   "modules": [],
+   "unavailable_reason": "Pandora's developer API is closed to new",
+   "restore_commit": ""
+  },
+  {
+   "id": "plaid",
+   "name": "Plaid",
+   "status": "unavailable",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "🔒",
+   "summary": "The dominant US bank-data aggregator — broadest institution coverage, near-real-time transactions, and an Investments product covering brokerage accounts.",
+   "brief": "docs/integrations/plaid.md",
+   "modules": [],
+   "unavailable_reason": "Plaid issues developer-held keys that can't",
+   "restore_commit": ""
+  },
+  {
+   "id": "plausible",
+   "name": "Plausible Analytics",
+   "status": "unavailable",
+   "domain": "social",
+   "priority": "P2",
+   "effort": "S",
+   "needs": "",
+   "summary": "Privacy-respecting website analytics (cloud or self-hosted; Community Edition v2.2 is fully open-source AGPL-3.0).",
+   "brief": "docs/integrations/plausible.md",
+   "modules": [],
+   "unavailable_reason": "Out of scope: Trove is a vault for your personal",
+   "restore_commit": ""
+  },
+  {
+   "id": "snaptrade",
+   "name": "SnapTrade (Brokerage Aggregator)",
+   "status": "unavailable",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "A brokerage-data aggregator: 30+ brokerages (Robinhood, Schwab, Fidelity, TD, IBKR, …) behind one REST API, with an official Rust SDK and a generous free…",
+   "brief": "docs/integrations/snaptrade.md",
+   "modules": [],
+   "unavailable_reason": "SnapTrade issues developer-held API keys that",
+   "restore_commit": ""
+  },
+  {
+   "id": "soundcloud",
+   "name": "SoundCloud",
+   "status": "unavailable",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "",
+   "summary": "Streaming platform centered on independent and user-uploaded music.",
+   "brief": "docs/integrations/soundcloud.md",
+   "modules": [],
+   "unavailable_reason": "SoundCloud's API has no listening-history",
+   "restore_commit": ""
+  },
+  {
+   "id": "streaks",
+   "name": "Streaks",
+   "status": "unavailable",
+   "domain": "habits",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "Popular iOS-primary habit tracker (Streaks by Crunchy Bagel, App Store id 963034692) with a Catalyst Mac build.",
+   "brief": "docs/integrations/streaks.md",
+   "modules": [],
+   "unavailable_reason": "Streaks has no API and no documented export; its",
+   "restore_commit": ""
+  },
+  {
+   "id": "sunsama",
+   "name": "Sunsama",
+   "status": "unavailable",
+   "domain": "tasks",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "",
+   "summary": "Sunsama is a daily-planning app that aggregates tasks from other tools (Todoist, Asana, Linear, Jira, calendars) into a guided daily/weekly plan.",
+   "brief": "docs/integrations/sunsama.md",
+   "modules": [],
+   "unavailable_reason": "Sunsama has no public API and no reliable export;",
+   "restore_commit": ""
+  },
+  {
+   "id": "teller",
+   "name": "Teller.io",
+   "status": "unavailable",
+   "domain": "finance",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "🔒",
+   "summary": "A bank-aggregation backend: direct API connections to banks (no screen scraping), near-real-time transactions and balances.",
+   "brief": "docs/integrations/teller.md",
+   "modules": [],
+   "unavailable_reason": "Teller authenticates with a certificate issued to",
+   "restore_commit": ""
+  },
+  {
+   "id": "transit-cards",
+   "name": "Transit Cards (Clipper, Oyster, ORCA, …)",
+   "status": "unavailable",
+   "domain": "travel",
+   "priority": "P2",
+   "effort": "L",
+   "needs": "🔒",
+   "summary": "Stored-value transit fare cards (Clipper in the Bay Area, Oyster in London, ORCA in Seattle, Ventra in Chicago, CharlieCard in Boston, …).",
+   "brief": "docs/integrations/transit-cards.md",
+   "modules": [],
+   "unavailable_reason": "Transit card operators (Clipper, Oyster, ORCA,",
+   "restore_commit": ""
+  },
+  {
+   "id": "tv-time",
+   "name": "TV Time",
+   "status": "unavailable",
+   "domain": "media",
+   "priority": "P2",
+   "effort": "M",
+   "needs": "",
+   "summary": "TV episode tracker (which series, which episode, when watched, watch counts).",
+   "brief": "docs/integrations/tv-time.md",
+   "modules": [],
+   "unavailable_reason": "No official API or export. The only paths are",
+   "restore_commit": ""
+  },
+  {
+   "id": "wechat",
+   "name": "WeChat",
+   "status": "unavailable",
+   "domain": "correspondence",
+   "priority": "P2",
+   "effort": "XL",
+   "needs": "🔒",
+   "summary": "Tencent's messaging super-app (~800M users, primarily East Asia).",
+   "brief": "docs/integrations/wechat.md",
+   "modules": [],
+   "unavailable_reason": "WeChat encrypts its local database with a key that",
+   "restore_commit": ""
+  }
+ ]
+}

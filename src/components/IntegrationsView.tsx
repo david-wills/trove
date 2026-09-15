@@ -20,6 +20,37 @@ import GenericStreamView from "./GenericStreamView";
 
 /** The Google services, in card display order — each a vault-side toggle
  *  (catalog id) gated on top of a connected account. */
+import catalogJson from "../generated/catalog.json";
+
+/** Every source ever briefed (docs/integrations/INDEX.md, rendered at build
+ *  time by scripts/gen-catalog.mjs). Entries that are live in this build are
+ *  already hub cards; the rest — pruned, queued, unavailable — are listed in
+ *  the Catalog section so they stay discoverable and restorable. */
+type CatalogRow = {
+  id: string;
+  name: string;
+  status: string;
+  domain: string;
+  priority: string;
+  effort: string;
+  needs: string;
+  summary: string;
+  brief: string;
+  modules: string[];
+  unavailable_reason: string;
+  restore_commit: string;
+};
+const CATALOG: CatalogRow[] = (catalogJson as { rows: CatalogRow[] }).rows
+  .filter((r) => r.status !== "built" && r.status !== "validated")
+  .sort((a, b) => a.name.localeCompare(b.name));
+const CATALOG_BADGE: Record<string, string> = {
+  pruned: "not included",
+  queued: "queued",
+  unavailable: "unavailable",
+  building: "building",
+};
+const CATALOG_PREFIX = "catalog:";
+
 const GOOGLE_SERVICES = [
   "google-gmail",
   "google-calendar",
@@ -316,6 +347,9 @@ export default function IntegrationsView({
   // Domains collapsed by the user; Collectors and the selected group's
   // domain always stay open.
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  // The Catalog section is closed by default; a search or a selected catalog
+  // row forces it open.
+  const [catalogExpanded, setCatalogExpanded] = useState(false);
 
   const refresh = useCallback(async () => {
     const [status, conns, fin, watch, ouraState, gmailState] =
@@ -358,7 +392,12 @@ export default function IntegrationsView({
   };
 
   const groups = allGroups(items);
-  const group = groups.find((g) => g.id === selected) ?? groups[0];
+  const catalogRow = selected.startsWith(CATALOG_PREFIX)
+    ? CATALOG.find((r) => r.id === selected.slice(CATALOG_PREFIX.length)) ?? null
+    : null;
+  const group = catalogRow
+    ? null
+    : groups.find((g) => g.id === selected) ?? groups[0];
   const enabledIds = new Set(items.filter((i) => i.enabled).map((i) => i.id));
 
   // The "Collectors" section stays its own curated grouping, first; every
@@ -395,7 +434,19 @@ export default function IntegrationsView({
       .sort((a, b) => domainLabel(a).localeCompare(domainLabel(b))),
   ];
 
-  const selectedDomain = groupDomain(group, items);
+  const selectedDomain = group ? groupDomain(group, items) : "";
+  // Catalog rows match the same search box; collapsed unless searching or
+  // one of them is selected.
+  const q = query.trim().toLowerCase();
+  const catalogMatch = CATALOG.filter(
+    (r) =>
+      q === "" ||
+      r.name.toLowerCase().includes(q) ||
+      r.id.includes(q) ||
+      r.domain.includes(q) ||
+      r.summary.toLowerCase().includes(q)
+  );
+  const catalogOpen = catalogExpanded || q !== "" || catalogRow !== null;
   const collectorsMatch = collectorGroups.filter((g) =>
     groupMatches(g, items, query)
   );
@@ -502,11 +553,43 @@ export default function IntegrationsView({
             );
           })}
 
-          {orderedDomains.length === 0 && collectorsMatch.length === 0 && (
+          {/* Catalog — everything briefed but not live in this build. */}
+          {catalogMatch.length > 0 && (
+            <div className="int-list-section int-catalog-section">
+              <button
+                className="int-list-head int-list-head-toggle"
+                onClick={() => setCatalogExpanded((v) => !v)}
+                title="Sources that are briefed but not part of this build"
+              >
+                <span className={`int-caret ${catalogOpen ? "open" : ""}`}>▸</span>
+                <span>Catalog</span>
+                <span className="int-list-count">{catalogMatch.length}</span>
+              </button>
+              {catalogOpen &&
+                catalogMatch.map((r) => (
+                  <button
+                    key={r.id}
+                    className={`int-list-row int-list-row-dim ${
+                      catalogRow?.id === r.id ? "selected" : ""
+                    }`}
+                    onClick={() => setSelected(CATALOG_PREFIX + r.id)}
+                  >
+                    <span className="int-list-title">{r.name}</span>
+                    <span className="int-badge int-badge-planned int-list-badge">
+                      {CATALOG_BADGE[r.status] ?? r.status}
+                    </span>
+                  </button>
+                ))}
+            </div>
+          )}
+          {orderedDomains.length === 0 &&
+            collectorsMatch.length === 0 &&
+            catalogMatch.length === 0 && (
             <div className="int-list-empty">No integrations match “{query}”.</div>
           )}
         </nav>
         <section className="int-detail">
+          {catalogRow && <CatalogDetail row={catalogRow} />}
           {group && (
             <>
               <h3 className="int-detail-title">{group.title}</h3>
@@ -654,6 +737,71 @@ function IntListRow({
         />
       )}
     </button>
+  );
+}
+
+/** Detail pane for a Catalog entry: what it is, why it isn't here, and — for
+ *  pruned modules — exactly how to bring it back. */
+function CatalogDetail({ row }: { row: CatalogRow }) {
+  const badge = CATALOG_BADGE[row.status] ?? row.status;
+  const restoreCmd =
+    row.restore_commit && row.modules.length > 0
+      ? [
+          `git checkout ${row.restore_commit} -- ${row.modules
+            .map((m) => `crates/trove-core/src/${m}`)
+            .join(" ")}`,
+          `# then: pub mod <name>; in lib.rs, &crate::<name>::DEF in integrations.rs,`,
+          `# and TROVE_REGEN=1 cargo test -p trove-core --test schedule_doc`,
+        ].join("\n")
+      : "";
+  return (
+    <>
+      <h3 className="int-detail-title">
+        {row.name}
+        <span className="int-badge int-badge-planned">{badge}</span>
+      </h3>
+      <p className="int-detail-intro">{row.summary}</p>
+      <div className="int-card int-catalog-card">
+        <div className="int-meta">
+          <span>{domainLabel(row.domain)}</span>
+          {row.priority && <span>· {row.priority}</span>}
+          {row.effort && <span>· effort {row.effort}</span>}
+          {row.needs && <span>· {row.needs}</span>}
+        </div>
+        {row.status === "pruned" && (
+          <p className="int-caveat">
+            Built and fixture-tested, but never run against a real account.
+            Removed from this build on 2026-09-14 to keep Trove to sources
+            that have touched real data. The code is in git and comes back
+            with one checkout.
+          </p>
+        )}
+        {row.status === "queued" && (
+          <p className="int-caveat">
+            Briefed and queued; no collector has been written. The brief
+            records what it would take.
+          </p>
+        )}
+        {row.status === "unavailable" && (
+          <p className="int-caveat">
+            <span className="int-caveat-mark">Not collectable.</span>{" "}
+            {row.unavailable_reason || "No export, no API, or an entitlement Trove can't get."}
+          </p>
+        )}
+        <p className="int-actions-note">
+          Brief: <code>{row.brief}</code>
+          {row.modules.length > 0 && (
+            <>
+              {" "}· module{row.modules.length > 1 ? "s" : ""}:{" "}
+              {row.modules.map((m) => (
+                <code key={m}>{m}</code>
+              ))}
+            </>
+          )}
+        </p>
+        {restoreCmd && <pre className="int-catalog-restore">{restoreCmd}</pre>}
+      </div>
+    </>
   );
 }
 
