@@ -151,9 +151,8 @@ export default function CallsView() {
           <div className="perm-text">
             <strong>Call history is locked.</strong> Reading the call history
             database needs <strong>Full Disk Access</strong> — the same grant
-            Messages uses. Grant it to Trove in System Settings (and to
-            troved, if installed), then restart — the full call log imports
-            automatically.
+            Messages uses. Grant it to Trove in System Settings, then
+            restart — the full call log imports automatically.
           </div>
           <div className="perm-actions">
             <button

@@ -205,8 +205,11 @@ Constraints that hold either way:
   (Letterboxd stays as the reference import example).
 - **Cloud connections:** Google (Gmail, Calendar, Contacts, Tasks,
   YouTube, Books), TickTick, Oura, Fathom, SimpleFIN, Weather (Open-Meteo).
-- **Watcher-class, leaving with decision 2:** activity, browser extension
-  host, ads observer and identify, Music scrobbler, screenshots.
+- **Watcher-class, left with decision 2 (S4):** activity, browser extension
+  host, ads observer and identify, Music scrobbler — now written by
+  `trove-collector`, shown here as `Behavior::External` cards. Screenshots
+  stayed, converted to a periodic scan (a screenshot is a file; nothing is
+  lost between passes).
 
 ## Sequence
 
@@ -216,7 +219,7 @@ Constraints that hold either way:
 | S2 | Prune the catalog to the keep list; INDEX records restore commits | ✅ 2026-09-14 (`b0e2bce`) |
 | S3 | Catalog view in the hub, rendered from INDEX at build time | ✅ 2026-09-14 (`60bc571`) |
 | M1 | **Vault MCP server** (`crates/trove-mcp`) — see "Next up" above; the ask component lives here, not in the window | ✅ 2026-09-15 (outcome below) |
-| S4 | Extract the watcher to its own project; delete `troved`; app syncs on open | paused 2026-09-14: `~/Local/trove-collector` scaffolded (standalone binary + extension, compiles, 36 tests; local repo, not pushed). Trove side untouched — still carries troved + watcher modules |
+| S4 | Extract the watcher to its own project; delete `troved`; app syncs on open | ✅ 2026-09-16 (outcome below) |
 | S5 | Measure each periodic sync's memory in isolation; fix what the daemon leaked | |
 | S6 | UI baseline: navigation, theme, layout | |
 | S7-health | First data-type pass. Build **both** read-side shapes (merged vs source-native, see above) on real Oura + Apple Health data; pick one; record the decision here | |
@@ -227,6 +230,31 @@ Constraints that hold either way:
 Each data-type pass is: best view for the type → read-path index →
 spec-fidelity check against real files → done. A pass is not done until
 the view is one a new user would keep open.
+
+### S4 outcome (2026-09-16)
+
+- `crates/troved`, `extension/`, `sampler.rs`, `music_listener.rs`, and the
+  write halves of `activity`, `music`, `browser_ext`, `ads` are gone from
+  this repo. The read halves, the defs, and the sidecar/heartbeat types
+  stay. `Behavior::Live` and `NativeHost` were replaced by one
+  `Behavior::External { collector }`; the `LiveCollector` trait is gone.
+- troved never had a scheduler: every periodic def already ran from
+  `runner.rs`'s owner loop, which the app was running in a thread. That
+  loop is now `run_sync`, holds its own `.trove/sync.lock`, and never
+  contends with the collector's `.trove/watcher.lock`. Opening the app is
+  the sync; the first pass fires ~5 s after launch.
+- The hub reads the collector's heartbeat (`.trove/watcher-state.json`:
+  pid, last tick, in-progress activity event, resident memory) through
+  `Vault::collector_status`; the Trove Collector group shows running /
+  installed / memory and the five external toggles.
+- The three streams the collector owns exclusively had no spec page. They
+  do now (`domains/activity.md`, `browser-visits.md`, `ads.md`), with
+  schemas, fixtures, and the anti-drift round-trip test — the contract is
+  the only thing the two programs share.
+- `~/Local/trove-collector` is public at github.com/david-wills/trove-collector
+  and installed via its `scripts/build.sh`. Its first job (measure its own
+  memory) is built in: `rss_mb` in the heartbeat and a log line every ten
+  minutes. S5 measures the app's periodic syncs the same way.
 
 ## Carried forward unchanged
 

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/browser.visit.schema.json",
+  "title": "Trove browser visit",
+  "description": "One line of browser/YYYY-MM-DD.jsonl: one page visit, from a browser-history import (source \"history\") or a live extension span (source \"extension\"). Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["time", "url", "browser"],
+  "additionalProperties": true,
+  "properties": {
+    "time": { "type": "string", "format": "date-time", "description": "RFC3339 local time the visit (or span) began", "examples": ["2026-06-10T14:03:01-07:00"] },
+    "url": { "type": "string", "description": "the page URL", "examples": ["https://news.ycombinator.com/"] },
+    "title": { "type": "string", "description": "the page title, when known", "examples": ["Hacker News"] },
+    "browser": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "which browser, lowercased: \"chrome\", \"safari\", …", "examples": ["chrome"] },
+    "profile": { "type": "string", "description": "browser profile name for history rows; empty for extension rows (the tabs API does not expose it)", "examples": ["Default"] },
+    "duration_secs": { "type": "integer", "minimum": 0, "description": "time on the page: the browser's own figure for history rows, the engaged wall time (focused-active or audible) for extension rows; 0/absent when unknown", "examples": [42] },
+    "source": { "type": "string", "enum": ["history", "extension"], "description": "provenance; defaults to \"history\" when absent. Readers prefer extension rows where both cover the same browsing.", "examples": ["history"] },
+    "audible": { "type": "boolean", "description": "extension rows: the tab played audio at some point in the span", "examples": [true] },
+    "foreground_secs": { "type": "integer", "minimum": 0, "description": "extension rows: seconds spent as the focused-active tab (≤ duration_secs)", "examples": [95] },
+    "favicon": { "type": "string", "description": "extension rows: the tab's favicon URL", "examples": ["https://www.youtube.com/favicon.ico"] },
+    "referrer": { "type": "string", "description": "extension rows: the page this visit was navigated from, when the browser could tell", "examples": ["https://www.google.com/"] },
+    "transition": { "type": "string", "description": "extension rows: how the navigation happened per the browser (link, typed, reload, form_submit, …)", "examples": ["link"] },
+    "tab_count": { "type": "integer", "minimum": 0, "description": "extension rows: open tabs across all windows when the span opened", "examples": [12] }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/activity.event.schema.json",
+  "title": "Trove activity event",
+  "description": "One line of activity/YYYY-MM-DD.jsonl (or activity/<source>/YYYY-MM-DD.jsonl for an imported history): one contiguous span of using a single app and window, or of being away from the keyboard. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["start", "end", "seconds", "app", "afk"],
+  "additionalProperties": true,
+  "properties": {
+    "start": { "type": "string", "format": "date-time", "description": "RFC3339 local time the span began", "examples": ["2026-06-10T14:03:01-07:00"] },
+    "end": { "type": "string", "format": "date-time", "description": "RFC3339 local time the span ended", "examples": ["2026-06-10T14:09:22-07:00"] },
+    "seconds": { "type": "integer", "minimum": 0, "description": "end - start in whole seconds, stored so readers never have to parse timestamps to total a day", "examples": [381] },
+    "app": { "type": "string", "description": "the frontmost app's display name; empty for AFK spans", "examples": ["Code"] },
+    "bundle_id": { "type": "string", "description": "the app's bundle identifier when known", "examples": ["com.microsoft.VSCode"] },
+    "title": { "type": "string", "description": "the frontmost window's title; empty when the sampler lacks Screen Recording", "examples": ["activity.rs — trove"] },
+    "afk": { "type": "boolean", "description": "true = away from keyboard (no input past the idle threshold); such spans have an empty app", "examples": [false] }
+  }
+}

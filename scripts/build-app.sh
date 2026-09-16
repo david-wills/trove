@@ -7,29 +7,30 @@
 # grant to the binary's designated requirement. `tauri build` signs ad-hoc, so
 # the requirement is a bare cdhash that changes every build and the grants get
 # revoked. Signing with an Apple Development identity makes the requirement
-# identity-based, so you grant once. Same trick as scripts/build-troved.sh.
+# identity-based, so you grant once. trove-collector's scripts/build.sh does the same.
 #
 # Usage:
 #   scripts/build-app.sh                 # build + sign + install
 #   scripts/build-app.sh --no-install    # build + sign only (leaves target/release/bundle)
 #
-# Identity: TROVED_SIGN_ID (SHA-1 from `security find-identity -v -p codesigning`).
+# Identity: TROVE_SIGN_ID (SHA-1 from `security find-identity -v -p codesigning`;
+# TROVED_SIGN_ID is still honoured as the old name).
 # If unset, the first "Apple Development" identity in the keychain is used.
 # Rebuild cost after the first build is a few minutes — Cargo caches everything
 # you didn't touch; frontend-only changes don't recompile Rust at all.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-SIGN_ID="${TROVED_SIGN_ID:-}"
+SIGN_ID="${TROVE_SIGN_ID:-${TROVED_SIGN_ID:-}}"
 if [[ -z "$SIGN_ID" ]]; then
   SIGN_ID="$(security find-identity -v -p codesigning 2>/dev/null \
     | grep 'Apple Development' | head -1 | awk '{print $2}')"
   if [[ -z "$SIGN_ID" ]]; then
-    echo "No Apple Development signing identity found and TROVED_SIGN_ID is unset." >&2
+    echo "No Apple Development signing identity found and TROVE_SIGN_ID is unset." >&2
     echo "List yours with: security find-identity -v -p codesigning" >&2
     exit 1
   fi
-  echo "==> using signing identity $SIGN_ID (set TROVED_SIGN_ID to pin one)"
+  echo "==> using signing identity $SIGN_ID (set TROVE_SIGN_ID to pin one)"
 fi
 
 BUNDLE="target/release/bundle/macos/Trove.app"

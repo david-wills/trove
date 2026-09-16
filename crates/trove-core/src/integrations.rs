@@ -5,9 +5,10 @@
 //! behavior together — and registered here with a single line in
 //! [`INTEGRATIONS`]. User choices live in `.trove/integrations.json` as a
 //! *disabled set* — anything not listed is enabled, so new integrations
-//! default on and the file stays tiny. The collectors in `runner.rs` (and
-//! the troved native host) consult [`Vault::integration_enabled`] each pass,
-//! so toggling off actually stops collection rather than just hiding a card.
+//! default on and the file stays tiny. The sync loop in `runner.rs` (and the
+//! external `trove-collector`, which re-reads the same file) consult
+//! [`Vault::integration_enabled`] each pass, so toggling off actually stops
+//! collection rather than just hiding a card.
 //!
 //! [`Vault::integrations_status`] is the one read the hub UI needs: the
 //! catalog joined with the enabled flag, a permission preflight, and a
@@ -29,8 +30,8 @@ const SETTINGS_FILE: &str = ".trove/integrations.json";
 #[serde(rename_all = "kebab-case")]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum IntegrationKind {
-    /// Always-on capture inside the watcher loop (or a host process); the
-    /// stream only exists while a collector runs.
+    /// Always-on capture by the external collector process; the stream only
+    /// exists while it runs.
     Live,
     /// Periodic read of another local app's own store (copy-then-read).
     LocalSync,
@@ -47,8 +48,8 @@ pub struct PermissionInfo {
     /// "screen-recording" | "full-disk-access" | "media-library"
     pub kind: &'static str,
     /// Preflight from *this* process — `None` when it can't be checked
-    /// cheaply (Media Library only fails at read time). Note the grant is
-    /// per-binary: troved needs its own, this reflects the app.
+    /// cheaply (Media Library only fails at read time). The grant is
+    /// per-binary; this reflects the app.
     pub granted: Option<bool>,
     /// `false` = the integration works without it, just with less detail
     /// (e.g. activity runs app-level without Screen Recording).
@@ -442,8 +443,7 @@ mod tests {
         let shape = |b: &Behavior| match b {
             Behavior::Periodic { .. } => "Periodic",
             Behavior::CoveredBy(_) => "CoveredBy",
-            Behavior::Live(_) => "Live",
-            Behavior::NativeHost => "NativeHost",
+            Behavior::External { .. } => "External",
             Behavior::Import(_) => "Import",
             Behavior::NotWired => "NotWired",
             Behavior::Unavailable { .. } => "Unavailable",
@@ -475,7 +475,9 @@ mod tests {
                     "{}: imports have nothing to toggle",
                     d.id
                 ),
-                (IntegrationKind::Live, Behavior::Live(_) | Behavior::NativeHost) => {}
+                (IntegrationKind::Live, Behavior::External { collector }) => {
+                    assert!(!collector.is_empty(), "{}: external needs a collector id", d.id)
+                }
                 (
                     IntegrationKind::LocalSync,
                     Behavior::Periodic { .. } | Behavior::CoveredBy(_),
@@ -503,7 +505,7 @@ mod tests {
             }
             if let Behavior::Periodic { cadence, .. } = d.behavior {
                 assert!(
-                    cadence.every_secs >= crate::activity::POLL_SECS,
+                    cadence.every_secs >= crate::runner::POLL_SECS,
                     "{}: cadence faster than the runner poll",
                     d.id
                 );

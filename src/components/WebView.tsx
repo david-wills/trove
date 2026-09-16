@@ -190,8 +190,7 @@ export default function WebView() {
             <strong>Safari history is locked.</strong> Chrome imports work
             without permissions, but reading Safari's history needs{" "}
             <strong>Full Disk Access</strong>. Grant it to Trove in System
-            Settings (and to troved, if installed), then restart — syncing
-            resumes automatically.
+            Settings, then restart — syncing resumes automatically.
           </div>
           <div className="perm-actions">
             <button

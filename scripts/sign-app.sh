@@ -14,15 +14,15 @@
 #
 #   scripts/sign-app.sh
 #
-# See also scripts/build-troved.sh (same idea for the headless daemon) and the
-# repo memory note "troved build signing".
+# scripts/build-app.sh does this for the release bundle; trove-collector's
+# scripts/build.sh does the same for the headless collector.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 # Must match src-tauri/tauri.conf.json "identifier".
-SIGN_ID="${TROVED_SIGN_ID:-}"
+SIGN_ID="${TROVE_SIGN_ID:-${TROVED_SIGN_ID:-}}"
 if [[ -z "$SIGN_ID" ]]; then
-  echo "TROVED_SIGN_ID is not set. Export the SHA-1 of a stable code-signing identity" >&2
+  echo "TROVE_SIGN_ID is not set. Export the SHA-1 of a stable code-signing identity" >&2
   echo "(list yours with: security find-identity -v -p codesigning)." >&2
   exit 1
 fi

@@ -11,8 +11,7 @@
 //! *responsible process*. The prompt only renders when that process carries
 //! usage strings (`NSCalendarsFullAccessUsageDescription` /
 //! `NSRemindersFullAccessUsageDescription`) — the Tauri app gets them via its
-//! Info.plist, troved via an embedded `__TEXT,__info_plist` section (see
-//! `crates/troved/build.rs`). There is no manual-grant fallback: the System
+//! Info.plist). There is no manual-grant fallback: the System
 //! Settings panes for these services have no "+" button, an app appears there
 //! only after requesting. Completion blocks arrive on an internal EventKit
 //! queue — no run-loop pumping needed (unlike distributed notifications).

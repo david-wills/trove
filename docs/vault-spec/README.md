@@ -54,8 +54,8 @@ Trove separates *what was collected* from *what it means*:
 | `tasks/<source>/tasks.jsonl` + `events/YYYY-MM.jsonl` | tasks, snapshot+events ([spec](domains/tasks.md)) |
 | `media/plays/<source>/YYYY-MM.jsonl` | media plays write contract ([spec](domains/media-plays.md)) |
 | `calendar/events/` + `calendar/changes/` | calendar occurrences + change stream ([spec](domains/calendar.md)) |
-| `activity/YYYY-MM-DD.jsonl` | Mac app/window spans — **single-writer, owned by the live collector**; imported observed-span histories write `activity/<source>/` subfolders instead |
-| `browser/YYYY-MM-DD.jsonl` | web visits with duration (multi-writer with flock; see conventions); sibling raw streams `browser/ads/`, `browser/searches/` |
+| `activity/YYYY-MM-DD.jsonl` | Mac app/window spans ([spec](domains/activity.md)) — **single-writer, owned by the external collector**; imported observed-span histories write `activity/<source>/` subfolders instead |
+| `browser/YYYY-MM-DD.jsonl` | web visits with duration ([spec](domains/browser-visits.md); multi-writer with flock, see conventions); sibling streams `browser/ads/` ([spec](domains/ads.md)) and `browser/searches/` ([spec](domains/browser-searches.md)) |
 | `health/` | per-metric CSVs + per-source raw files (spec page planned) |
 | `.trove/` | rebuildable indexes, cursors, settings, secrets — see conventions |
 | `.trove/manifest.json` | rebuildable index of every data folder present |

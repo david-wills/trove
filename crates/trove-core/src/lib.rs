@@ -50,7 +50,6 @@ pub mod meetings;
 pub mod meta_encoding;
 pub mod music;
 pub mod music_library;
-pub mod music_listener;
 pub mod normalizer;
 pub mod notes;
 pub mod oura;
@@ -60,7 +59,6 @@ pub mod query;
 pub mod reading;
 pub mod registry;
 pub mod runner;
-pub mod sampler;
 pub mod screen_time;
 pub mod segb;
 pub mod slack;
@@ -75,10 +73,8 @@ pub mod voice;
 pub mod weather;
 pub mod youtube;
 
-pub use activity::{
-    ActivityEvent, ActivitySummary, AppUsage, WatchConfig, Watcher, POLL_SECS,
-};
-pub use ads::{AdEvent, AdRecord, AdUsage, AdsDaily, AdsSummary};
+pub use activity::{ActivityEvent, ActivitySummary, AppUsage};
+pub use ads::{AdRecord, AdUsage, AdsDaily, AdsSummary};
 pub use books::{
     diff_annotations, diff_assets, read_books_via_copy, BookAnnotation, BookAsset, BookEvent,
     BooksSnapshotStats,
@@ -87,10 +83,7 @@ pub use browser::{
     safari_permission_ok, BrowserSummary, BrowserSyncState, BrowserSyncStats, BrowserVisit,
     DomainUsage, BROWSER_SYNC_SECS,
 };
-pub use browser_ext::{
-    native_host_manifest_path, ExtConfig, ExtSnapshot, LiveSpan, LiveState, TabInfo, TabTracker,
-    EXTENSION_ID, EXT_SNAPSHOT_SECS, NATIVE_HOST_NAME,
-};
+pub use browser_ext::{LiveSpan, LiveState};
 pub use browser_searches::Search;
 pub use calendar::{
     diff_occurrences, CalendarChange, CalendarCount, CalendarOccurrence, CalendarSummary,
@@ -134,14 +127,11 @@ pub use integrations::{
 pub use media::{MediaItem, MediaSummary, MediaUsage};
 pub use meetings::Meeting;
 pub use notes::Note;
-pub use music::{
-    ArtistUsage, MusicSummary, Play, PlayerEvent, PlayerState, ScrobbleConfig, Scrobbler, TrackInfo,
-};
+pub use music::{ArtistUsage, MusicSummary, Play};
 pub use music_library::{
     diff_snapshots, read_library, should_snapshot, FieldChange, LibraryEvent,
     LibrarySnapshotStats, LibraryTrack,
 };
-pub use music_listener::{pump_main_run_loop, MusicListener};
 pub use oura::{OuraCollectionState, OuraSyncState, OuraSyncStats, OURA_SYNC_SECS};
 pub use photos::Photo;
 pub use query::{list_sources, record_date, SourceInfo, StreamInfo, StreamPage, STREAM_PAGE_MAX};
@@ -154,12 +144,12 @@ pub use reading::{Highlight, Item};
 pub use registry::{
     Advance, Behavior, Cadence, CollectOutcome, ConnectMethod, ConnectMethodInfo, ConnectStatus,
     ConnectedAccount, ConnectionDef, ConnectionStatusRow, Gate, ImportInfo, ImportOutcome,
-    ImportParam, ImportSpec, IntegrationDef, LiveCollector, PullOutcome,
+    ImportParam, ImportSpec, IntegrationDef, PullOutcome,
 };
 pub use runner::{
-    daemon_plist_path, run_watcher, WatchControl, WatcherRole, WatcherState, DAEMON_LABEL,
+    collector_plist_path, run_sync, CollectorState, CollectorStatus, SyncControl,
+    COLLECTOR_LABEL, POLL_SECS,
 };
-pub use sampler::{request_screen_recording, sample, screen_recording_ok, Sample};
 pub use screen_time::{
     decode_infocus, decode_nowplaying, is_idle_bundle, pair_nowplaying, pair_sessions,
     screen_time_mtime, screen_time_permission_ok, DeviceInfo, InFocusEvent, NowPlayingEvent,

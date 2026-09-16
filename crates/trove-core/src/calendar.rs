@@ -106,8 +106,8 @@ pub static DEF: IntegrationDef = IntegrationDef {
         vault_path: "calendar/",
         toggleable: true,
         setup: &[
-            "Approve the Calendar access prompt the first time the app (and separately the troved daemon) asks for Full Access.",
-            "If the prompt was declined: System Settings → Privacy & Security → Calendars → set Trove and troved to Full Access.",
+            "Approve the Calendar access prompt the first time the app asks for Full Access.",
+            "If the prompt was declined: System Settings → Privacy & Security → Calendars → set Trove to Full Access.",
             "Google/Exchange calendars are covered as long as the account is added to macOS (System Settings → Internet Accounts) with Calendars on.",
         ],
         caveats: "Events themselves can be re-backfilled anytime, but the change stream (what got rescheduled or cancelled) only accrues while the sync runs. Changes are only watched 60 days back / 1 year forward; events past their month freeze. There is no manual-grant path: the Calendars settings pane only lists apps after they ask.",

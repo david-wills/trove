@@ -132,7 +132,7 @@ pub static DEF: IntegrationDef = IntegrationDef {
         vault_path: "correspondence/email/",
         toggleable: true,
         setup: &[
-            "System Settings → Privacy & Security → Full Disk Access → add Trove and the troved binary.",
+            "System Settings → Privacy & Security → Full Disk Access → add Trove.",
             "Restart the daemon after granting (grants apply to fresh processes only).",
             "Apple Mail must be configured and have synced at least once before messages appear.",
         ],

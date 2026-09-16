@@ -6,7 +6,7 @@
 //!
 //! Implemented by shelling out to `/usr/bin/security` rather than the
 //! Security framework on purpose: keychain ACLs are per-binary, and the app
-//! and the troved daemon are different (and frequently rebuilt) binaries. An
+//! and a dev build are different (and frequently rebuilt) binaries. An
 //! item created through `security` is readable through `security` from both
 //! processes with no per-binary grant or prompt — and the daemon has no UI
 //! session to answer a prompt with. `security` ships with macOS, so this

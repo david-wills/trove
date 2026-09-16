@@ -84,8 +84,8 @@ pub static DEF: IntegrationDef = IntegrationDef {
         vault_path: "weather/",
         toggleable: true,
         setup: &[
-            "Approve the Location Services prompt when the app (and separately the troved daemon) asks — or skip it and set a location manually on the Weather tab.",
-            "If the prompt was declined: System Settings → Privacy & Security → Location Services → enable Trove and troved, or just set a manual location.",
+            "Approve the Location Services prompt when the app asks — or skip it and set a location manually on the Weather tab.",
+            "If the prompt was declined: System Settings → Privacy & Security → Location Services → enable Trove, or just set a manual location.",
         ],
         caveats: "Inert until a location exists (granting Location Services or setting one manually is the opt-in for this network call). Conditions are recorded only while a collector runs — gaps are honest gaps, though Open-Meteo's historical archive could backfill them someday.",
     },

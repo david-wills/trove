@@ -6,20 +6,22 @@
 //! copied into the vault.** Screen recordings go to a separate raw stream at
 //! `files/macos-screenshots/YYYY-MM.jsonl`.
 //!
-//! # How the watcher works
+//! # How the scan works
 //!
-//! On each `tick` the collector scans the resolved screenshot folder (read from
-//! `defaults read com.apple.screencapture location`, falling back to `~/Desktop`)
-//! for both images (PNG/JPEG/HEIC/TIFF) and video recordings (MOV/MP4/M4V).
-//! On the very first tick a one-shot `mdfind kMDItemIsScreenCapture==1` backfill
-//! pass is run to catch screenshots saved to a custom location before the watcher
-//! started, as well as any pre-existing screenshots on a fresh install.
-//! New files (those whose SHA-256 content hash is not already in the in-memory
-//! seen set) are processed: their capture timestamp is parsed from the filename,
-//! dimensions are read via image metadata, and OCR text is extracted via Vision's
-//! `VNRecognizeTextRequest` (on macOS). The seen set is persisted to
-//! `.trove/macos-screenshots-seen.json` so a daemon restart never re-processes
-//! previously seen screenshots.
+//! This is a periodic pass in the app's sync loop (every 15 minutes while the
+//! app is open), not an always-on watcher: a screenshot is a file on disk, so
+//! nothing is lost between passes. Each pass scans the resolved screenshot
+//! folder (read from `defaults read com.apple.screencapture location`,
+//! falling back to `~/Desktop`) for both images (PNG/JPEG/HEIC/TIFF) and
+//! video recordings (MOV/MP4/M4V). The very first pass (no seen-set file yet)
+//! also runs a one-shot `mdfind kMDItemIsScreenCapture==1` backfill to catch
+//! screenshots saved to a custom location, or taken before Trove existed.
+//! New files (those whose SHA-256 content hash is not already in the seen
+//! set) are processed: their capture timestamp is parsed from the filename,
+//! dimensions are read via image metadata, and OCR text is extracted via
+//! Vision's `VNRecognizeTextRequest` (on macOS). The seen set is persisted
+//! to `.trove/macos-screenshots-seen.json` and reloaded every pass, so a
+//! restart never re-processes previously seen screenshots.
 //!
 //! # Privacy
 //!
@@ -53,7 +55,7 @@
 //!
 //! Content-hashing large video files on every poll is prohibitively expensive.
 //! Recording GUIDs use `path + mtime` instead. Trade-off: if the file is moved
-//! or renamed (or its mtime is touched) the daemon generates a new GUID and
+//! or renamed (or its mtime is touched) the scan generates a new GUID and
 //! re-indexes the recording as a duplicate. A restart does NOT recover the
 //! original entry (the seen-set file tracks the old GUID). This is an accepted
 //! fidelity limitation for v1; a future improvement could hash the first+last
@@ -82,7 +84,7 @@ use sha2::{Digest, Sha256};
 
 use crate::integrations::{Integration, IntegrationKind};
 use crate::photos::Photo;
-use crate::registry::{Behavior, IntegrationDef, LiveCollector};
+use crate::registry::{Behavior, Cadence, CollectOutcome, IntegrationDef};
 use crate::store::Partition;
 use crate::vault::Vault;
 
@@ -106,11 +108,11 @@ pub static DEF: IntegrationDef = IntegrationDef {
     meta: Integration {
         id: "macos-screenshots",
         name: "Screenshots",
-        kind: IntegrationKind::Live,
+        kind: IntegrationKind::LocalSync,
         default_on: false,
-        description: "Watches your screenshots folder and indexes each new capture: \
-                      filename, timestamp, and on-device OCR text extracted via \
-                      Apple Vision. Screenshot images are never stored.",
+        description: "Scans your screenshots folder while Trove is open and indexes \
+                      each new capture: filename, timestamp, and on-device OCR text \
+                      extracted via Apple Vision. Screenshot images are never stored.",
         domain: "photos",
         vault_path: "photos/macos-screenshots/",
         toggleable: true,
@@ -125,7 +127,10 @@ pub static DEF: IntegrationDef = IntegrationDef {
         caveats: "OCR captures whatever text was on screen when the screenshot was taken. \
                   Review your vault if you take screenshots of sensitive content.",
     },
-    behavior: Behavior::Live(make_live),
+    behavior: Behavior::Periodic {
+        cadence: Cadence::every(crate::browser::BROWSER_SYNC_SECS),
+        collect: def_collect,
+    },
     permission: None,
     last_data: Some(def_last_data),
     connection: None,
@@ -133,38 +138,52 @@ pub static DEF: IntegrationDef = IntegrationDef {
 };
 
 // ---------------------------------------------------------------------------
-// Live collector
+// Periodic scan
 
-/// In-memory seen set loaded from and flushed back to `.trove/macos-screenshots-seen.json`.
+/// Seen set persisted at `.trove/macos-screenshots-seen.json`.
 #[derive(Serialize, Deserialize, Default)]
 struct SeenState {
     guids: Vec<String>,
 }
 
-struct ScreenshotLive {
-    /// GUIDs already written — loaded from the state file on construction, plus
-    /// every new row added this session. Persisted on each successful batch.
+/// One pass of the scanner: the seen set loaded from disk, merged into (and
+/// persisted) after each successful append.
+struct Scanner {
+    /// GUIDs already written — loaded from the state file, plus every new
+    /// row added this pass. Persisted on each successful batch.
     seen: HashSet<String>,
-    /// Whether the seen set has been loaded from disk yet (lazy, first tick).
-    loaded: bool,
-    /// True until the first tick completes — gates the one-shot mdfind backfill.
-    first_tick: bool,
 }
 
-fn make_live() -> Box<dyn LiveCollector> {
-    Box::new(ScreenshotLive { seen: HashSet::new(), loaded: false, first_tick: true })
+/// The periodic collect hook: load the seen set, backfill via Spotlight the
+/// first time ever, then scan the screenshot folder and the QuickTime
+/// recordings folder. Stateless across passes except for the seen-set file.
+fn def_collect(vault: &Vault, now: DateTime<Local>) -> Result<CollectOutcome> {
+    let mut scanner = Scanner { seen: HashSet::new() };
+    let first_ever = !scanner.load_seen(vault);
+    if first_ever {
+        scanner.run_mdfind_backfill(vault, now);
+    }
+    let before = scanner.seen.len();
+    scanner.scan_screenshots(vault, now);
+    scanner.scan_recordings_library(vault, now);
+    let added = scanner.seen.len().saturating_sub(before);
+    Ok(CollectOutcome {
+        summary: (added > 0).then(|| format!("macos-screenshots: indexed {added} new file(s)")),
+    })
 }
 
-impl ScreenshotLive {
-    /// Load the persisted seen set from the vault into `self.seen`.
-    fn load_seen(&mut self, vault: &Vault) {
-        self.loaded = true;
+impl Scanner {
+    /// Load the persisted seen set from the vault into `self.seen`. Returns
+    /// whether a state file existed (false = first pass ever → backfill).
+    fn load_seen(&mut self, vault: &Vault) -> bool {
         let path = vault.root().join(SEEN_STATE);
-        if let Ok(body) = fs::read_to_string(&path) {
-            if let Ok(state) = serde_json::from_str::<SeenState>(&body) {
-                self.seen.extend(state.guids);
-            }
+        let Ok(body) = fs::read_to_string(&path) else {
+            return false;
+        };
+        if let Ok(state) = serde_json::from_str::<SeenState>(&body) {
+            self.seen.extend(state.guids);
         }
+        true
     }
 
     /// Persist the seen set to disk. Silently ignores errors (the seen set is
@@ -313,7 +332,7 @@ impl ScreenshotLive {
             let stream = vault.stream(PHOTOS_DIR, Partition::Month);
             if let Err(e) = stream.append(&new_photos, |p| &p.ts) {
                 eprintln!("trove macos-screenshots: failed to append photos: {e:#}");
-                // Do NOT advance self.seen — next poll will retry these files.
+                // Do NOT advance self.seen — the next pass will retry these files.
             } else {
                 self.seen.extend(new_photo_guids);
                 self.persist_seen(vault);
@@ -327,7 +346,7 @@ impl ScreenshotLive {
                 r.get("ts").and_then(|v| v.as_str()).unwrap_or("")
             }) {
                 eprintln!("trove macos-screenshots: failed to append recordings: {e:#}");
-                // Do NOT advance self.seen — next poll will retry these files.
+                // Do NOT advance self.seen — the next pass will retry these files.
             } else {
                 self.seen.extend(new_rec_guids);
                 self.persist_seen(vault);
@@ -346,10 +365,10 @@ impl ScreenshotLive {
         self.scan_folder(vault, now, &folder);
     }
 
-    /// One-shot `mdfind kMDItemIsScreenCapture==1` backfill. Runs once on the
-    /// first enabled tick to catch screenshots saved before the watcher started
-    /// (historical backfill) or stored in a custom location that differs from
-    /// the current `defaults` value.
+    /// One-shot `mdfind kMDItemIsScreenCapture==1` backfill. Runs on the
+    /// first pass ever (no seen-set file yet) to catch screenshots taken
+    /// before Trove existed (historical backfill) or stored in a custom
+    /// location that differs from the current `defaults` value.
     ///
     /// On any mdfind error (Spotlight disabled, sandbox, CI) the pass is
     /// silently skipped — the live scan still runs normally.
@@ -464,29 +483,6 @@ impl ScreenshotLive {
                 self.persist_seen(vault);
             }
         }
-    }
-}
-
-impl LiveCollector for ScreenshotLive {
-    fn tick(&mut self, vault: &Vault, now: DateTime<Local>, enabled: bool) {
-        if !enabled {
-            return;
-        }
-        // Load seen set lazily on first tick.
-        if !self.loaded {
-            self.load_seen(vault);
-        }
-        // One-shot mdfind backfill on the very first enabled tick.
-        if self.first_tick {
-            self.first_tick = false;
-            self.run_mdfind_backfill(vault, now);
-        }
-        self.scan_screenshots(vault, now);
-        self.scan_recordings_library(vault, now);
-    }
-
-    fn shutdown(&mut self, _vault: &Vault, _now: DateTime<Local>) {
-        // Nothing to flush — we write immediately on detect.
     }
 }
 
@@ -976,7 +972,7 @@ mod tests {
         let filename = "Screenshot 2026-06-11 at 09.47.12.png";
         fs::write(ss_dir.join(filename), &png).unwrap();
 
-        let mut live = ScreenshotLive { seen: HashSet::new(), loaded: true, first_tick: false };
+        let mut live = Scanner { seen: HashSet::new() };
         let now = Local::now();
         // Call scan_folder directly — no env var race.
         live.scan_folder(&vault, now, &ss_dir);
@@ -1005,7 +1001,7 @@ mod tests {
         )
         .unwrap();
 
-        let mut live = ScreenshotLive { seen: HashSet::new(), loaded: true, first_tick: false };
+        let mut live = Scanner { seen: HashSet::new() };
         let now = Local::now();
         live.scan_folder(&vault, now, &ss_dir);
         live.scan_folder(&vault, now, &ss_dir); // second scan — same file
@@ -1014,29 +1010,24 @@ mod tests {
     }
 
     #[test]
-    fn disabled_tick_writes_nothing() {
-        let vault = temp_vault("disabled");
-        let ss_dir = vault.root().join("fake-desktop");
-        fs::create_dir_all(&ss_dir).unwrap();
-        fs::write(ss_dir.join("Screenshot 2026-06-10 at 10.00.00.png"), b"img").unwrap();
-
-        let mut live = ScreenshotLive { seen: HashSet::new(), loaded: true, first_tick: false };
-        let now = Local::now();
-        // Simulate a disabled tick: the live collector returns early when disabled.
-        // Test directly: don't call tick, verify no rows.
-        live.tick(&vault, now, false); // disabled — scan_folder is never called
-
-        // Since no scan_folder call was made, nothing written.
-        assert_eq!(read_all_photos(&vault).len(), 0, "disabled tick writes nothing");
+    fn first_pass_is_detected_by_missing_seen_file() {
+        let vault = temp_vault("first-pass");
+        let mut s = Scanner { seen: HashSet::new() };
+        assert!(!s.load_seen(&vault), "no state file yet → first pass");
+        s.seen.insert("sha256:abc".into());
+        s.persist_seen(&vault);
+        let mut s2 = Scanner { seen: HashSet::new() };
+        assert!(s2.load_seen(&vault), "state file present → not first pass");
+        assert!(s2.seen.contains("sha256:abc"));
     }
 
     // -----------------------------------------------------------------------
     // DEF sanity
 
     #[test]
-    fn def_is_live_default_off_no_connection() {
+    fn def_is_periodic_default_off_no_connection() {
         assert!(!DEF.meta.default_on, "screenshots is default-off (privacy)");
-        assert!(matches!(DEF.behavior, Behavior::Live(_)));
+        assert!(matches!(DEF.behavior, Behavior::Periodic { .. }));
         assert!(DEF.connection.is_none(), "no login needed — local files only");
         assert_eq!(DEF.meta.id, "macos-screenshots");
         assert_eq!(DEF.meta.domain, "photos");
@@ -1056,7 +1047,7 @@ mod tests {
         let card = status.iter().find(|s| s.id == "macos-screenshots");
         assert!(card.is_some(), "macos-screenshots in registry");
         let card = card.unwrap();
-        assert!(matches!(card.kind, crate::integrations::IntegrationKind::Live), "kind is Live");
+        assert!(matches!(card.kind, crate::integrations::IntegrationKind::LocalSync), "kind is LocalSync");
         assert!(!card.enabled, "default-off");
     }
 
@@ -1158,7 +1149,7 @@ mod tests {
         let filename = "Screen Recording 2024-08-19 at 14.22.05.mov";
         fs::write(ss_dir.join(filename), b"fake video bytes").unwrap();
 
-        let mut live = ScreenshotLive { seen: HashSet::new(), loaded: true, first_tick: false };
+        let mut live = Scanner { seen: HashSet::new() };
         let now = Local::now();
         live.scan_folder(&vault, now, &ss_dir);
 
@@ -1195,7 +1186,7 @@ mod tests {
         let content = b"some-unique-screenshot-bytes-for-seen-test";
         fs::write(ss_dir.join("Screenshot 2026-06-15 at 08.00.00.png"), content).unwrap();
 
-        let mut live = ScreenshotLive { seen: HashSet::new(), loaded: true, first_tick: false };
+        let mut live = Scanner { seen: HashSet::new() };
         let now = Local::now();
 
         // First scan: file is new, should be written.

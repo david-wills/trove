@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["src-tauri", "crates/trove-core", "crates/trove-mcp", "crates/troved"]
+members = ["src-tauri", "crates/trove-core", "crates/trove-mcp"]
 
 [workspace.package]
 version = "0.1.0"

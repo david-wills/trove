@@ -5,17 +5,16 @@
 //! in [`crate::integrations::INTEGRATIONS`]. The def carries the static
 //! catalog metadata ([`Integration`]), the one [`Behavior`] shape that says
 //! how it runs — a periodic collect pass with its [`Cadence`], coverage by
-//! another def's pass, a [`LiveCollector`] factory, the native-messaging
-//! host, a file [`ImportSpec`], or nothing yet — plus the hooks that apply
+//! another def's pass, an external collector process, a file
+//! [`ImportSpec`], or nothing yet — plus the hooks that apply
 //! to any shape: a permission preflight and a cheap "when did data last
 //! land" probe. One shape per def means an impossible combination (an import
 //! with a cadence, a live collector with a collect hook) simply doesn't
 //! compile.
 //!
 //! Hooks are plain `fn` pointers (not closures — `static` initializers need
-//! named, capture-free functions): all I/O state rides on `&Vault`, gating
-//! state lives in the runner's per-id job state, and the only genuinely
-//! stateful collectors (the live ones) get a real trait instance instead.
+//! named, capture-free functions): all I/O state rides on `&Vault` and
+//! gating state lives in the runner's per-id job state.
 
 use std::collections::BTreeMap;
 use std::fs;
@@ -26,7 +25,6 @@ use anyhow::Result;
 use chrono::{DateTime, Local};
 use serde::Serialize;
 
-use crate::activity::ActivityEvent;
 use crate::health::ImportProgress;
 use crate::integrations::{Integration, PermissionInfo};
 use crate::vault::Vault;
@@ -62,7 +60,7 @@ pub enum Gate {
 #[derive(Clone, Copy)]
 pub struct Cadence {
     /// Minimum seconds between attempts (the runner polls every
-    /// [`crate::activity::POLL_SECS`]).
+    /// [`crate::runner::POLL_SECS`]).
     pub every_secs: u64,
     pub advance: Advance,
     pub gate: Gate,
@@ -351,26 +349,8 @@ pub struct PullOutcome {
     pub counts: BTreeMap<&'static str, u64>,
 }
 
-/// A stateful always-on collector driven every poll by the lock owner.
-/// Instances are built once per lock takeover via [`IntegrationDef::live`].
-pub trait LiveCollector: Send {
-    /// Called every poll with the live toggle state. Each impl owns its
-    /// disabled semantics (close out open spans; discard rather than queue
-    /// events received while off).
-    fn tick(&mut self, vault: &Vault, now: DateTime<Local>, enabled: bool);
-
-    /// Graceful shutdown: stop sources, drain, flush, write.
-    fn shutdown(&mut self, vault: &Vault, now: DateTime<Local>);
-
-    /// The in-progress activity event for the heartbeat, if this collector
-    /// tracks one.
-    fn current(&self, _now: DateTime<Local>) -> Option<ActivityEvent> {
-        None
-    }
-}
-
 /// How an integration runs — exactly one shape per def, so an impossible
-/// combination (an import with a cadence, a live collector with a collect
+/// combination (an import with a cadence, an external stream with a collect
 /// hook) is unrepresentable.
 #[derive(Clone, Copy)]
 pub enum Behavior {
@@ -386,12 +366,12 @@ pub enum Behavior {
     /// serves both browsers). Enabling a covered entry keeps the owner's
     /// pass running; per-arm opt-ins are consulted inside the collector.
     CoveredBy(&'static str),
-    /// Always-on stateful collector, built once per lock takeover and ticked
-    /// every poll.
-    Live(fn() -> Box<dyn LiveCollector>),
-    /// The troved native-messaging host drives it (browser extension arms);
-    /// the owner loop does nothing.
-    NativeHost,
+    /// Written by a separate, always-on collector program (named by its
+    /// launchd/binary id, e.g. "trove-collector") that follows the vault
+    /// spec. Nothing runs in this process: the hub keeps the toggle (the
+    /// collector re-reads `.trove/integrations.json`) and shows the
+    /// collector's heartbeat; the app only reads the stream.
+    External { collector: &'static str },
     /// User-triggered file import only, run via the generic `run_import`
     /// command; nothing runs in the background.
     Import(&'static ImportSpec),

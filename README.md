@@ -32,9 +32,8 @@ This is a stated goal with a design behind it, not a shipped feature. The sequen
 A Rust workspace and a Tauri app:
 
 - [`crates/trove-core/`](crates/trove-core/) is everything: the vault, every collector and importer, the integration registry, the read paths. About 54k lines of Rust after the September 2026 prune (it was 330k; see the next tier below).
-- [`crates/troved/`](crates/troved/) is the always-on collector daemon, a small headless binary registered with `launchd`. It and the app share the core crate and coordinate through a file lock so exactly one process collects at a time.
 - [`src-tauri/`](src-tauri/) and [`src/`](src/) are the desktop app: Tauri 2, React 19, a thin command layer over the core crate with TypeScript bindings generated from the Rust types.
-- [`extension/`](extension/) is a Chrome extension that streams tab activity to the daemon over native messaging. Local-only; it has no network permission.
+- The always-on watcher — app activity, the Chrome extension's tab and ad observations, Apple Music plays — is a separate program, [trove-collector](https://github.com/david-wills/trove-collector). It writes into the same vault by following the spec and has no dependency on this repo's crates; Trove shows its streams and its heartbeat.
 - [`docs/vault-spec/`](docs/vault-spec/) is the file-format spec: the vault's conventions, one page per data domain, a JSON Schema per record type, and a guide to writing a collector in any language. It is the part of the project I would keep if I had to throw the rest away.
 
 The vault is a folder, `~/Documents/Trove`, of JSONL, CSV and markdown. The files are the source of truth; every index the app builds is under `.trove/` and rebuildable from them. Anything that can read a text file can read a vault, including you, `grep`, and whatever model you point at it.
@@ -63,10 +62,10 @@ These were built first, one at a time, and each was validated against the real t
 | Source | How | Needs |
 |---|---|---|
 | Apple Health `export.zip` | streaming XML parse, never extracted; ~600k records/s | nothing |
-| Mac app and window activity | CoreGraphics sampler, AFK back-dating, merged spans; the daemon runs it 24/7 | Screen Recording for other apps' titles |
+| Mac app and window activity | CoreGraphics sampler, AFK back-dating, merged spans; runs 24/7 in trove-collector | Screen Recording for other apps' titles |
 | Chrome and Safari history | copy-then-read of the SQLite files, incremental cursors that rebuild from the vault | Full Disk Access for Safari |
-| Browser tab spans | the Chrome extension, via native messaging into `troved` | load unpacked |
-| Apple Music plays | observes the `playerInfo` distributed notification; a scrobbler, since Music keeps no history | nothing |
+| Browser tab spans | the Chrome extension, via native messaging into trove-collector | load unpacked |
+| Apple Music plays | observes the `playerInfo` distributed notification in trove-collector; a scrobbler, since Music keeps no history | nothing |
 | Screen Time and Now Playing from iPhone/iPad | reads Apple's Biome SEGB segments synced to the Mac, with my own protobuf walker | Full Disk Access |
 | iMessage and SMS | `chat.db`, with my own typedstream decoder (the GPL one was off-limits) | Full Disk Access |
 | Calls and FaceTime | `CallHistory.storedata` | Full Disk Access |
@@ -138,14 +137,9 @@ Claude Desktop reads the same shape from its config file (`~/Library/Application
 
 Both default to `~/Documents/Trove`; pass `--vault <path>` for another vault. The tools are `list_sources` (the registry, with data presence), `list_streams` (every JSONL directory with its date range), `read_stream` (newest-first, paginated, date-bounded raw records), `describe_type` (the vault-spec page for a domain, embedded at build time), `search_artifacts` / `read_artifact` (the notes layer), and `health_metrics` / `health_series` (Apple Health and Oura, aggregated per day/week/month). Live service connectors (Gmail, TickTick, …) are not this server's job; attach those to your MCP client directly. Trove's own pulls are for retention, not freshness.
 
-The daemon, if you want collection to continue when the app is closed:
+Periodic sources (browser history, Messages, Calendar, the cloud connections, …) sync while the app is open: the first pass runs seconds after launch and every source then follows its own cadence (`docs/integration-schedule.md`). There is no daemon in this repo. For the streams that need a 24/7 process — app activity, the browser extension, Apple Music plays — install [trove-collector](https://github.com/david-wills/trove-collector); its build script signs with a stable identity and registers a launch agent, and the Integrations hub shows whether it is running and how much memory it uses.
 
-```bash
-cargo build --release -p troved
-./target/release/troved install    # writes a launchd agent; `status` and `uninstall` also exist
-```
-
-macOS ties Full Disk Access and Screen Recording grants to a binary's signature, and an ad-hoc-signed `cargo` build changes on every rebuild, so the grants get revoked each time. [`scripts/build-troved.sh`](scripts/build-troved.sh) signs with a stable identity (`TROVED_SIGN_ID`, an Apple Development certificate in your keychain) so you grant once. Without it you re-grant after every build.
+macOS ties Full Disk Access and Screen Recording grants to a binary's signature, and an ad-hoc-signed `cargo` build changes on every rebuild, so the grants get revoked each time. [`scripts/build-app.sh`](scripts/build-app.sh) signs with a stable identity (`TROVE_SIGN_ID`, an Apple Development certificate in your keychain) so you grant once. Without it you re-grant after every build.
 
 Cloud sources need their own app registration: set `TROVE_<SERVICE>_CLIENT_ID` and `_SECRET` at build time, or paste them into the connect card. No credentials of mine are compiled in; the one baked-in pair is Eight Sleep's community-published client id, the same one Home Assistant ships. [`docs/oauth-distribution.md`](docs/oauth-distribution.md) explains the model.
 

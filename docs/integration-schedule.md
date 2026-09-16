@@ -12,11 +12,11 @@ TROVE_REGEN=1 cargo test -p trove-core --test schedule_doc
 
 | Id | Name | Shape | Schedule |
 |---|---|---|---|
-| `activity` | App activity | Live | always on; ticked every poll (5 s) |
-| `music-scrobbler` | Apple Music scrobbler | Live | always on; ticked every poll (5 s) |
-| `browser-extension` | Browser extension | Native host | event-driven; the browser extension's native-messaging host writes as events arrive |
-| `browser-ads` | Ad observation | Native host | event-driven; the browser extension's native-messaging host writes as events arrive |
-| `browser-ads-identify` | Advertiser identity lookup | Native host | event-driven; the browser extension's native-messaging host writes as events arrive |
+| `activity` | App activity | External (`trove-collector`) | always on, outside the app; `trove-collector` writes the stream and re-reads the hub toggle every 5 s |
+| `music-scrobbler` | Apple Music scrobbler | External (`trove-collector`) | always on, outside the app; `trove-collector` writes the stream and re-reads the hub toggle every 5 s |
+| `browser-extension` | Browser extension | External (`trove-collector`) | always on, outside the app; `trove-collector` writes the stream and re-reads the hub toggle every 5 s |
+| `browser-ads` | Ad observation | External (`trove-collector`) | always on, outside the app; `trove-collector` writes the stream and re-reads the hub toggle every 5 s |
+| `browser-ads-identify` | Advertiser identity lookup | External (`trove-collector`) | always on, outside the app; `trove-collector` writes the stream and re-reads the hub toggle every 5 s |
 | `chrome-history` | Chrome history | Periodic | every 15 min |
 | `safari-history` | Safari history | Covered by `chrome-history` | runs with `chrome-history`'s pass |
 | `imessage` | Messages (iMessage) | Periodic | every 15 min |
@@ -44,7 +44,7 @@ TROVE_REGEN=1 cargo test -p trove-core --test schedule_doc
 | `email` | Email archives | Import | manual; runs when you import a file |
 | `slack` | Slack exports | Import | manual; runs when you import a file |
 | `letterboxd` | Letterboxd | Import | manual; runs when you import a file |
-| `macos-screenshots` | Screenshots | Live | always on; ticked every poll (5 s) |
+| `macos-screenshots` | Screenshots | Periodic | every 15 min |
 | `apple-mail` | Apple Mail | Periodic | every 15 min |
 | `dropbox` | Dropbox | Periodic | every 15 min |
 | `google-drive` | Google Drive | Periodic | every 15 min |

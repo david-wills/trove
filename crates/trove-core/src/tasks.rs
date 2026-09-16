@@ -119,8 +119,8 @@ pub static REMINDERS_DEF: IntegrationDef = IntegrationDef {
         vault_path: "tasks/apple-reminders/",
         toggleable: true,
         setup: &[
-            "Approve the Reminders access prompt the first time the app (and separately the troved daemon) asks for Full Access.",
-            "If the prompt was declined: System Settings → Privacy & Security → Reminders → set Trove and troved to Full Access.",
+            "Approve the Reminders access prompt the first time the app asks for Full Access.",
+            "If the prompt was declined: System Settings → Privacy & Security → Reminders → set Trove to Full Access.",
         ],
         caveats: "Completions are read from the Reminders store with their true times (90-day lookback), so brief collection gaps don't lose them. Completing one instance of a recurring reminder isn't logged as a completion yet.",
     },

@@ -239,48 +239,11 @@ impl Vault {
             .collect())
     }
 
-    /// Replace this browser host's live sidecar with its currently-open spans.
-    /// `key` identifies the writer (the host pid) so concurrent profile hosts
-    /// don't clobber each other. The write is atomic (temp + rename) so a
-    /// reader never sees a half-written file. Sidecars are ephemeral runtime
-    /// state under `.trove/live/`, NOT vault data — readers tolerate them
-    /// missing and they're safe to delete.
-    pub fn write_browser_live(
-        &self,
-        browser: &str,
-        key: &str,
-        spans: &[crate::browser_ext::LiveSpan],
-    ) -> Result<()> {
-        let dir = self.root.join(LIVE_DIR);
-        fs::create_dir_all(&dir).context("creating live dir")?;
-        let state = crate::browser_ext::LiveState {
-            browser: browser.to_string(),
-            updated: now_epoch(),
-            spans: spans.to_vec(),
-        };
-        let tmp = dir.join(format!("browser-{key}.json.tmp"));
-        let path = dir.join(format!("browser-{key}.json"));
-        fs::write(&tmp, serde_json::to_vec(&state)?)
-            .with_context(|| format!("writing live sidecar {key}"))?;
-        fs::rename(&tmp, &path).with_context(|| format!("publishing live sidecar {key}"))?;
-        Ok(())
-    }
-
-    /// Remove this host's live sidecar — call when it disconnects so the UI
-    /// stops showing its "watching now" rows immediately rather than waiting
-    /// for the staleness TTL. Absent file is success.
-    pub fn clear_browser_live(&self, key: &str) -> Result<()> {
-        let path = self.root.join(LIVE_DIR).join(format!("browser-{key}.json"));
-        match fs::remove_file(&path) {
-            Ok(()) => Ok(()),
-            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
-            Err(e) => Err(e).with_context(|| format!("clearing live sidecar {key}")),
-        }
-    }
-
-    /// Every currently-open browser span across all live hosts. Sidecars older
-    /// than [`LIVE_TTL_SECS`] (the host died without clearing) are skipped and
-    /// best-effort deleted. Empty when nothing is being watched right now.
+    /// Every currently-open browser span across all live hosts, from the
+    /// sidecars the external collector publishes under `.trove/live/`.
+    /// Sidecars older than [`LIVE_TTL_SECS`] (the host died without clearing)
+    /// are skipped and best-effort deleted. Empty when nothing is being
+    /// watched right now.
     pub fn read_browser_live(&self) -> Result<Vec<crate::browser_ext::LiveSpan>> {
         let dir = self.root.join(LIVE_DIR);
         let entries = match fs::read_dir(&dir) {

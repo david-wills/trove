@@ -406,27 +406,17 @@ async activityDaily(from: string, to: string) : Promise<Result<SeriesPoint[], st
 },
 /**
  * The event currently in progress (not yet written to the log), if any —
- * ours when this app owns collection, otherwise mirrored from the owning
- * process's heartbeat (e.g. the troved daemon).
+ * read from the external collector's heartbeat (one tiny file).
  */
 async activityCurrent() : Promise<ActivityEvent | null> {
     return await TAURI_INVOKE("activity_current");
 },
 /**
- * Whether Screen Recording is granted (needed for window titles).
+ * What the hub shows about the external `trove-collector`: running (fresh
+ * heartbeat), installed (launch agent plist present), pid, memory.
  */
-async activityPermission() : Promise<boolean> {
-    return await TAURI_INVOKE("activity_permission");
-},
-/**
- * Prompt for Screen Recording (first call only — afterwards macOS requires a
- * trip to System Settings). Returns the resulting permission state.
- */
-async requestActivityPermission() : Promise<boolean> {
-    return await TAURI_INVOKE("request_activity_permission");
-},
-async watcherStatus() : Promise<WatcherStatus> {
-    return await TAURI_INVOKE("watcher_status");
+async collectorStatus() : Promise<CollectorStatus> {
+    return await TAURI_INVOKE("collector_status");
 },
 /**
  * Per-app and per-device screen time over an inclusive date range
@@ -466,7 +456,7 @@ async screenTimeDevices() : Promise<Partial<{ [key in string]: DeviceInfo }>> {
 },
 /**
  * Whether this process can read the Biome streams (Full Disk Access).
- * Grants are per-binary — troved needs its own; the hub handles that.
+ * Grants are per-binary; the hub handles that.
  */
 async screenTimePermission() : Promise<boolean> {
     return await TAURI_INVOKE("screen_time_permission");
@@ -514,7 +504,7 @@ async browserDaily(from: string, to: string) : Promise<Result<SeriesPoint[], str
 },
 /**
  * Cursor/sync metadata — `updated` tells the UI when history last synced.
- * Collection itself runs in the watcher owner loop (app or troved).
+ * Collection itself runs in the app's sync loop.
  */
 async browserSyncInfo() : Promise<BrowserSyncState | null> {
     return await TAURI_INVOKE("browser_sync_info");
@@ -522,7 +512,7 @@ async browserSyncInfo() : Promise<BrowserSyncState | null> {
 /**
  * Whether this process can read Safari's History.db (Full Disk Access).
  * There is no programmatic FDA prompt — the UI deep-links to System
- * Settings. Note the grant is per-binary: troved needs its own.
+ * Settings. Note the grant is per-binary.
  */
 async browserSafariPermission() : Promise<boolean> {
     return await TAURI_INVOKE("browser_safari_permission");
@@ -658,7 +648,7 @@ async tasksDaily(from: string, to: string) : Promise<Result<SeriesPoint[], strin
 /**
  * Sync metadata — when each source last synced and any standing error
  * (e.g. an expired token). Collection itself runs in the watcher owner
- * loop (app or troved).
+ * loop.
  */
 async tasksSyncInfo() : Promise<TasksSyncState | null> {
     return await TAURI_INVOKE("tasks_sync_info");
@@ -782,7 +772,7 @@ async imessagePermission() : Promise<boolean> {
 },
 /**
  * Cursor/sync metadata — `updated` tells the UI when messages last synced.
- * Collection itself runs in the watcher owner loop (app or troved).
+ * Collection itself runs in the app's sync loop.
  */
 async imessageSyncInfo() : Promise<IMessageSyncState | null> {
     return await TAURI_INVOKE("imessage_sync_info");
@@ -954,14 +944,14 @@ async integrationPull(id: string) : Promise<Result<PullOutcome, string>> {
 },
 /**
  * Per-collection sync progress (watermarks, backfill cursors, standing
- * error). Collection itself runs in the watcher owner loop (app or troved).
+ * error). Collection itself runs in the app's sync loop.
  */
 async ouraSyncInfo() : Promise<OuraSyncState | null> {
     return await TAURI_INVOKE("oura_sync_info");
 },
 /**
  * Per-account Gmail sync progress (backfill cursors, history ids, standing
- * errors). Collection itself runs in the watcher owner loop (app or troved).
+ * errors). Collection itself runs in the app's sync loop.
  */
 async gmailSyncInfo() : Promise<GmailSyncState | null> {
     return await TAURI_INVOKE("gmail_sync_info");
@@ -980,7 +970,7 @@ async integrationsStatus() : Promise<Result<IntegrationStatus[], string>> {
 },
 /**
  * Persist a hub toggle. The collector loops re-read settings every pass, so
- * this takes effect within ~one poll in both the app and troved.
+ * this takes effect within ~one poll in both the app and the external collector.
  */
 async setIntegrationEnabled(id: string, enabled: boolean) : Promise<Result<IntegrationStatus[], string>> {
     try {
@@ -1100,7 +1090,7 @@ viewable: number; viewed_secs: number }
  */
 export type AdsDaily = { seen: SeriesPoint[]; viewed_secs: SeriesPoint[] }
 /**
- * Aggregate of a date range for the (future) Ads view.
+ * Aggregate of a date range for the Ads view.
  */
 export type AdsSummary = { ads: number; viewable: number; viewed_secs: number; 
 /**
@@ -1349,6 +1339,23 @@ export type ChatUsage = { chat: string;
  */
 chat_name: string; source: string; messages: number; sent: number }
 /**
+ * What the hub shows about the external collector. Cheap: one plist stat
+ * and one tiny file read.
+ */
+export type CollectorStatus = { 
+/**
+ * A fresh heartbeat exists.
+ */
+running: boolean; 
+/**
+ * The launch agent plist is present (it may still not be loaded).
+ */
+installed: boolean; pid: number | null; role: string | null; 
+/**
+ * RFC3339 local time of the last heartbeat, fresh or not.
+ */
+updated: string | null; rss_mb: number | null }
+/**
  * What the hub needs to render one connect method, straight off the def.
  */
 export type ConnectMethodInfo = { kind: "oauth"; multi_account: boolean } | { kind: "token-paste"; label: string; help: string; placeholder: string }
@@ -1591,8 +1598,8 @@ key: string; label: string; placeholder: string; required: boolean }
  */
 export type IntegrationKind = 
 /**
- * Always-on capture inside the watcher loop (or a host process); the
- * stream only exists while a collector runs.
+ * Always-on capture by the external collector process; the stream only
+ * exists while it runs.
  */
 "live" | 
 /**
@@ -1653,9 +1660,9 @@ pullable: boolean }
 export type JsonValue = null | boolean | number | string | JsonValue[] | Partial<{ [key in string]: JsonValue }>
 /**
  * One currently-open span, surfaced for live "watching now" display. This is
- * ephemeral UI state derived from [`TabTracker`]'s in-memory open spans — it
+ * ephemeral state the collector derives from its in-memory open spans — it
  * is *never* written to the day JSONL (which records closed spans only). See
- * [`TabTracker::live`] and [`crate::vault::Vault::write_browser_live`].
+ * [`crate::vault::Vault::read_browser_live`].
  */
 export type LiveSpan = { url: string; title?: string; favicon: string; 
 /**
@@ -2004,8 +2011,8 @@ export type PermissionInfo = {
 kind: string; 
 /**
  * Preflight from *this* process — `None` when it can't be checked
- * cheaply (Media Library only fails at read time). Note the grant is
- * per-binary: troved needs its own, this reflects the app.
+ * cheaply (Media Library only fails at read time). The grant is
+ * per-binary; this reflects the app.
  */
 granted: boolean | null; 
 /**
@@ -2031,9 +2038,10 @@ end: string;
  */
 seconds_played: number; track: string; artist: string; album: string; genre?: string; duration_secs?: number | null; persistent_id?: string; 
 /**
- * Did this count as actually listening (Last.fm rule, see
- * [`ScrobbleConfig`])? False = a skip. The default read-time filter;
- * recomputable from `seconds_played`/`duration_secs` if the rule changes.
+ * Did this count as actually listening (Last.fm rule: half the track or
+ * four minutes, 30 s when the duration is unknown)? False = a skip. The
+ * default read-time filter; recomputable from `seconds_played` /
+ * `duration_secs` if the rule changes.
  */
 full_play?: boolean }
 /**
@@ -2252,15 +2260,6 @@ note?: string | null; sources: UnifiedSourceInfo[] }
  */
 export type UnifiedSourceInfo = { source: string; records: number; first_date: string; last_date: string }
 export type VaultInfo = { root: string }
-export type WatcherStatus = { 
-/**
- * Who is collecting right now: "app", "daemon", or "none".
- */
-collector: string; 
-/**
- * Whether the troved launch agent plist is installed.
- */
-daemon_installed: boolean }
 /**
  * Per-day aggregate computed at read time from the hourly observations.
  * "Opinions at read time": the JSONL keeps every field, this is just what

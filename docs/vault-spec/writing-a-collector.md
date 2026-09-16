@@ -84,6 +84,9 @@ real demand is what would justify designing it.
 | messages, calls, conversations | correspondence contract | [domains/correspondence.md](domains/correspondence.md) |
 | to-dos from any task app | tasks contract (snapshot + events) | [domains/tasks.md](domains/tasks.md) |
 | listens/watches/plays | media-plays contract | [domains/media-plays.md](domains/media-plays.md) |
+| app/window activity spans from a sampler | activity stream, in your own `activity/<source>/` subfolder | [domains/activity.md](domains/activity.md) |
+| web page visits | browser-visits stream (multi-writer; take the flock) | [domains/browser-visits.md](domains/browser-visits.md) |
+| ads seen while browsing | ads stream | [domains/ads.md](domains/ads.md) |
 | something with no contract yet | your own folder of date-partitioned JSONL per [conventions](conventions.md) — it appears in `.trove/manifest.json` and the generic data browser automatically | — |
 
 When a domain you need has no contract yet, open an issue/PR proposing one —

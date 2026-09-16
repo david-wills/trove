@@ -411,9 +411,8 @@ export default function WeatherView() {
 
       {!latest && !needsLocation && (
         <div className="activity-empty">
-          No observations yet. The collector records conditions once an hour
-          while Trove or the troved daemon is running — the first one should
-          land within 15 minutes.
+          No observations yet. Trove records conditions once an hour while
+          it is open — the first one should land within 15 minutes.
         </div>
       )}
 

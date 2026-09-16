@@ -12,12 +12,12 @@
 //!  "duration_secs":42,"source":"history"}
 //! ```
 //!
-//! **This import is the backup, not the primary.** The planned browser
-//! watcher extension (tab URL + title + `audible` via native messaging into
-//! troved — see docs/data-sources.md §2) is the richer, real-time capture and
-//! writes the same stream with `source:"extension"`. Both always record (the
-//! history import keeps running even once the extension exists — it backfills
-//! anything the extension missed, e.g. while troved was down, and preserves
+//! **This import is the backup, not the primary.** The browser extension
+//! (tab URL + title + `audible`, via native messaging into the external
+//! `trove-collector`) is the richer, real-time capture and writes the same
+//! stream with `source:"extension"`. Both always record (the history import
+//! keeps running even once the extension exists — it backfills anything the
+//! extension missed, e.g. while the collector was down, and preserves
 //! history past Chrome's ~90-day retention); precedence is resolved at *read*
 //! time, where extension rows win over history rows covering the same
 //! browsing. The raw files keep both, per the files-first principle.
@@ -31,9 +31,9 @@
 //! resync never duplicates rows. The very first sync has cursor 0 and pulls
 //! the profile's entire history — the backfill is free.
 //!
-//! Sync runs inside the watcher owner loop (see [`crate::runner`]), so the
-//! single-writer lock that already guards activity events also guarantees
-//! only one process imports browser history at a time.
+//! Sync runs inside the app's sync loop (see [`crate::runner`]), whose lock
+//! guarantees only one app instance imports browser history at a time; the
+//! per-file flock on `browser/` covers the collector's concurrent appends.
 
 use std::collections::{BTreeMap, HashMap};
 use std::fs;
@@ -109,7 +109,7 @@ pub static SAFARI_DEF: IntegrationDef = IntegrationDef {
         vault_path: "browser/",
         toggleable: true,
         setup: &[
-            "System Settings → Privacy & Security → Full Disk Access → add Trove and the troved binary.",
+            "System Settings → Privacy & Security → Full Disk Access → add Trove.",
             "Restart the daemon after granting (grants apply to fresh processes only).",
         ],
         caveats: "Safari retains roughly a year of history — anything older exists in the vault only if it was imported in time.",

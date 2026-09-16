@@ -1,9 +1,12 @@
-//! Apple Music play history (scrobbler).
+//! Apple Music play history: the read side of the `music/plays/` stream.
 //!
 //! Music.app posts a `com.apple.Music.playerInfo` distributed notification on
 //! every play/pause/stop/track change, but keeps no play *history* itself
 //! (only lifetime counts) — this stream is unrecoverable unless captured
-//! live, which is why the scrobbler ships before most other collectors.
+//! live. The capture (the notification listener and the scrobbling state
+//! machine) lives in the external `trove-collector` program; this crate only
+//! reads what it writes, plus [`Vault::append_music_plays`] as the
+//! byte-parity reference writer used by tests and imports.
 //!
 //! Source of truth is one JSONL file per local day:
 //! `music/plays/YYYY-MM-DD.jsonl`, one completed play per line:
@@ -16,94 +19,27 @@
 //! ```
 //!
 //! **Full fidelity at write time, opinions at read time:** every play longer
-//! than a tiny anti-flicker floor (5s) is recorded — skips included, they're
+//! than a tiny anti-flicker floor is recorded — skips included, they're
 //! signal too ("songs I always bail on"). The Last.fm-style judgment (half
 //! the track or 4 minutes — did you actually *listen* to it?) is stored as
 //! the `full_play` flag, the default filter for charts/stats; the underlying
 //! `seconds_played`/`duration_secs` are always present, so readers can apply
 //! any other rule later.
-//!
-//! Like [`crate::activity::Watcher`], the [`Scrobbler`] holds no OS handles —
-//! feed it timestamped [`PlayerEvent`]s and it emits closed plays. The
-//! platform notification listener lives in [`crate::music_listener`].
 
 use std::collections::HashMap;
 use std::fs;
 
 use anyhow::{Context, Result};
-use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 
 use crate::activity::days;
 use crate::health::SeriesPoint;
 use crate::integrations::{Integration, IntegrationKind};
-use crate::music_listener::{MusicListener, TimedPlayerEvent};
-use crate::registry::{Behavior, IntegrationDef, LiveCollector};
+use crate::registry::{Behavior, IntegrationDef};
 use crate::vault::Vault;
 
 fn def_last_data(vault: &Vault) -> Option<String> {
     crate::registry::newest_stem(&vault.root().join("music/plays"))
-}
-
-/// The live scrobbler: owns the playerInfo notification channel and the
-/// [`Scrobbler`] state machine. Built once per lock takeover — exactly where
-/// the listener used to start — so the main-run-loop delivery contract is
-/// unchanged (headless hosts still pump it; see [`crate::music_listener`]).
-struct MusicLive {
-    /// `Some` until shutdown ([`MusicListener::stop`] takes it by value).
-    listener: Option<MusicListener>,
-    rx: std::sync::mpsc::Receiver<TimedPlayerEvent>,
-    scrobbler: Scrobbler,
-}
-
-fn make_live() -> Box<dyn LiveCollector> {
-    let (listener, rx) = MusicListener::start();
-    Box::new(MusicLive {
-        listener: Some(listener),
-        rx,
-        scrobbler: Scrobbler::new(ScrobbleConfig::default()),
-    })
-}
-
-impl MusicLive {
-    fn append(&self, vault: &Vault, plays: &[Play], context: &str) {
-        if !plays.is_empty() {
-            if let Err(e) = vault.append_music_plays(plays) {
-                eprintln!("trove watcher: failed to {context} music plays: {e:#}");
-            }
-        }
-    }
-}
-
-impl LiveCollector for MusicLive {
-    fn tick(&mut self, vault: &Vault, now: DateTime<Local>, enabled: bool) {
-        // Drain notifications delivered since the last tick; each is stamped
-        // at delivery time, so this cadence costs no accuracy.
-        let mut plays = Vec::new();
-        if enabled {
-            while let Ok((ts, ev)) = self.rx.try_recv() {
-                plays.extend(self.scrobbler.handle(ts, &ev));
-            }
-        } else {
-            // Disabled: discard new events (re-enabling must not replay a
-            // backlog of stale player state), close out any open play.
-            while self.rx.try_recv().is_ok() {}
-            plays.extend(self.scrobbler.flush(now));
-        }
-        self.append(vault, &plays, "append");
-    }
-
-    fn shutdown(&mut self, vault: &Vault, now: DateTime<Local>) {
-        if let Some(listener) = self.listener.take() {
-            listener.stop();
-        }
-        let mut plays = Vec::new();
-        while let Ok((ts, ev)) = self.rx.try_recv() {
-            plays.extend(self.scrobbler.handle(ts, &ev));
-        }
-        plays.extend(self.scrobbler.flush(now));
-        self.append(vault, &plays, "flush final");
-    }
 }
 
 /// Registered in [`crate::integrations::INTEGRATIONS`].
@@ -113,47 +49,21 @@ pub static SCROBBLER_DEF: IntegrationDef = IntegrationDef {
         name: "Apple Music scrobbler",
         kind: IntegrationKind::Live,
         default_on: true,
-        description: "Records every play as it happens, skips included. No permission needed.",
+        description: "Records every play as it happens, skips included, via the trove-collector background process. No permission needed.",
         domain: "media",
         vault_path: "music/plays/",
         toggleable: true,
-        setup: &[],
-        caveats: "Music.app keeps no play history of its own — plays are captured only while a collector runs; gaps can never be backfilled. The daily library snapshot below catches what this misses, but only as count drift.",
+        setup: &[
+            "Install trove-collector (github.com/david-wills/trove-collector); it listens for Music.app's playerInfo notifications while it runs.",
+        ],
+        caveats: "Music.app keeps no play history of its own — plays are captured only while the collector runs; gaps can never be backfilled. The daily library snapshot below catches what this misses, but only as count drift.",
     },
-    behavior: Behavior::Live(make_live),
+    behavior: Behavior::External { collector: "trove-collector" },
     permission: None,
     last_data: Some(def_last_data),
     connection: None,
     pull: None,
 };
-
-/// Track metadata carried by a playerInfo notification.
-#[derive(Debug, Clone, PartialEq)]
-pub struct TrackInfo {
-    pub name: String,
-    pub artist: String,
-    pub album: String,
-    pub genre: String,
-    /// Track length in seconds ("Total Time", when present).
-    pub duration_secs: Option<f64>,
-    /// Music's persistent ID as uppercase hex; empty if absent.
-    pub persistent_id: String,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PlayerState {
-    Playing,
-    Paused,
-    Stopped,
-}
-
-/// One playerInfo notification, decoded. A track change arrives as a bare
-/// `Stopped` (no track) followed by `Playing` with the new track.
-#[derive(Debug, Clone)]
-pub struct PlayerEvent {
-    pub state: PlayerState,
-    pub track: Option<TrackInfo>,
-}
 
 /// One completed play (full listen or skip) — a line in
 /// `music/plays/YYYY-MM-DD.jsonl`.
@@ -175,152 +85,12 @@ pub struct Play {
     pub duration_secs: Option<f64>,
     #[serde(default)]
     pub persistent_id: String,
-    /// Did this count as actually listening (Last.fm rule, see
-    /// [`ScrobbleConfig`])? False = a skip. The default read-time filter;
-    /// recomputable from `seconds_played`/`duration_secs` if the rule changes.
+    /// Did this count as actually listening (Last.fm rule: half the track or
+    /// four minutes, 30 s when the duration is unknown)? False = a skip. The
+    /// default read-time filter; recomputable from `seconds_played` /
+    /// `duration_secs` if the rule changes.
     #[serde(default)]
     pub full_play: bool,
-}
-
-/// Tunables for [`Scrobbler`]. The full-play judgment follows the Last.fm
-/// convention.
-#[derive(Debug, Clone, Copy)]
-pub struct ScrobbleConfig {
-    /// Plays shorter than this aren't recorded at all (anti-flicker floor —
-    /// rapid track-flipping, not listening).
-    pub min_record_secs: f64,
-    /// `full_play` when this fraction of the track played (duration known)…
-    pub full_fraction: f64,
-    /// …or after this many seconds, whichever comes first (long tracks).
-    pub full_secs: f64,
-}
-
-/// `full_play` threshold when the track duration is unknown (radio streams):
-/// no fraction to compute, so fall back to the classic 30s scrobble bar.
-const UNKNOWN_DURATION_FULL_SECS: f64 = 30.0;
-
-impl Default for ScrobbleConfig {
-    fn default() -> Self {
-        ScrobbleConfig {
-            min_record_secs: 5.0,
-            full_fraction: 0.5,
-            full_secs: 240.0,
-        }
-    }
-}
-
-/// The in-progress play.
-#[derive(Debug, Clone)]
-struct OpenPlay {
-    track: TrackInfo,
-    start: DateTime<Local>,
-    /// Accumulated playing time, pauses excluded.
-    played: f64,
-    /// When the current playing stretch began; `None` while paused.
-    resumed_at: Option<DateTime<Local>>,
-    /// When playback last ran — the `end` of the play if it closes while paused.
-    last_active: DateTime<Local>,
-}
-
-/// Folds playerInfo events into completed plays. Holds no OS handles.
-pub struct Scrobbler {
-    cfg: ScrobbleConfig,
-    open: Option<OpenPlay>,
-}
-
-impl Scrobbler {
-    pub fn new(cfg: ScrobbleConfig) -> Self {
-        Scrobbler { cfg, open: None }
-    }
-
-    /// Feed one event received at `now`. Returns a play if one just closed
-    /// and cleared the recording floor (skips included — see `full_play`).
-    pub fn handle(&mut self, now: DateTime<Local>, event: &PlayerEvent) -> Option<Play> {
-        match event.state {
-            PlayerState::Playing => {
-                let track = event.track.as_ref()?;
-                if self.open.as_ref().is_some_and(|o| same_track(&o.track, track)) {
-                    // Same track: resume if paused; otherwise it's a seek or a
-                    // duplicate notification — the play just continues.
-                    let o = self.open.as_mut().unwrap();
-                    if o.resumed_at.is_none() {
-                        o.resumed_at = Some(now);
-                    }
-                    o.last_active = now;
-                    None
-                } else {
-                    let done = self.close(now);
-                    self.open = Some(OpenPlay {
-                        track: track.clone(),
-                        start: now,
-                        played: 0.0,
-                        resumed_at: Some(now),
-                        last_active: now,
-                    });
-                    done
-                }
-            }
-            PlayerState::Paused => {
-                if let Some(o) = self.open.as_mut() {
-                    if let Some(r) = o.resumed_at.take() {
-                        o.played += secs_between(r, now);
-                        o.last_active = now;
-                    }
-                }
-                None
-            }
-            PlayerState::Stopped => self.close(now),
-        }
-    }
-
-    /// Close out the open play (e.g. on shutdown), if any clears the floor.
-    pub fn flush(&mut self, now: DateTime<Local>) -> Option<Play> {
-        self.close(now)
-    }
-
-    fn close(&mut self, now: DateTime<Local>) -> Option<Play> {
-        let mut o = self.open.take()?;
-        if let Some(r) = o.resumed_at.take() {
-            o.played += secs_between(r, now);
-            o.last_active = now;
-        }
-        if o.track.name.is_empty() || o.played < self.cfg.min_record_secs {
-            return None;
-        }
-        Some(Play {
-            start: o.start.to_rfc3339(),
-            end: o.last_active.to_rfc3339(),
-            seconds_played: o.played.round() as u64,
-            full_play: self.is_full(&o),
-            track: o.track.name,
-            artist: o.track.artist,
-            album: o.track.album,
-            genre: o.track.genre,
-            duration_secs: o.track.duration_secs,
-            persistent_id: o.track.persistent_id,
-        })
-    }
-
-    fn is_full(&self, o: &OpenPlay) -> bool {
-        match o.track.duration_secs {
-            Some(d) => o.played >= d * self.cfg.full_fraction || o.played >= self.cfg.full_secs,
-            None => o.played >= UNKNOWN_DURATION_FULL_SECS,
-        }
-    }
-}
-
-/// Persistent IDs are authoritative when both sides have one; metadata
-/// otherwise (streaming radio etc. can lack IDs).
-fn same_track(a: &TrackInfo, b: &TrackInfo) -> bool {
-    if !a.persistent_id.is_empty() && !b.persistent_id.is_empty() {
-        a.persistent_id == b.persistent_id
-    } else {
-        a.name == b.name && a.artist == b.artist && a.album == b.album
-    }
-}
-
-fn secs_between(from: DateTime<Local>, to: DateTime<Local>) -> f64 {
-    ((to - from).num_milliseconds() as f64 / 1000.0).max(0.0)
 }
 
 /// One artist's listening over a range.
@@ -430,51 +200,24 @@ impl Vault {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::TimeZone;
 
-    fn at(h: u32, m: u32, s: u32) -> DateTime<Local> {
-        Local.with_ymd_and_hms(2026, 6, 10, h, m, s).unwrap()
-    }
-
-    fn track(name: &str, duration: Option<f64>) -> TrackInfo {
-        TrackInfo {
-            name: name.into(),
-            artist: "Artist".into(),
+    fn play(day: &str, artist: &str, secs: u64, full: bool) -> Play {
+        Play {
+            start: format!("{day}T09:00:00-07:00"),
+            end: format!("{day}T09:10:00-07:00"),
+            seconds_played: secs,
+            track: format!("{artist} song"),
+            artist: artist.into(),
             album: "Album".into(),
             genre: "Pop".into(),
-            duration_secs: duration,
-            persistent_id: format!("{:016X}", name.len() as u64),
+            duration_secs: Some(200.0),
+            persistent_id: String::new(),
+            full_play: full,
         }
     }
 
-    fn playing(t: &TrackInfo) -> PlayerEvent {
-        PlayerEvent {
-            state: PlayerState::Playing,
-            track: Some(t.clone()),
-        }
-    }
-
-    fn paused(t: &TrackInfo) -> PlayerEvent {
-        PlayerEvent {
-            state: PlayerState::Paused,
-            track: Some(t.clone()),
-        }
-    }
-
-    /// Track changes arrive as a bare Stopped with no track info.
-    fn stopped() -> PlayerEvent {
-        PlayerEvent {
-            state: PlayerState::Stopped,
-            track: None,
-        }
-    }
-
-    fn scrobbler() -> Scrobbler {
-        Scrobbler::new(ScrobbleConfig::default())
-    }
-
-    /// Byte-parity contract for the append path: exact file bytes, pinned
-    /// before the port onto `store::JsonlStream` and unchanged by it.
+    /// Byte-parity contract for the append path: exact file bytes, the line
+    /// shape the external collector writes and this reader expects.
     #[test]
     fn append_writes_byte_identical_jsonl() {
         let dir = std::env::temp_dir().join(format!("trove-music-{}-parity", std::process::id()));
@@ -518,159 +261,22 @@ mod tests {
     }
 
     #[test]
-    fn full_play_is_recorded_and_flagged() {
-        let mut s = scrobbler();
-        let t = track("Take On Me", Some(200.0));
-        assert!(s.handle(at(9, 0, 0), &playing(&t)).is_none());
-        let play = s.handle(at(9, 3, 20), &stopped()).expect("recorded");
-        assert_eq!(play.seconds_played, 200);
-        assert!(play.full_play);
-        assert_eq!(play.track, "Take On Me");
-        assert_eq!(play.start, at(9, 0, 0).to_rfc3339());
-        assert_eq!(play.end, at(9, 3, 20).to_rfc3339());
-    }
-
-    #[test]
-    fn skip_is_recorded_as_not_full() {
-        let mut s = scrobbler();
-        let a = track("Skipped", Some(200.0));
-        let b = track("Kept", Some(200.0));
-        s.handle(at(9, 0, 0), &playing(&a));
-        // Skip after 20s: Music posts bare Stopped, then Playing with track B.
-        let skip = s.handle(at(9, 0, 20), &stopped()).expect("skips are data");
-        assert_eq!(skip.track, "Skipped");
-        assert_eq!(skip.seconds_played, 20);
-        assert!(!skip.full_play, "20s of 200s is a skip");
-        assert!(s.handle(at(9, 0, 20), &playing(&b)).is_none());
-        let play = s.flush(at(9, 2, 0)).expect("100s of 200s is full");
-        assert_eq!(play.track, "Kept");
-        assert_eq!(play.seconds_played, 100);
-        assert!(play.full_play);
-    }
-
-    #[test]
-    fn flicker_below_floor_is_dropped() {
-        let mut s = scrobbler();
-        let t = track("Flicked Past", Some(200.0));
-        s.handle(at(9, 0, 0), &playing(&t));
-        assert!(
-            s.handle(at(9, 0, 3), &stopped()).is_none(),
-            "3s < 5s floor: not even a skip"
-        );
-    }
-
-    #[test]
-    fn direct_track_change_closes_previous() {
-        // Defensive: a Playing for a new track with no intervening Stopped.
-        let mut s = scrobbler();
-        let a = track("First", Some(200.0));
-        let b = track("Second", Some(200.0));
-        s.handle(at(9, 0, 0), &playing(&a));
-        let play = s.handle(at(9, 3, 0), &playing(&b)).expect("First closes");
-        assert_eq!(play.track, "First");
-        assert_eq!(play.seconds_played, 180);
-        assert!(play.full_play);
-    }
-
-    #[test]
-    fn pause_resume_accumulates_play_time_only() {
-        let mut s = scrobbler();
-        let t = track("Paused Song", Some(200.0));
-        s.handle(at(9, 0, 0), &playing(&t));
-        assert!(s.handle(at(9, 1, 0), &paused(&t)).is_none()); // 60s played
-        // Nine minutes idle, then resume for 40s more.
-        s.handle(at(9, 10, 0), &playing(&t));
-        let play = s.handle(at(9, 10, 40), &stopped()).expect("recorded");
-        assert_eq!(play.seconds_played, 100, "pause time excluded");
-        assert!(play.full_play, "100s of 200s");
-        assert_eq!(play.start, at(9, 0, 0).to_rfc3339());
-        assert_eq!(play.end, at(9, 10, 40).to_rfc3339());
-    }
-
-    #[test]
-    fn close_while_paused_ends_at_last_active() {
-        let mut s = scrobbler();
-        let t = track("Abandoned", Some(200.0));
-        s.handle(at(9, 0, 0), &playing(&t));
-        s.handle(at(9, 2, 0), &paused(&t)); // 120s played
-        let play = s.flush(at(11, 0, 0)).expect("recorded");
-        assert_eq!(play.seconds_played, 120);
-        assert!(play.full_play);
-        assert_eq!(play.end, at(9, 2, 0).to_rfc3339(), "pause tail not included");
-    }
-
-    #[test]
-    fn four_minute_rule_marks_long_tracks_full() {
-        let mut s = scrobbler();
-        let t = track("Long Mix", Some(1200.0));
-        s.handle(at(9, 0, 0), &playing(&t));
-        let play = s.handle(at(9, 4, 10), &stopped()).expect("recorded");
-        assert_eq!(play.seconds_played, 250);
-        assert!(play.full_play, "250s >= 240s four-minute rule");
-
-        s.handle(at(9, 5, 0), &playing(&t));
-        let partial = s.handle(at(9, 7, 0), &stopped()).expect("recorded");
-        assert!(!partial.full_play, "120s of 1200s, under both bars");
-    }
-
-    #[test]
-    fn unknown_duration_full_at_thirty_seconds() {
-        let mut s = scrobbler();
-        let t = track("Radio Stream", None);
-        s.handle(at(9, 0, 0), &playing(&t));
-        let full = s.handle(at(9, 0, 35), &stopped()).expect("recorded");
-        assert!(full.full_play, "35s >= 30s unknown-duration bar");
-
-        s.handle(at(9, 1, 0), &playing(&t));
-        let skip = s.handle(at(9, 1, 25), &stopped()).expect("recorded");
-        assert!(!skip.full_play, "25s < 30s bar, but still recorded");
-    }
-
-    #[test]
-    fn duplicate_playing_does_not_reset_the_play() {
-        let mut s = scrobbler();
-        let t = track("Seeked", Some(200.0));
-        s.handle(at(9, 0, 0), &playing(&t));
-        // Seek posts another Playing for the same track.
-        assert!(s.handle(at(9, 0, 30), &playing(&t)).is_none());
-        let play = s.handle(at(9, 2, 0), &stopped()).expect("recorded");
-        assert_eq!(play.start, at(9, 0, 0).to_rfc3339());
-        assert_eq!(play.seconds_played, 120);
-    }
-
-    #[test]
-    fn stopped_with_nothing_open_is_a_noop() {
-        let mut s = scrobbler();
-        assert!(s.handle(at(9, 0, 0), &stopped()).is_none());
-        assert!(s.flush(at(9, 0, 1)).is_none());
-    }
-
-    #[test]
     fn vault_round_trip() {
         let dir = std::env::temp_dir().join(format!("trove-music-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         let v = Vault::open_or_create(dir).unwrap();
 
-        let mut s = scrobbler();
-        let a = track("One", Some(200.0));
-        let b = track("Skipped", Some(200.0));
-        let c = track("Two", Some(200.0));
-        let mut plays = Vec::new();
-        s.handle(at(9, 0, 0), &playing(&a));
-        plays.extend(s.handle(at(9, 3, 0), &stopped()));
-        s.handle(at(9, 3, 0), &playing(&b));
-        plays.extend(s.handle(at(9, 3, 20), &playing(&c))); // skipped at 20s
-        plays.extend(s.flush(at(9, 6, 20)));
-        v.append_music_plays(&plays).unwrap();
+        v.append_music_plays(&[
+            play("2026-06-10", "One", 180, true),
+            play("2026-06-10", "Skipped", 20, false),
+        ])
+        .unwrap();
 
         let day = v.music_timeline("2026-06-10").unwrap();
-        assert_eq!(day.len(), 3);
-        assert_eq!(day[0].track, "One");
+        assert_eq!(day.len(), 2);
+        assert_eq!(day[0].artist, "One");
         assert!(day[0].full_play);
-        assert_eq!(day[1].track, "Skipped");
         assert!(!day[1].full_play, "skip round-trips with its flag");
-        assert_eq!(day[2].track, "Two");
-        assert_eq!(day[2].seconds_played, 180);
         assert!(v.music_timeline("2026-06-09").unwrap().is_empty());
     }
 
@@ -680,18 +286,6 @@ mod tests {
         let _ = fs::remove_dir_all(&dir);
         let v = Vault::open_or_create(dir).unwrap();
 
-        let play = |day: &str, artist: &str, secs: u64, full: bool| Play {
-            start: format!("{day}T09:00:00-07:00"),
-            end: format!("{day}T09:10:00-07:00"),
-            seconds_played: secs,
-            track: format!("{artist} song"),
-            artist: artist.into(),
-            album: "Album".into(),
-            genre: "Pop".into(),
-            duration_secs: Some(200.0),
-            persistent_id: String::new(),
-            full_play: full,
-        };
         v.append_music_plays(&[
             play("2026-06-09", "Cannons", 200, true),
             play("2026-06-09", "Cannons", 20, false),

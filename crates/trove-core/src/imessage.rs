@@ -75,7 +75,7 @@ pub static DEF: IntegrationDef = IntegrationDef {
         vault_path: "correspondence/imessage/",
         toggleable: true,
         setup: &[
-            "System Settings → Privacy & Security → Full Disk Access → add Trove and the troved binary.",
+            "System Settings → Privacy & Security → Full Disk Access → add Trove.",
             "Restart the daemon after granting (grants apply to fresh processes only).",
         ],
         caveats: "Senders are raw handles (phone numbers, addresses) until the planned Contacts source maps them to people.",

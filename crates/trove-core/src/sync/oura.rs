@@ -7,7 +7,7 @@
 //!   `cloud.ouraring.com`, bring-your-own app (redirect URI
 //!   `http://localhost:38574/callback`) or compiled-in credentials. Access
 //!   tokens last ~30 days; Oura issues *single-use rotating* refresh tokens,
-//!   so [`fresh_token`] serializes refreshes across processes (app + troved)
+//!   so [`fresh_token`] serializes refreshes across processes (two app instances)
 //!   with a file lock and persists the rotated token before returning.
 //! - **Personal Access Token** (fallback): pasted from
 //!   `cloud.ouraring.com/personal-access-tokens`, stored as a [`TokenSet`]

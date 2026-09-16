@@ -41,14 +41,15 @@ For "current state" (open tasks, library contents): a single JSONL file
 ## Concurrent writers
 
 - Single-line `O_APPEND` writes of ≤ a few KB are atomic enough for streams
-  with one writer process (Trove's own collectors coordinate via a global
-  single-writer lock).
-- A stream with **multiple legitimate writer processes** (`browser/`: the
-  history sync plus extension host processes) takes an exclusive `flock` on
-  the partition file around its appends. Hold it for the write only.
-- External collectors should write only their **own** folders
+  with one writer process (the app's periodic syncs coordinate via one
+  sync lock; the always-on collector holds its own).
+- A stream with **multiple legitimate writer processes** (`browser/` and
+  `browser/ads/`: the app's history sync plus one extension host per
+  browser profile) takes an exclusive `flock` on the partition file around
+  its appends. Hold it for the write only.
+- Other collectors should write only their **own** folders
   (`<domain>/<your-source>/`), which sidesteps contention entirely. Never
-  write into `activity/`'s root day files (the live watcher's owned
+  write into `activity/`'s root day files (the always-on collector's owned
   stream) or another collector's source folder — an observed-span source
   writes `activity/<your-source>/` like any other domain.
 

@@ -1,75 +1,77 @@
-//! The always-on watcher loop shared by the GUI app and the `troved` daemon.
+//! The periodic sync loop the app runs while it is open, and the read side
+//! of the external collector's heartbeat.
 //!
-//! Exactly one process may write activity events at a time. Coordination is an
-//! OS advisory file lock (`.trove/watcher.lock`): whoever holds it runs the
-//! sample→tick→append loop and heartbeats `.trove/watcher-state.json`; every
-//! other process idles, mirrors that heartbeat for its live "current activity"
-//! view, and retries the lock each poll — so when the owner exits (the kernel
-//! releases flock on process death, crash included) the next contender takes
-//! over within ~one poll. No pidfiles, no IPC: the handoff between app and
-//! daemon is automatic in both directions.
+//! Trove has no always-on process of its own (docs/roadmap.md, decision 3).
+//! Every [`Behavior::Periodic`] def runs from [`run_sync`] on a background
+//! thread of the app; the first pass fires one poll after start, so opening
+//! the app *is* the sync. Exactly one app instance syncs a given vault at a
+//! time, coordinated by an OS advisory file lock (`.trove/sync.lock`); a
+//! second instance idles and retries each poll, so when the owner exits (the
+//! kernel releases flock on process death, crash included) the next one
+//! takes over within ~one poll.
+//!
+//! The live streams (`activity/`, `browser/` extension rows, `browser/ads/`,
+//! `music/plays/`) are written by the separate `trove-collector` binary,
+//! which holds its own lock (`.trove/watcher.lock`) and heartbeats
+//! `.trove/watcher-state.json`. This module only *reads* that heartbeat, so
+//! the app can say whether the collector is running, what it is using, and
+//! what the in-progress activity event is.
 
 use std::collections::HashMap;
 use std::fs::{self, File, OpenOptions};
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use std::time::{Duration as StdDuration, Instant, SystemTime};
 
 use anyhow::{Context, Result};
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 
-use crate::activity::{ActivityEvent, POLL_SECS};
+use crate::activity::ActivityEvent;
 use crate::integrations::INTEGRATIONS;
 use crate::music_library::should_snapshot;
 use crate::registry::{Advance, Behavior, Cadence, Gate};
 use crate::vault::Vault;
 
-const STATE_FILE: &str = ".trove/watcher-state.json";
-const LOCK_FILE: &str = ".trove/watcher.lock";
+/// Seconds between sync-loop polls; also the collector's heartbeat cadence
+/// (the freshness window below is a multiple of it).
+pub const POLL_SECS: u64 = 5;
 
-/// launchd label for the troved daemon. Shared with `troved install` and the
-/// app's "is the daemon installed" check so they can never drift.
-pub const DAEMON_LABEL: &str = "com.davidwills.troved";
+const SYNC_LOCK_FILE: &str = ".trove/sync.lock";
 
-/// Where `troved install` writes the launch agent plist.
-pub fn daemon_plist_path() -> Option<PathBuf> {
-    dirs::home_dir().map(|h| h.join("Library/LaunchAgents").join(format!("{DAEMON_LABEL}.plist")))
+/// The external collector's heartbeat (written by `trove-collector`, never
+/// by this crate).
+const COLLECTOR_STATE_FILE: &str = ".trove/watcher-state.json";
+
+/// launchd label the external collector installs itself under. Shared with
+/// the hub's "is it installed" check so they can never drift.
+pub const COLLECTOR_LABEL: &str = "com.davidwills.trove-collector";
+
+/// Where `trove-collector install` writes its launch agent plist.
+pub fn collector_plist_path() -> Option<PathBuf> {
+    dirs::home_dir().map(|h| h.join("Library/LaunchAgents").join(format!("{COLLECTOR_LABEL}.plist")))
 }
 
-/// Which kind of process is hosting the watcher.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum WatcherRole {
-    App,
-    Daemon,
-}
-
-impl WatcherRole {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            WatcherRole::App => "app",
-            WatcherRole::Daemon => "daemon",
-        }
-    }
-}
-
-/// Heartbeat written by the lock owner every poll. Non-owners read it to show
-/// who is collecting and what the in-progress event is. Removed on graceful
-/// shutdown; after a crash it goes stale instead (see [`WatcherState::is_fresh`]).
+/// Heartbeat written by the external collector every poll. Removed on its
+/// graceful shutdown; after a crash it goes stale instead (see
+/// [`CollectorState::is_fresh`]).
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WatcherState {
+pub struct CollectorState {
     pub pid: u32,
-    /// "app" or "daemon".
+    /// The writing program's name, e.g. "trove-collector".
     pub role: String,
     /// RFC3339 local time of the last tick.
     pub updated: String,
-    /// The in-progress (not yet written) event, if any.
+    /// The in-progress (not yet written) activity event, if any.
     pub current: Option<ActivityEvent>,
+    /// Resident memory of the collector process, in MB, when it reports it.
+    #[serde(default)]
+    pub rss_mb: Option<u64>,
 }
 
-impl WatcherState {
-    /// Whether the heartbeat is recent enough to indicate a live owner.
+impl CollectorState {
+    /// Whether the heartbeat is recent enough to indicate a live collector.
     pub fn is_fresh(&self) -> bool {
         chrono::DateTime::parse_from_rfc3339(&self.updated)
             .map(|t| {
@@ -79,95 +81,67 @@ impl WatcherState {
     }
 }
 
-/// Thread-safe handle for embedding [`run_watcher`]: request shutdown and read
-/// live state from other threads. Cheap to clone.
+/// What the hub shows about the external collector. Cheap: one plist stat
+/// and one tiny file read.
+#[derive(Debug, Clone, Serialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct CollectorStatus {
+    /// A fresh heartbeat exists.
+    pub running: bool,
+    /// The launch agent plist is present (it may still not be loaded).
+    pub installed: bool,
+    pub pid: Option<u32>,
+    pub role: Option<String>,
+    /// RFC3339 local time of the last heartbeat, fresh or not.
+    pub updated: Option<String>,
+    pub rss_mb: Option<u64>,
+}
+
+/// Thread-safe handle for embedding [`run_sync`]: request shutdown from
+/// another thread. Cheap to clone.
 #[derive(Clone, Default)]
-pub struct WatchControl {
-    inner: Arc<ControlInner>,
+pub struct SyncControl {
+    stop: Arc<AtomicBool>,
 }
 
-#[derive(Default)]
-struct ControlInner {
-    stop: AtomicBool,
-    owns: AtomicBool,
-    current: Mutex<Option<ActivityEvent>>,
-}
-
-impl WatchControl {
+impl SyncControl {
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// Ask the loop to stop. It flushes the open event before returning.
+    /// Ask the loop to stop after the current pass.
     pub fn stop(&self) {
-        self.inner.stop.store(true, Ordering::SeqCst);
+        self.stop.store(true, Ordering::SeqCst);
     }
 
     pub fn stopped(&self) -> bool {
-        self.inner.stop.load(Ordering::SeqCst)
-    }
-
-    /// Does this process currently hold the single-writer lock?
-    pub fn owns(&self) -> bool {
-        self.inner.owns.load(Ordering::SeqCst)
-    }
-
-    /// The in-progress event — ours if we own the lock, otherwise mirrored
-    /// from the owner's heartbeat.
-    pub fn current(&self) -> Option<ActivityEvent> {
-        self.inner.current.lock().unwrap().clone()
-    }
-
-    fn set_owns(&self, v: bool) {
-        self.inner.owns.store(v, Ordering::SeqCst);
-    }
-
-    fn set_current(&self, v: Option<ActivityEvent>) {
-        *self.inner.current.lock().unwrap() = v;
+        self.stop.load(Ordering::SeqCst)
     }
 }
 
-/// Blocking: contend for the vault's single-writer lock and, while holding it,
-/// run the watcher loop. While another process holds the lock, idle and mirror
-/// its heartbeat. Returns only when [`WatchControl::stop`] is called (the open
-/// event is flushed first). Collection errors inside the loop are logged to
-/// stderr and skipped, never fatal — a daemon must outlive transient failures.
-pub fn run_watcher(root: PathBuf, role: WatcherRole, control: WatchControl) -> Result<()> {
+/// Blocking: contend for the vault's sync lock and, while holding it, run
+/// every periodic collector on its cadence. While another app instance
+/// holds the lock, idle and retry. Returns only when [`SyncControl::stop`]
+/// is called. Collection errors inside the loop are logged to stderr and
+/// skipped, never fatal.
+pub fn run_sync(root: PathBuf, control: SyncControl) -> Result<()> {
     let vault = Vault::open_or_create(root)?;
     while !control.stopped() {
         match try_lock(&vault)? {
             Some(lock) => {
-                control.set_owns(true);
-                owner_loop(&vault, role, &control);
-                control.set_owns(false);
+                owner_loop(&vault, &control);
                 drop(lock);
             }
-            None => {
-                let state = vault.read_watcher_state().filter(|s| s.is_fresh());
-                control.set_current(state.and_then(|s| s.current));
-                sleep_unless_stopped(&control, StdDuration::from_secs(POLL_SECS));
-            }
+            None => sleep_unless_stopped(&control, StdDuration::from_secs(POLL_SECS)),
         }
     }
     Ok(())
 }
 
-/// The actual collection loop, run only while holding the lock — so
-/// single-writer applies to the whole vault. Entirely registry-driven: live
-/// collectors ([`Behavior::Live`]) tick every poll, periodic collect hooks
-/// ([`Behavior::Periodic`]) run through their [`Cadence`] gates. Adding a
-/// collector never touches this loop.
-fn owner_loop(vault: &Vault, role: WatcherRole, control: &WatchControl) {
-    // Live collectors are built once per takeover (the music listener starts
-    // its notification channel here, exactly as before).
-    let mut live: Vec<(&'static crate::registry::IntegrationDef, Box<dyn crate::registry::LiveCollector>)> =
-        INTEGRATIONS
-            .iter()
-            .filter_map(|d| match d.behavior {
-                Behavior::Live(make) => Some((*d, make())),
-                _ => None,
-            })
-            .collect();
+/// The actual sync loop, run only while holding the lock. Entirely
+/// registry-driven: every [`Behavior::Periodic`] def runs through its
+/// [`Cadence`] gate. Adding a collector never touches this loop.
+fn owner_loop(vault: &Vault, control: &SyncControl) {
     // Reverse the `CoveredBy` edges once: owner id → the rider ids whose
     // toggles also keep the owner's periodic pass running.
     let mut riders: HashMap<&'static str, Vec<&'static str>> = HashMap::new();
@@ -184,31 +158,15 @@ fn owner_loop(vault: &Vault, role: WatcherRole, control: &WatchControl) {
         }
         // Hub toggles (`.trove/integrations.json`) are re-read every tick —
         // one tiny file — so disabling an integration takes effect within a
-        // poll, no restart, in app and daemon alike.
+        // poll, no restart.
         let settings = vault.integration_settings();
         let enabled = |id: &str| crate::integrations::enabled_in(&settings, id);
         let now = Local::now();
-        for (def, collector) in &mut live {
-            collector.tick(vault, now, enabled(def.id));
-        }
-        let current = live.iter().find_map(|(_, l)| l.current(now));
-        control.set_current(current.clone());
-        let state = WatcherState {
-            pid: std::process::id(),
-            role: role.as_str().into(),
-            updated: now.to_rfc3339(),
-            current,
-        };
-        if let Err(e) = vault.write_watcher_state(&state) {
-            eprintln!("trove watcher: failed to write heartbeat: {e:#}");
-        }
-        // Registry-driven periodic collectors. One `Instant` and one `now`
-        // serve the whole tick, so jobs sharing a period stay in lockstep
-        // forever (the old shared slow-tick timer, generalized — a slow
-        // browser copy can't fragment the block across ticks) and a mid-tick
-        // midnight can't split a daily gate from its snapshot stamp. The
-        // first pass runs one poll after lock takeover, as before. Collect
-        // errors are logged and skipped, never fatal.
+        // One `Instant` and one `now` serve the whole tick, so jobs sharing a
+        // period stay in lockstep forever (a slow pass can't fragment the
+        // block across ticks) and a mid-tick midnight can't split a daily
+        // gate from its snapshot stamp. The first pass runs one poll after
+        // lock takeover. Collect errors are logged and skipped, never fatal.
         let tick_started = Instant::now();
         for def in INTEGRATIONS {
             let Behavior::Periodic { cadence, collect } = def.behavior else {
@@ -224,29 +182,18 @@ fn owner_loop(vault: &Vault, role: WatcherRole, control: &WatchControl) {
                 Ok(out) => {
                     js.commit(&cadence.gate, probed, now);
                     if let Some(s) = out.summary {
-                        eprintln!("trove watcher: {s}");
+                        eprintln!("trove sync: {s}");
                     }
                 }
-                Err(e) => eprintln!("trove watcher: {} sync failed: {e:#}", def.id),
+                Err(e) => eprintln!("trove sync: {} sync failed: {e:#}", def.id),
             }
         }
-    }
-    // Graceful shutdown: every live collector closes out its open spans, then
-    // the heartbeat is cleared so status flips immediately instead of waiting
-    // out the freshness window.
-    let now = Local::now();
-    for (_, collector) in &mut live {
-        collector.shutdown(vault, now);
-    }
-    control.set_current(None);
-    if let Err(e) = vault.clear_watcher_state() {
-        eprintln!("trove watcher: failed to clear heartbeat: {e:#}");
     }
 }
 
 /// Per-collector gating state for the registry-driven job loop, keyed by
-/// integration id. Fresh per lock takeover, like the old inline timers — the
-/// first pass runs one poll after takeover, and timers reset on handoff.
+/// integration id. Fresh per lock takeover — the first pass runs one poll
+/// after takeover, and timers reset on handoff.
 #[derive(Default)]
 struct JobState {
     /// Timer for `Cadence::every_secs`. Always stamped from the tick's
@@ -278,10 +225,9 @@ impl JobState {
         if !due {
             return None;
         }
-        // `Due` consumes the window even while the toggle is off (the
-        // historical slow-tick semantics: re-enabling waits out the rest of
-        // the window); `Run` stamps only on a real run, so re-enabling fires
-        // within one poll (the historical oura/gmail semantics).
+        // `Due` consumes the window even while the toggle is off (re-enabling
+        // waits out the rest of the window); `Run` stamps only on a real run,
+        // so re-enabling fires within one poll.
         if cadence.advance == Advance::Due {
             self.last_attempt = Some(tick_started);
         }
@@ -315,7 +261,7 @@ impl JobState {
 
 /// Sleep `total` in short slices, returning early once stop is requested, so
 /// shutdown never waits out a full poll interval.
-fn sleep_unless_stopped(control: &WatchControl, total: StdDuration) {
+fn sleep_unless_stopped(control: &SyncControl, total: StdDuration) {
     let slice = StdDuration::from_millis(250);
     let mut elapsed = StdDuration::ZERO;
     while elapsed < total && !control.stopped() {
@@ -324,55 +270,57 @@ fn sleep_unless_stopped(control: &WatchControl, total: StdDuration) {
     }
 }
 
-/// Try to take the single-writer lock. The returned `File` *is* the lock —
-/// keep it alive while collecting; the kernel releases it when the fd closes
-/// or the process dies.
+/// Try to take the sync lock. The returned `File` *is* the lock — keep it
+/// alive while syncing; the kernel releases it when the fd closes or the
+/// process dies.
 #[cfg(unix)]
 fn try_lock(vault: &Vault) -> Result<Option<File>> {
     use std::os::unix::io::AsRawFd;
-    let path = vault.resolve(LOCK_FILE)?;
+    let path = vault.resolve(SYNC_LOCK_FILE)?;
     let f = OpenOptions::new()
         .create(true)
         .write(true)
         .open(&path)
-        .context("opening watcher.lock")?;
+        .context("opening sync.lock")?;
     let rc = unsafe { libc::flock(f.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) };
     Ok((rc == 0).then_some(f))
 }
 
-/// Non-unix: no enforcement (the daemon is macOS-only anyway).
+/// Non-unix: no enforcement (the app is macOS-only anyway).
 #[cfg(not(unix))]
 fn try_lock(vault: &Vault) -> Result<Option<File>> {
-    let path = vault.resolve(LOCK_FILE)?;
+    let path = vault.resolve(SYNC_LOCK_FILE)?;
     Ok(Some(
         OpenOptions::new().create(true).write(true).open(&path)?,
     ))
 }
 
 impl Vault {
-    /// The watcher heartbeat, if a state file exists (check
-    /// [`WatcherState::is_fresh`] before trusting it).
-    pub fn read_watcher_state(&self) -> Option<WatcherState> {
-        let path = self.resolve(STATE_FILE).ok()?;
+    /// The external collector's heartbeat, if a state file exists (check
+    /// [`CollectorState::is_fresh`] before trusting it).
+    pub fn read_collector_state(&self) -> Option<CollectorState> {
+        let path = self.resolve(COLLECTOR_STATE_FILE).ok()?;
         let body = fs::read_to_string(path).ok()?;
         serde_json::from_str(&body).ok()
     }
 
-    /// Atomic write (temp + rename) so readers never see a torn file.
-    fn write_watcher_state(&self, state: &WatcherState) -> Result<()> {
-        let path = self.resolve(STATE_FILE)?;
-        let tmp = path.with_extension("json.tmp");
-        fs::write(&tmp, serde_json::to_vec(state)?)?;
-        fs::rename(&tmp, &path)?;
-        Ok(())
+    /// Everything the hub shows about the external collector.
+    pub fn collector_status(&self) -> CollectorStatus {
+        let state = self.read_collector_state();
+        let fresh = state.as_ref().is_some_and(|s| s.is_fresh());
+        CollectorStatus {
+            running: fresh,
+            installed: collector_plist_path().is_some_and(|p| p.exists()),
+            pid: state.as_ref().filter(|_| fresh).map(|s| s.pid),
+            role: state.as_ref().filter(|_| fresh).map(|s| s.role.clone()),
+            updated: state.as_ref().map(|s| s.updated.clone()),
+            rss_mb: state.as_ref().filter(|_| fresh).and_then(|s| s.rss_mb),
+        }
     }
 
-    fn clear_watcher_state(&self) -> Result<()> {
-        let path = self.resolve(STATE_FILE)?;
-        if path.exists() {
-            fs::remove_file(&path)?;
-        }
-        Ok(())
+    /// The in-progress activity event from a fresh collector heartbeat.
+    pub fn collector_current(&self) -> Option<ActivityEvent> {
+        self.read_collector_state().filter(|s| s.is_fresh()).and_then(|s| s.current)
     }
 }
 
@@ -493,30 +441,39 @@ mod tests {
     }
 
     #[test]
-    fn state_round_trip_freshness_and_clear() {
-        let v = temp_vault("state");
-        assert!(v.read_watcher_state().is_none());
+    fn collector_heartbeat_is_read_with_freshness() {
+        let v = temp_vault("heartbeat");
+        let status = v.collector_status();
+        assert!(!status.running);
+        assert!(status.pid.is_none() && status.updated.is_none());
 
-        let fresh = WatcherState {
+        // A fresh heartbeat, exactly as trove-collector writes it (extra
+        // fields tolerated, `rss_mb` optional).
+        let fresh = CollectorState {
             pid: 42,
-            role: "daemon".into(),
+            role: "trove-collector".into(),
             updated: Local::now().to_rfc3339(),
             current: None,
+            rss_mb: Some(31),
         };
-        v.write_watcher_state(&fresh).unwrap();
-        let read = v.read_watcher_state().unwrap();
-        assert_eq!(read.pid, 42);
-        assert_eq!(read.role, "daemon");
-        assert!(read.is_fresh());
+        let path = v.resolve(COLLECTOR_STATE_FILE).unwrap();
+        fs::write(&path, serde_json::to_vec(&fresh).unwrap()).unwrap();
+        let status = v.collector_status();
+        assert!(status.running);
+        assert_eq!(status.pid, Some(42));
+        assert_eq!(status.role.as_deref(), Some("trove-collector"));
+        assert_eq!(status.rss_mb, Some(31));
 
-        let stale = WatcherState {
+        // Stale: still reports when it was last seen, but not as running.
+        let stale = CollectorState {
             updated: (Local::now() - chrono::Duration::seconds(60)).to_rfc3339(),
             ..fresh
         };
-        v.write_watcher_state(&stale).unwrap();
-        assert!(!v.read_watcher_state().unwrap().is_fresh());
-
-        v.clear_watcher_state().unwrap();
-        assert!(v.read_watcher_state().is_none());
+        fs::write(&path, serde_json::to_vec(&stale).unwrap()).unwrap();
+        let status = v.collector_status();
+        assert!(!status.running);
+        assert!(status.pid.is_none());
+        assert_eq!(status.updated.as_deref(), Some(stale.updated.as_str()));
+        assert!(v.collector_current().is_none());
     }
 }

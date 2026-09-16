@@ -68,14 +68,12 @@ fn render() -> String {
                 format!("Covered by `{owner}`"),
                 format!("runs with `{owner}`'s pass"),
             ),
-            Behavior::Live(_) => (
-                "Live".to_string(),
-                format!("always on; ticked every poll ({POLL_SECS} s)"),
-            ),
-            Behavior::NativeHost => (
-                "Native host".to_string(),
-                "event-driven; the browser extension's native-messaging host writes as events arrive"
-                    .to_string(),
+            Behavior::External { collector } => (
+                format!("External (`{collector}`)"),
+                format!(
+                    "always on, outside the app; `{collector}` writes the stream and re-reads \
+                     the hub toggle every {POLL_SECS} s"
+                ),
             ),
             Behavior::Import(_) => (
                 "Import".to_string(),

@@ -64,7 +64,7 @@ export type {
   Subtask,
   TasksOverview,
   VaultInfo,
-  WatcherStatus,
+  CollectorStatus,
   WeatherDay,
 } from "./bindings";
 
@@ -348,9 +348,8 @@ export const api = {
   activityDaily: (from: string, to: string) =>
     unwrap(commands.activityDaily(from, to)),
   activityCurrent: () => commands.activityCurrent(),
-  activityPermission: () => commands.activityPermission(),
-  requestActivityPermission: () => commands.requestActivityPermission(),
-  watcherStatus: () => commands.watcherStatus(),
+  /** The external trove-collector's heartbeat: running, installed, pid, memory. */
+  collectorStatus: () => commands.collectorStatus(),
   screenTimeSummary: (
     from: string,
     to: string,

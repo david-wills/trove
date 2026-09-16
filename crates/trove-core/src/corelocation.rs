@@ -5,7 +5,7 @@
 //! framework objects into plain data, with everything testable kept out of
 //! it. Location is a per-service TCC prompt keyed to the responsible
 //! process; the prompt only renders when that process carries
-//! `NSLocationWhenInUseUsageDescription` (Tauri app: Info.plist; troved: the
+//! `NSLocationWhenInUseUsageDescription` (Tauri app: Info.plist; a headless binary: the
 //! embedded `__TEXT,__info_plist` section). Like Calendars/Reminders, the
 //! System Settings → Location Services pane lists an app only after it has
 //! requested once.
@@ -67,7 +67,27 @@ mod imp {
     use objc2_foundation::{NSArray, NSError, NSObject, NSObjectProtocol};
 
     use super::{AuthStatus, LocationFix, FRESH_FIX_SECS};
-    use crate::music_listener::run_loop_slice;
+
+    #[link(name = "CoreFoundation", kind = "framework")]
+    extern "C" {
+        fn CFRunLoopRunInMode(
+            mode: core_foundation::string::CFStringRef,
+            seconds: f64,
+            return_after_source_handled: u8,
+        ) -> i32;
+        static kCFRunLoopDefaultMode: core_foundation::string::CFStringRef;
+    }
+
+    /// Run the calling thread's CFRunLoop for at most `seconds` (one slice).
+    /// CoreLocation delivers its callbacks on the *calling* thread's run
+    /// loop, so the waits below pump with this between checks. Each slice
+    /// drains an autorelease pool: servicing the run loop autoreleases
+    /// CF/NSObject temporaries that a non-AppKit thread never drains otherwise.
+    fn run_loop_slice(seconds: f64) {
+        objc2::rc::autoreleasepool(|_| unsafe {
+            CFRunLoopRunInMode(kCFRunLoopDefaultMode, seconds, 0);
+        });
+    }
 
     pub fn auth_status() -> AuthStatus {
         // The class getter is deprecated in favor of the instance property,

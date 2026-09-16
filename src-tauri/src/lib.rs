@@ -6,15 +6,12 @@ use trove_core::{
     ActivityEvent, ActivitySummary, AdRecord, AdsDaily, AdsSummary, ArtifactMeta, BrowserSummary,
     BrowserSyncState, BrowserVisit, Bucket, DeviceInfo, LiveSpan, MediaItem,
     MediaSummary, MetricSummary, MusicSummary, Play, ScreenTimeSession, ScreenTimeSummary,
-    SeriesPoint, Task, TasksOverview, TasksSyncState, Vault, WatchControl, WatcherRole,
+    SeriesPoint, SyncControl, Task, TasksOverview, TasksSyncState, Vault,
 };
 
 /// The open vault, shared across commands.
 struct AppState {
     vault: Mutex<Vault>,
-    /// Handle to the contend-and-watch loop (see `trove_core::runner`): tells
-    /// us whether this process owns collection and what the live event is.
-    watch: WatchControl,
 }
 
 #[derive(serde::Serialize, specta::Type)]
@@ -686,12 +683,12 @@ async fn activity_daily(
 }
 
 /// The event currently in progress (not yet written to the log), if any —
-/// ours when this app owns collection, otherwise mirrored from the owning
-/// process's heartbeat (e.g. the troved daemon).
+/// read from the external collector's heartbeat (one tiny file).
 #[tauri::command]
 #[specta::specta]
 fn activity_current(state: State<AppState>) -> Option<ActivityEvent> {
-    state.watch.current()
+    let vault = state.vault.lock().unwrap();
+    vault.collector_current()
 }
 
 /// Per-app and per-device screen time over an inclusive date range
@@ -766,38 +763,20 @@ fn screen_time_devices(state: State<AppState>) -> BTreeMap<String, DeviceInfo> {
 }
 
 /// Whether this process can read the Biome streams (Full Disk Access).
-/// Grants are per-binary — troved needs its own; the hub handles that.
+/// Grants are per-binary; the hub handles that.
 #[tauri::command]
 #[specta::specta]
 fn screen_time_permission() -> bool {
     trove_core::screen_time_permission_ok()
 }
 
-#[derive(serde::Serialize, specta::Type)]
-struct WatcherStatus {
-    /// Who is collecting right now: "app", "daemon", or "none".
-    collector: String,
-    /// Whether the troved launch agent plist is installed.
-    daemon_installed: bool,
-}
-
+/// What the hub shows about the external `trove-collector`: running (fresh
+/// heartbeat), installed (launch agent plist present), pid, memory.
 #[tauri::command]
 #[specta::specta]
-fn watcher_status(state: State<AppState>) -> WatcherStatus {
-    let collector = if state.watch.owns() {
-        "app".into()
-    } else {
-        let vault = state.vault.lock().unwrap();
-        vault
-            .read_watcher_state()
-            .filter(|s| s.is_fresh())
-            .map(|s| s.role)
-            .unwrap_or_else(|| "none".into())
-    };
-    WatcherStatus {
-        collector,
-        daemon_installed: trove_core::daemon_plist_path().is_some_and(|p| p.exists()),
-    }
+fn collector_status(state: State<AppState>) -> trove_core::CollectorStatus {
+    let vault = state.vault.lock().unwrap();
+    vault.collector_status()
 }
 
 /// One row per known integration for the hub: catalog metadata + enabled
@@ -817,7 +796,7 @@ async fn integrations_status(
 }
 
 /// Persist a hub toggle. The collector loops re-read settings every pass, so
-/// this takes effect within ~one poll in both the app and troved.
+/// this takes effect within ~one poll in both the app and the external collector.
 #[tauri::command]
 #[specta::specta]
 async fn set_integration_enabled(
@@ -907,7 +886,7 @@ async fn integration_pull(
 }
 
 /// Per-collection sync progress (watermarks, backfill cursors, standing
-/// error). Collection itself runs in the watcher owner loop (app or troved).
+/// error). Collection itself runs in the app's sync loop.
 #[tauri::command]
 #[specta::specta]
 fn oura_sync_info(state: State<AppState>) -> Option<trove_core::OuraSyncState> {
@@ -916,7 +895,7 @@ fn oura_sync_info(state: State<AppState>) -> Option<trove_core::OuraSyncState> {
 }
 
 /// Per-account Gmail sync progress (backfill cursors, history ids, standing
-/// errors). Collection itself runs in the watcher owner loop (app or troved).
+/// errors). Collection itself runs in the app's sync loop.
 #[tauri::command]
 #[specta::specta]
 fn gmail_sync_info(state: State<AppState>) -> Option<trove_core::GmailSyncState> {
@@ -1014,7 +993,7 @@ async fn browser_daily(
 }
 
 /// Cursor/sync metadata — `updated` tells the UI when history last synced.
-/// Collection itself runs in the watcher owner loop (app or troved).
+/// Collection itself runs in the app's sync loop.
 #[tauri::command]
 #[specta::specta]
 fn browser_sync_info(state: State<AppState>) -> Option<BrowserSyncState> {
@@ -1024,7 +1003,7 @@ fn browser_sync_info(state: State<AppState>) -> Option<BrowserSyncState> {
 
 /// Whether this process can read Safari's History.db (Full Disk Access).
 /// There is no programmatic FDA prompt — the UI deep-links to System
-/// Settings. Note the grant is per-binary: troved needs its own.
+/// Settings. Note the grant is per-binary.
 #[tauri::command]
 #[specta::specta]
 fn browser_safari_permission() -> bool {
@@ -1407,7 +1386,7 @@ async fn tasks_daily(
 
 /// Sync metadata — when each source last synced and any standing error
 /// (e.g. an expired token). Collection itself runs in the watcher owner
-/// loop (app or troved).
+/// loop.
 #[tauri::command]
 #[specta::specta]
 fn tasks_sync_info(state: State<AppState>) -> Option<TasksSyncState> {
@@ -1497,7 +1476,7 @@ fn imessage_permission() -> bool {
 }
 
 /// Cursor/sync metadata — `updated` tells the UI when messages last synced.
-/// Collection itself runs in the watcher owner loop (app or troved).
+/// Collection itself runs in the app's sync loop.
 #[tauri::command]
 #[specta::specta]
 fn imessage_sync_info(state: State<AppState>) -> Option<trove_core::IMessageSyncState> {
@@ -1571,21 +1550,6 @@ fn calls_sync_info(state: State<AppState>) -> Option<trove_core::CallsSyncState>
     vault.read_calls_sync()
 }
 
-/// Whether Screen Recording is granted (needed for window titles).
-#[tauri::command]
-#[specta::specta]
-fn activity_permission() -> bool {
-    trove_core::screen_recording_ok()
-}
-
-/// Prompt for Screen Recording (first call only — afterwards macOS requires a
-/// trip to System Settings). Returns the resulting permission state.
-#[tauri::command]
-#[specta::specta]
-fn request_activity_permission() -> bool {
-    trove_core::request_screen_recording()
-}
-
 /// The tauri-specta builder: the single registry of every IPC command, used
 /// by `run()` for the invoke handler and by the bindings export (debug runs
 /// and the `export_typescript_bindings` test) to generate `src/bindings.ts`.
@@ -1628,9 +1592,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         activity_timeline,
         activity_daily,
         activity_current,
-        activity_permission,
-        request_activity_permission,
-        watcher_status,
+        collector_status,
         screen_time_summary,
         screen_time_timeline,
         screen_time_daily,
@@ -1716,23 +1678,23 @@ pub fn run() {
     let vault = Vault::open_or_create(Vault::default_root())
         .expect("failed to open or create vault at ~/Documents/Trove");
 
-    // Contend for the vault's single-writer lock on a background thread: this
-    // app collects only while it holds the lock, defers to troved (or another
-    // app instance) otherwise, and takes over automatically if the owner
-    // exits. Uses its own `Vault` handle so it never contends with command
+    // Sync-on-open: every periodic collector runs on a background thread while
+    // the app is open (docs/roadmap.md, decision 3). The thread contends for
+    // the vault's sync lock so two app instances never sync the same vault at
+    // once, and uses its own `Vault` handle so it never contends with command
     // handlers on the `AppState` mutex.
-    let watch = WatchControl::new();
-    let watcher_thread = {
+    let sync = SyncControl::new();
+    let sync_thread = {
         let root = vault.root().to_path_buf();
-        let control = watch.clone();
+        let control = sync.clone();
         std::thread::spawn(move || {
-            if let Err(e) = trove_core::run_watcher(root, WatcherRole::App, control) {
-                eprintln!("activity watcher stopped: {e:#}");
+            if let Err(e) = trove_core::run_sync(root, control) {
+                eprintln!("sync loop stopped: {e:#}");
             }
         })
     };
-    let watcher_thread = Mutex::new(Some(watcher_thread));
-    let watch_for_exit = watch.clone();
+    let sync_thread = Mutex::new(Some(sync_thread));
+    let sync_for_exit = sync.clone();
 
     let builder = specta_builder();
 
@@ -1746,17 +1708,15 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .manage(AppState {
             vault: Mutex::new(vault),
-            watch,
         })
         .invoke_handler(builder.invoke_handler())
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(move |_app, event| {
-            // Flush the in-progress event on quit (it would otherwise be
-            // lost) and release the lock so troved can take over.
+            // Let an in-flight sync pass finish and release the lock.
             if let tauri::RunEvent::Exit = event {
-                watch_for_exit.stop();
-                if let Some(h) = watcher_thread.lock().unwrap().take() {
+                sync_for_exit.stop();
+                if let Some(h) = sync_thread.lock().unwrap().take() {
                     let _ = h.join();
                 }
             }

@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { openUrl } from "@tauri-apps/plugin-opener";
 import {
   ActivityEvent,
   ActivitySummary,
   api,
   AppUsage,
+  CollectorStatus,
   SeriesPoint,
-  WatcherStatus,
 } from "../api";
 import Chart from "./Chart";
 
@@ -17,10 +16,6 @@ const RANGES: { id: Range; label: string; days: number }[] = [
   { id: "7d", label: "7 Days", days: 7 },
   { id: "30d", label: "30 Days", days: 30 },
 ];
-
-// macOS deep-link to the Screen Recording privacy pane.
-const SETTINGS_URL =
-  "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture";
 
 const REFRESH_MS = 7000;
 
@@ -74,9 +69,7 @@ export default function ActivityView() {
   const [current, setCurrent] = useState<ActivityEvent | null>(null);
   const [daily, setDaily] = useState<SeriesPoint[]>([]);
   const [timeline, setTimeline] = useState<ActivityEvent[]>([]);
-  const [hasTitlePerm, setHasTitlePerm] = useState(true);
-  const [dismissedPerm, setDismissedPerm] = useState(false);
-  const [watcher, setWatcher] = useState<WatcherStatus | null>(null);
+  const [collector, setCollector] = useState<CollectorStatus | null>(null);
 
   const refresh = useCallback(async (r: Range) => {
     const today = new Date();
@@ -86,14 +79,14 @@ export default function ActivityView() {
     fromDate.setDate(fromDate.getDate() - (days - 1));
     const from = localDate(fromDate);
 
-    const [s, cur, ws] = await Promise.all([
+    const [s, cur, cs] = await Promise.all([
       api.activitySummary(from, to),
       api.activityCurrent(),
-      api.watcherStatus(),
+      api.collectorStatus(),
     ]);
     setSummary(s);
     setCurrent(cur);
-    setWatcher(ws);
+    setCollector(cs);
     if (r === "today") {
       setTimeline(await api.activityTimeline(to));
     } else {
@@ -114,16 +107,6 @@ export default function ActivityView() {
       clearInterval(id);
     };
   }, [range, refresh]);
-
-  useEffect(() => {
-    api.activityPermission().then(setHasTitlePerm);
-  }, []);
-
-  const requestPerm = useCallback(async () => {
-    const granted = await api.requestActivityPermission();
-    setHasTitlePerm(granted);
-    if (!granted) openUrl(SETTINGS_URL).catch(() => {});
-  }, []);
 
   const view = useMemo(
     () => (summary ? withCurrent(summary, current) : null),
@@ -163,21 +146,14 @@ export default function ActivityView() {
         </div>
       </div>
 
-      {!hasTitlePerm && !dismissedPerm && (
+      {collector && !collector.running && (
         <div className="perm-banner">
           <div className="perm-text">
-            <strong>Window titles are hidden.</strong> Trove tracks which app
-            you use without any permission. To also record window titles (the
-            document or page you're looking at), grant{" "}
-            <strong>Screen Recording</strong>.
-          </div>
-          <div className="perm-actions">
-            <button className="btn-primary" onClick={requestPerm}>
-              Grant access
-            </button>
-            <button className="btn-ghost" onClick={() => setDismissedPerm(true)}>
-              Not now
-            </button>
+            <strong>Nothing is recording right now.</strong> App activity is
+            written by trove-collector, a separate always-on program.{" "}
+            {collector.installed
+              ? "It is installed but not running — check `trove-collector status` in a terminal."
+              : "Install it from github.com/david-wills/trove-collector to track app activity 24/7."}
           </div>
         </div>
       )}
@@ -192,8 +168,8 @@ export default function ActivityView() {
 
       {view && view.apps.length === 0 && (
         <div className="activity-empty">
-          No activity recorded yet. Trove logs the app you're using every few
-          seconds while it's open — switch around and check back.
+          No activity recorded yet. trove-collector logs the app you're using
+          every few seconds while it runs — switch around and check back.
         </div>
       )}
 
@@ -248,24 +224,15 @@ export default function ActivityView() {
       )}
 
       <div className="activity-footnote">
-        {watcher &&
-          (watcher.collector === "daemon" ? (
-            <>
-              Recorded by the background collector (troved) — tracking
-              continues when Trove is closed.{" "}
-            </>
-          ) : (
-            <>
-              Recording in-app — tracking stops when Trove closes.
-              {!watcher.daemon_installed && (
-                <>
-                  {" "}
-                  Install the always-on collector with{" "}
-                  <code>troved install</code>.
-                </>
-              )}{" "}
-            </>
-          ))}
+        {collector?.running ? (
+          <>
+            Recorded by trove-collector
+            {collector.rss_mb != null ? ` (${collector.rss_mb} MB)` : ""} —
+            tracking continues when Trove is closed.{" "}
+          </>
+        ) : (
+          <>Not recording — trove-collector is not running. </>
+        )}
         Raw events: <code>~/Documents/Trove/activity/</code> — one JSONL file per day.
       </div>
     </div>

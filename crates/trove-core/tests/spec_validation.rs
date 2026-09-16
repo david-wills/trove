@@ -13,10 +13,10 @@ use std::path::{Path, PathBuf};
 
 use serde_json::Value;
 use trove_core::{
-    Almanac, CalendarChange, CalendarOccurrence, Checkin, Contact, EnvGeoEvent, EnvReading, Fix,
-    Habit, Highlight, HomeReading, Item, LineItem, MediaItem, Meeting, Message, Note,
-    NutritionEntry, Observation, Photo, Post, Recording, Search, Segment, Task, TaskEvent,
-    TimeEntry, DOMAINS,
+    ActivityEvent, AdRecord, Almanac, BrowserVisit, CalendarChange, CalendarOccurrence, Checkin,
+    Contact, EnvGeoEvent, EnvReading, Fix, Habit, Highlight, HomeReading, Item, LineItem,
+    MediaItem, Meeting, Message, Note, NutritionEntry, Observation, Photo, Post, Recording,
+    Search, Segment, Task, TaskEvent, TimeEntry, DOMAINS,
 };
 
 fn repo_root() -> PathBuf {
@@ -131,6 +131,11 @@ fn fixtures_validate_against_schemas_and_rust_types() {
     check::<Segment>("travel.segment.jsonl", "travel.segment.schema.json");
     check::<Fix>("location.fix.jsonl", "location.fix.schema.json");
     check::<Search>("browser-searches.search.jsonl", "browser-searches.search.schema.json");
+    // The three streams the external collector owns (S4, 2026-09-16): the
+    // spec page is the only contract between it and this reader.
+    check::<ActivityEvent>("activity.event.jsonl", "activity.event.schema.json");
+    check::<BrowserVisit>("browser.visit.jsonl", "browser.visit.schema.json");
+    check::<AdRecord>("browser.ad.jsonl", "browser.ad.schema.json");
 }
 
 #[test]
@@ -163,6 +168,9 @@ fn doc_examples_are_the_fixture_lines_verbatim() {
         ("domains/travel.md", "jsonl", "travel.segment.jsonl"),
         ("domains/location.md", "jsonl", "location.fix.jsonl"),
         ("domains/browser-searches.md", "jsonl", "browser-searches.search.jsonl"),
+        ("domains/activity.md", "jsonl", "activity.event.jsonl"),
+        ("domains/browser-visits.md", "jsonl", "browser.visit.jsonl"),
+        ("domains/ads.md", "jsonl", "browser.ad.jsonl"),
     ];
     for (page, tag, fixture_name) in pairs {
         assert_doc_block(page, tag, fixture_name);

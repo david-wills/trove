@@ -1,6 +1,6 @@
 [package]
 name = "trove-core"
-description = "Core vault logic shared by the Trove app and the troved collector daemon"
+description = "Core vault logic shared by the Trove app and the trove-mcp server"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true

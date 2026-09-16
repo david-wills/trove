@@ -75,7 +75,7 @@ pub static DEF: IntegrationDef = IntegrationDef {
         vault_path: "music/library/",
         toggleable: true,
         setup: &[
-            "System Settings → Privacy & Security → Media & Apple Music → add the troved binary. No prompt will ever appear — this grant is manual.",
+            "System Settings → Privacy & Security → Media & Apple Music → add Trove. No prompt will ever appear — this grant is manual.",
             "Restart the daemon after granting.",
         ],
         caveats: "Until the grant is made the daily snapshot fails quietly (it logs and retries) — the status here can't preflight this permission, so check for a tracks.jsonl after the first day.",

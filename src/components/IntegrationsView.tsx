@@ -12,7 +12,7 @@ import {
   IntegrationStatus,
   OuraSyncState,
   StreamPage,
-  WatcherStatus,
+  CollectorStatus,
 } from "../api";
 import type { ConnectionStatusRow } from "../bindings";
 import { ConnectCard } from "./ConnectCard";
@@ -159,17 +159,15 @@ const GROUPS: Group[] = [
     id: "trove-collector",
     title: "Trove Collector",
     section: "collectors",
-    members: ["activity", "music-scrobbler"],
+    members: [
+      "activity",
+      "music-scrobbler",
+      "browser-extension",
+      "browser-ads",
+      "browser-ads-identify",
+    ],
     intro:
-      "The always-on collector — the troved daemon when installed, this app otherwise. These live streams only exist while it runs; gaps can't be backfilled.",
-  },
-  {
-    id: "browser-extension",
-    title: "Browser extension",
-    section: "collectors",
-    members: ["browser-extension"],
-    intro:
-      "The Trove Chrome extension, reporting live tabs through troved as its native host.",
+      "trove-collector is a separate always-on program that writes the live streams — app activity, Apple Music plays, and the Chrome extension's tab and ad observations — into this vault following the vault spec. These streams only exist while it runs; gaps can't be backfilled. Toggles here take effect in it within seconds.",
   },
   {
     id: "apple-music",
@@ -337,7 +335,7 @@ export default function IntegrationsView({
   const [finance, setFinance] = useState<FinanceOverview | null>(null);
   const [ouraInfo, setOuraInfo] = useState<OuraSyncState | null>(null);
   const [gmailInfo, setGmailInfo] = useState<GmailSyncState | null>(null);
-  const [watcher, setWatcher] = useState<WatcherStatus | null>(null);
+  const [collector, setCollector] = useState<CollectorStatus | null>(null);
   const [selected, setSelected] = useState("trove-collector");
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -352,19 +350,19 @@ export default function IntegrationsView({
   const [catalogExpanded, setCatalogExpanded] = useState(false);
 
   const refresh = useCallback(async () => {
-    const [status, conns, fin, watch, ouraState, gmailState] =
+    const [status, conns, fin, coll, ouraState, gmailState] =
       await Promise.all([
         api.integrationsStatus(),
         api.connectStatusAll(),
         api.financeOverview(),
-        api.watcherStatus(),
+        api.collectorStatus(),
         api.ouraSyncInfo(),
         api.gmailSyncInfo(),
       ]);
     setItems(status);
     setConnections(conns);
     setFinance(fin);
-    setWatcher(watch);
+    setCollector(coll);
     setOuraInfo(ouraState);
     setGmailInfo(gmailState);
   }, []);
@@ -468,7 +466,7 @@ export default function IntegrationsView({
         <p className="sync-sub">
           Everything that brings data into your vault. Pick an integration to
           see its settings, setup steps, and status — toggles take effect
-          within seconds, in the app and the background daemon alike.
+          within seconds, in the app and the background collector alike.
         </p>
       </div>
       {onImport && <ImportDropCard onImport={onImport} />}
@@ -594,8 +592,8 @@ export default function IntegrationsView({
             <>
               <h3 className="int-detail-title">{group.title}</h3>
               {group.intro && <p className="int-detail-intro">{group.intro}</p>}
-              {group.id === "trove-collector" && watcher && (
-                <CollectorStatus watcher={watcher} />
+              {group.id === "trove-collector" && collector && (
+                <CollectorStatusRow collector={collector} />
               )}
               {group.id === "google" && (
                 <GoogleSection
@@ -805,29 +803,38 @@ function CatalogDetail({ row }: { row: CatalogRow }) {
   );
 }
 
-function CollectorStatus({ watcher }: { watcher: WatcherStatus }) {
-  const line =
-    watcher.collector === "daemon"
-      ? "Collecting 24/7 — the troved daemon is running."
-      : watcher.collector === "app"
-        ? watcher.daemon_installed
-          ? "Collecting while this app is open — troved takes over when it quits."
-          : "Collecting only while this app is open."
-        : "Nothing is collecting right now.";
+function CollectorStatusRow({ collector }: { collector: CollectorStatus }) {
+  const memory =
+    collector.rss_mb != null ? `, using ${collector.rss_mb} MB` : "";
+  const line = collector.running
+    ? `Collecting 24/7 — trove-collector is running (pid ${collector.pid}${memory}).`
+    : collector.installed
+      ? `trove-collector is installed but not running${
+          collector.updated ? ` — last seen ${collector.updated}` : ""
+        }.`
+      : "Nothing is collecting right now.";
   return (
     <div className="int-collector-status">
       <span
         className={`int-dot int-dot-${
-          watcher.collector === "none" ? "off" : "on"
+          collector.running ? "on" : collector.installed ? "warn" : "off"
         }`}
       />
       <span>
         {line}
-        {!watcher.daemon_installed && (
+        {!collector.installed && (
           <>
             {" "}
-            Run <code>troved install</code> in a terminal to collect 24/7 in
-            the background.
+            Install it from{" "}
+            <code>github.com/david-wills/trove-collector</code> (its
+            build script registers a launch agent) to collect in the
+            background.
+          </>
+        )}
+        {collector.installed && !collector.running && (
+          <>
+            {" "}
+            Check <code>trove-collector status</code> in a terminal.
           </>
         )}
       </span>
@@ -1032,13 +1039,9 @@ function PermissionBanner({ item }: { item: IntegrationStatus }) {
   const label = PERMISSION_LABEL[perm.kind] ?? perm.kind;
 
   const openSettings = async () => {
-    // Screen Recording and Calendar/Reminders can prompt programmatically;
-    // everything else is a manual grant in System Settings. For Calendar/
-    // Reminders the prompt is the only path — the panes have no add button.
-    if (perm.kind === "screen-recording") {
-      const granted = await api.requestActivityPermission().catch(() => false);
-      if (granted) return;
-    }
+    // Calendar/Reminders can prompt programmatically; everything else is a
+    // manual grant in System Settings. For Calendar/Reminders the prompt is
+    // the only path — the panes have no add button.
     if (perm.kind === "calendars" || perm.kind === "reminders") {
       const [ev, rem] = await api
         .requestCalendarPermission()
@@ -1066,7 +1069,7 @@ function PermissionBanner({ item }: { item: IntegrationStatus }) {
             Settings (no prompt will appear).
           </>
         )}{" "}
-        Grants are per-binary: give it to both Trove and the troved daemon.
+        Grants are per-binary.
       </span>
       <button className="btn-primary" onClick={openSettings}>
         Open System Settings

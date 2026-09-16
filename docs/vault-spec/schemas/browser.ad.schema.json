@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/browser.ad.schema.json",
+  "title": "Trove ad impression",
+  "description": "One line of browser/ads/YYYY-MM-DD.jsonl (keyed by the close day): one display ad the owner was shown, with serving network, attributed advertiser, size, and MRC viewability. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["ts", "end", "page_url", "network"],
+  "additionalProperties": true,
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "RFC3339 local time the ad was detected", "examples": ["2026-06-11T10:23:45-07:00"] },
+    "end": { "type": "string", "format": "date-time", "description": "RFC3339 local time it closed (frame removed / page unloaded); the file is keyed by this day", "examples": ["2026-06-11T10:24:10-07:00"] },
+    "page_url": { "type": "string", "description": "the top-frame page the ad appeared on", "examples": ["https://example.com/article"] },
+    "frame_url": { "type": "string", "description": "the ad iframe's URL; empty/absent for srcdoc or about:blank frames", "examples": ["https://googleads.g.doubleclick.net/pagead/ads?x"] },
+    "landing_url": { "type": "string", "description": "click-through landing URL when the observer could join one", "examples": ["https://www.advertiser.com/promo"] },
+    "network": { "type": "string", "description": "serving network: registrable domain of frame_url, else the ad-slot family (\"google\"), else \"unknown\"", "examples": ["doubleclick.net"] },
+    "advertiser": { "type": "string", "description": "registrable domain of landing_url, or — with the opt-in identity lookup — the legal \"Paid for by\" name; empty when unattributable", "examples": ["advertiser.com"] },
+    "advertiser_id": { "type": "string", "description": "Google ad-transparency advertiser id (AR…) when the identity lookup named the advertiser", "examples": ["AR04055566952792326145"] },
+    "viewed_secs": { "type": "number", "minimum": 0, "description": "seconds at least 50% visible in a visible tab", "examples": [12.5] },
+    "viewable": { "type": "boolean", "description": "met the MRC display bar: at least 50% visible for at least one continuous second", "examples": [true] },
+    "w": { "type": "integer", "minimum": 0, "description": "largest observed frame width, CSS px", "examples": [300] },
+    "h": { "type": "integer", "minimum": 0, "description": "largest observed frame height, CSS px", "examples": [250] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id; defaults to \"extension\" when absent", "examples": ["extension"] }
+  }
+}

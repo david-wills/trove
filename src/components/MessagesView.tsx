@@ -200,8 +200,8 @@ export default function MessagesView() {
           <div className="perm-text">
             <strong>Messages history is locked.</strong> Reading the iMessage
             database needs <strong>Full Disk Access</strong>. Grant it to
-            Trove in System Settings (and to troved, if installed), then
-            restart — the full history imports automatically.
+            Trove in System Settings, then restart — the full history
+            imports automatically.
           </div>
           <div className="perm-actions">
             <button
