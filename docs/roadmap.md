@@ -221,8 +221,8 @@ Constraints that hold either way:
 | M1 | **Vault MCP server** (`crates/trove-mcp`) — see "Next up" above; the ask component lives here, not in the window | ✅ 2026-09-15 (outcome below) |
 | S4 | Extract the watcher to its own project; delete `troved`; app syncs on open | ✅ 2026-09-16 (outcome below) |
 | S5 | Measure each periodic sync's memory in isolation; fix what the daemon leaked | |
-| S6 | UI baseline: navigation, theme, layout | |
-| S7-health | First data-type pass. Build **both** read-side shapes (merged vs source-native, see above) on real Oura + Apple Health data; pick one; record the decision here | groundwork 2026-09-16 (below); views wait on S6 |
+| S6 | UI baseline: navigation, theme, layout | ✅ thin scope 2026-09-16 (outcome below); theme deferred by decision |
+| S7-health | First data-type pass. Build **both** read-side shapes (merged vs source-native, see above) on real Oura + Apple Health data; pick one; record the decision here | groundwork 2026-09-16 (below); S6 landed; views next |
 | S7+ | Remaining data-type passes, one at a time, in the shape S7-health settled: messages, browser, calendar, activity (via the external watcher), music | |
 | later | Scheduled insights: an agent reads the vault through M1 on a schedule and writes findings back as markdown; the window shows them like any other type | |
 | later | The read layer from the old R4: vault-wide search, unified timeline, entity resolution, then LLM analysis over the search index | |
@@ -255,6 +255,32 @@ the view is one a new user would keep open.
   and installed via its `scripts/build.sh`. Its first job (measure its own
   memory) is built in: `rss_mb` in the heartbeat and a log line every ten
   minutes. S5 measures the app's periodic syncs the same way.
+
+### S6 outcome (2026-09-16)
+
+Thin by decision: the shell, not the views. Settled with David the same day:
+
+- **Navigation is a flat list the user orders.** No fixed groups (proposed,
+  rejected: grouping is the app's opinion about the user's data, and the
+  user's is better). Sidebar items drag up and down; the order and the
+  last-open section persist in localStorage (`src/nav.ts`), not the vault —
+  they are preferences of this window, not data. New sections append to
+  the end of a saved order. Sources never appear in the sidebar: S7's
+  source-native shape puts the Oura / Apple picker inside Health.
+- **One view shell.** Every section renders in `.view.view--scroll` (one
+  scrolling column) or `.view.view--split` (a 260px `.view-rail` beside a
+  scrolling `.view-body`), with a shared header (`.view-header` h2 +
+  `.view-sub` / `.view-intro`) and a shared single-column vocabulary
+  (`view-stats`, `view-section-title`, `view-trend`, `view-timeline`,
+  `view-empty`, `view-footnote`). Those classes were the `activity-*`
+  family, which twelve views had been borrowing from ActivityView; the two
+  identical rails (artifacts, health metrics) and three header styles
+  collapsed into one each. Per-view classes remain for what is unique to a
+  view; each S7 pass migrates its own cards.
+- **Theme deferred.** Token expansion, light mode, and chart palette were
+  proposed and set aside: David's priority is the UI/UX of the views, and a
+  theme pass on views that S7 is about to rebuild is work done twice. The
+  12 variables in `App.css` stay; nothing new hardcodes a colour.
 
 ### S7-health groundwork (2026-09-16)
 

@@ -158,16 +158,16 @@ export default function NormalizerView({
   }, [initialFile, ingest, onFileConsumed]);
 
   return (
-    <div className="norm-view">
-      <header className="norm-head">
+    <div className="view view--scroll norm-view">
+      <div className="view-header">
         <div>
-          <h1 className="norm-title">Import</h1>
-          <p className="norm-sub">
+          <h2>Import</h2>
+          <p className="view-intro">
             Drop any CSV or JSONL export. Trove maps it to a contract, routes it
             to a built importer, or keeps it raw — your call, every time.
           </p>
         </div>
-      </header>
+      </div>
 
       {error && <div className="norm-error">{error}</div>}
       {notice && <div className="norm-notice">{notice}</div>}

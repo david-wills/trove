@@ -169,11 +169,11 @@ export default function MessagesView() {
     : "";
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Messages</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             {neverSynced ? (
               <>Waiting for the first message sync…</>
             ) : (
@@ -218,7 +218,7 @@ export default function MessagesView() {
       )}
 
       {summary && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label="Messages" value={String(summary.messages)} />
           <Stat label="Sent" value={String(summary.sent)} muted />
           <Stat label="Received" value={String(summary.received)} muted />
@@ -231,7 +231,7 @@ export default function MessagesView() {
       )}
 
       {summary && summary.messages === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No messages in this range yet. iMessage imports automatically every
           15 minutes once Full Disk Access is granted (the first sync pulls
           the entire history). Email arrives via Gmail sync (connect a Google
@@ -260,15 +260,15 @@ export default function MessagesView() {
       )}
 
       {range !== "today" && daily.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Messages per day</div>
+        <div className="view-trend">
+          <div className="view-section-title">Messages per day</div>
           <Chart points={daily} name="Messages" unit="" kind="sum" />
         </div>
       )}
 
       {range === "today" && timeline.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Today, most recent first</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Today, most recent first</div>
           {[...timeline]
             .filter((m) => m.kind === "message")
             .sort((a, b) => (a.ts < b.ts ? 1 : -1))
@@ -293,8 +293,8 @@ export default function MessagesView() {
         </div>
       )}
 
-      <div className="activity-trend">
-        <div className="activity-section-title">Import archives</div>
+      <div className="view-trend">
+        <div className="view-section-title">Import archives</div>
         {askAccount === "" ? (
           <div className="perm-actions">
             <button
@@ -342,10 +342,10 @@ export default function MessagesView() {
             </button>
           </div>
         )}
-        {importNote && <div className="activity-sub">{importNote}</div>}
+        {importNote && <div className="view-sub">{importNote}</div>}
       </div>
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         iMessage is imported read-only from the Messages database — Messages
         is never modified. Email arrives via Gmail sync and .mbox archives
         (browse it in the Email tab); Slack from exported archives. Raw

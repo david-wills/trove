@@ -460,14 +460,16 @@ export default function IntegrationsView({
   };
 
   return (
-    <div className="sync-view int-hub">
-      <div className="sync-header">
-        <h2>Integrations</h2>
-        <p className="sync-sub">
-          Everything that brings data into your vault. Pick an integration to
-          see its settings, setup steps, and status — toggles take effect
-          within seconds, in the app and the background collector alike.
-        </p>
+    <div className="view view--scroll int-hub">
+      <div className="view-header">
+        <div>
+          <h2>Integrations</h2>
+          <p className="view-intro">
+            Everything that brings data into your vault. Pick an integration to
+            see its settings, setup steps, and status — toggles take effect
+            within seconds, in the app and the background collector alike.
+          </p>
+        </div>
       </div>
       {onImport && <ImportDropCard onImport={onImport} />}
       {error && <div className="sync-error">{error}</div>}

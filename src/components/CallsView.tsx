@@ -121,11 +121,11 @@ export default function CallsView() {
   const neverSynced = !sync || !sync.updated;
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Calls</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             {neverSynced ? (
               <>Waiting for the first call history sync…</>
             ) : (
@@ -169,7 +169,7 @@ export default function CallsView() {
       )}
 
       {summary && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label="Calls" value={String(summary.calls)} />
           <Stat label="Talk time" value={fmtTalk(summary.talk_secs)} />
           <Stat label="Outgoing" value={String(summary.outgoing)} muted />
@@ -179,7 +179,7 @@ export default function CallsView() {
       )}
 
       {summary && summary.calls === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No calls in this range yet. Phone and FaceTime history imports
           automatically every 15 minutes once Full Disk Access is granted
           (the first sync pulls the entire retained log).
@@ -208,15 +208,15 @@ export default function CallsView() {
       )}
 
       {daily.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Calls per day</div>
+        <div className="view-trend">
+          <div className="view-section-title">Calls per day</div>
           <Chart points={daily} name="Calls" unit="" kind="sum" />
         </div>
       )}
 
       {recent.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">
+        <div className="view-timeline">
+          <div className="view-section-title">
             Call log, most recent first
           </div>
           {recent.map((m, i) => (
@@ -239,7 +239,7 @@ export default function CallsView() {
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Calls are imported read-only from the system call history database —
         nothing is ever modified. Raw records:{" "}
         <code>~/Documents/Trove/correspondence/calls/</code> — one JSONL file per month.

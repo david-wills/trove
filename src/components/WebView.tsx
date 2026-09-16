@@ -156,11 +156,11 @@ export default function WebView() {
     live.length > 0 || timeline.some((v) => v.source === "extension");
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Web</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             {neverSynced ? (
               <>Waiting for the first history sync…</>
             ) : (
@@ -208,7 +208,7 @@ export default function WebView() {
 
       {liveSorted.length > 0 && (
         <div className="live-now">
-          <div className="activity-section-title">
+          <div className="view-section-title">
             <span className="live-dot" /> Watching now
           </div>
           {liveSorted.map((s) => (
@@ -248,14 +248,14 @@ export default function WebView() {
       )}
 
       {summary && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label="Visits" value={String(summary.visits)} />
           <Stat label="Sites" value={String(summary.domains.length)} muted />
         </div>
       )}
 
       {summary && summary.visits === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No browsing history here yet. Trove imports Chrome and Safari
           history automatically every 15 minutes (the first import pulls the
           full retained history). Chrome needs no permissions; Safari needs
@@ -283,15 +283,15 @@ export default function WebView() {
       )}
 
       {range !== "today" && daily.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Visits per day</div>
+        <div className="view-trend">
+          <div className="view-section-title">Visits per day</div>
           <Chart points={daily} name="Visits" unit="" kind="sum" />
         </div>
       )}
 
       {range === "today" && timeline.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Today, most recent first</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Today, most recent first</div>
           {[...timeline]
             .sort((a, b) => (a.time < b.time ? 1 : -1))
             .slice(0, 60)
@@ -341,7 +341,7 @@ export default function WebView() {
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Imported read-only from Chrome's and Safari's local history databases
         — the browsers are never modified. Raw visits:{" "}
         <code>~/Documents/Trove/browser/</code> — one JSONL file per day.

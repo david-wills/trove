@@ -109,11 +109,11 @@ export default function FinanceView() {
   const totals = totalsByCurrency(overview?.accounts ?? []);
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Finance</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             {overview?.connected ? (
               overview.state?.updated ? (
                 <>SimpleFIN · synced {fmtSynced(overview.state.updated)}</>
@@ -144,7 +144,7 @@ export default function FinanceView() {
       )}
 
       {overview && !overview.connected && overview.accounts.length === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No financial data yet. Connect your banks on the Integrations tab —
           Trove pulls balances and transactions once a day through your own
           SimpleFIN Bridge credential, into plain files under{" "}
@@ -153,7 +153,7 @@ export default function FinanceView() {
       )}
 
       {totals.length > 0 && (
-        <div className="activity-stats">
+        <div className="view-stats">
           {totals.map(([currency, total]) => (
             <div className="stat" key={currency}>
               <div className="stat-value">
@@ -170,8 +170,8 @@ export default function FinanceView() {
       )}
 
       {overview && overview.accounts.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Accounts</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Accounts</div>
           {overview.accounts.map((a) => (
             <div key={a.id} className="tl-row">
               <div className="tl-time">{a.balance_date ?? "—"}</div>
@@ -188,8 +188,8 @@ export default function FinanceView() {
       )}
 
       {(txns.length > 0 || account || filter) && (
-        <div className="activity-timeline">
-          <div className="activity-section-title fin-txn-head">
+        <div className="view-timeline">
+          <div className="view-section-title fin-txn-head">
             <span>Transactions · newest {PAGE}</span>
             <span className="fin-controls">
               <select
@@ -234,12 +234,12 @@ export default function FinanceView() {
             </div>
           ))}
           {shown.length === 0 && (
-            <div className="activity-empty">Nothing matches.</div>
+            <div className="view-empty">Nothing matches.</div>
           )}
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Files are the source of truth: accounts in{" "}
         <code>~/Documents/Trove/finance/accounts.jsonl</code>, transactions per account
         and year under <code>finance/transactions/</code>, daily balance

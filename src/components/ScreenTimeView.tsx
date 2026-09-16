@@ -147,11 +147,11 @@ export default function ScreenTimeView() {
     summary && summary.devices.length > 0 ? summary.devices[0].seconds : 1;
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Screen Time</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             App usage from every Apple device on your iCloud account
           </div>
         </div>
@@ -199,7 +199,7 @@ export default function ScreenTimeView() {
       )}
 
       {summary && !noDevicesYet && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label="Screen time" value={fmtDuration(summary.total_seconds)} />
           <Stat label="Apps" value={String(summary.apps.length)} muted />
           <Stat label="Devices" value={String(summary.devices.length)} muted />
@@ -207,7 +207,7 @@ export default function ScreenTimeView() {
       )}
 
       {noDevicesYet && (
-        <div className="activity-empty">
+        <div className="view-empty">
           {hasPermission ? (
             <>
               No screen time synced yet. Sessions from your iPhone, iPad,
@@ -226,7 +226,7 @@ export default function ScreenTimeView() {
       )}
 
       {summary && !noDevicesYet && summary.total_seconds === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No sessions in this range
           {device ? " for this device" : ""}. Devices sync their usage
           through iCloud with a delay of minutes to hours.
@@ -234,8 +234,8 @@ export default function ScreenTimeView() {
       )}
 
       {summary && device === null && summary.devices.length > 1 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">By device</div>
+        <div className="view-trend">
+          <div className="view-section-title">By device</div>
           <div className="app-bars">
             {summary.devices.map((d) => (
               <div
@@ -261,8 +261,8 @@ export default function ScreenTimeView() {
       )}
 
       {summary && summary.apps.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Top apps</div>
+        <div className="view-trend">
+          <div className="view-section-title">Top apps</div>
           <div className="app-bars">
             {summary.apps.slice(0, 14).map((a) => (
               <div key={a.bundle_id} className="app-bar">
@@ -283,15 +283,15 @@ export default function ScreenTimeView() {
       )}
 
       {range !== "today" && daily.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Screen time per day</div>
+        <div className="view-trend">
+          <div className="view-section-title">Screen time per day</div>
           <Chart points={daily} name="Screen time" unit="hr" kind="sum" />
         </div>
       )}
 
       {range === "today" && timeline.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Today, most recent first</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Today, most recent first</div>
           {[...timeline]
             .reverse()
             .slice(0, 60)
@@ -316,7 +316,7 @@ export default function ScreenTimeView() {
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Read from the usage streams iCloud already syncs between your Apple
         devices — nothing leaves your machine. Apple keeps only a few weeks
         on disk; Trove banks them for good. Raw sessions:{" "}

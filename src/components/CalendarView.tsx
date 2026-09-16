@@ -133,11 +133,11 @@ export default function CalendarView() {
   const hasUpcoming = [...upcoming.values()].some((v) => v.length > 0);
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Calendar</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             {sync?.updated ? (
               <>
                 synced {fmtSynced(sync.updated)}
@@ -181,7 +181,7 @@ export default function CalendarView() {
       )}
 
       {summary && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label={`Events (${range})`} value={String(summary.events)} />
           <Stat label="Scheduled hours" value={summary.hours.toFixed(1)} />
           <Stat label="All-day" value={String(summary.all_day)} muted />
@@ -194,7 +194,7 @@ export default function CalendarView() {
       )}
 
       {summary && summary.events === 0 && !needsPermission && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No events in range yet. The first sync backfills full calendar
           history into <code>~/Documents/Trove/calendar/</code> within a few minutes of
           access being granted.
@@ -221,8 +221,8 @@ export default function CalendarView() {
       )}
 
       {daily.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">
+        <div className="view-trend">
+          <div className="view-section-title">
             Scheduled hours per day, last {range}
           </div>
           <Chart points={daily} name="Scheduled" unit="h" kind="sum" />
@@ -230,8 +230,8 @@ export default function CalendarView() {
       )}
 
       {hasUpcoming && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">
+        <div className="view-timeline">
+          <div className="view-section-title">
             Next {UPCOMING_DAYS} days
           </div>
           {[...upcoming.entries()].map(([date, events]) =>
@@ -263,8 +263,8 @@ export default function CalendarView() {
       )}
 
       {changes.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">
+        <div className="view-timeline">
+          <div className="view-section-title">
             Schedule changes, last 7 days
           </div>
           {changes.map((c, i) => (
@@ -281,7 +281,7 @@ export default function CalendarView() {
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Read from the system calendar store (EventKit), which carries every
         account macOS syncs. Files: <code>~/Documents/Trove/calendar/</code> — events by
         month in <code>events/</code>, the reschedule/cancellation stream in{" "}

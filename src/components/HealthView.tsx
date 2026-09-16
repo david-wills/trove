@@ -314,7 +314,7 @@ function OverviewSection({
       </div>
       {trendOptions.length > 0 && (
         <>
-          <div className="health-header">
+          <div className="view-header">
             <div>
               <h2>{metric?.name ?? ""}</h2>
               <div className="health-header-sub">Oura · daily</div>
@@ -371,10 +371,10 @@ function MetricsSection({
     : null;
 
   return (
-    <div className="health-view">
-      <div className="metric-list">
-        <div className="metric-list-header">
-          <span className="metric-list-title">Metrics</span>
+    <div className="view view--split">
+      <div className="view-rail">
+        <div className="view-rail-header">
+          <span className="view-rail-title">Metrics</span>
           <button
             className="btn-new"
             onClick={onImport}
@@ -384,7 +384,7 @@ function MetricsSection({
             +
           </button>
         </div>
-        <div className="metric-list-items">
+        <div className="view-rail-items">
           {metrics.map((m) => (
             <div
               key={m.slug}
@@ -412,10 +412,10 @@ function MetricsSection({
           ))}
         </div>
       </div>
-      <div className="health-main">
+      <div className="view-body">
         {metric && span && (
           <>
-            <div className="health-header">
+            <div className="view-header">
               <div>
                 <h2>{metric.name}</h2>
                 <div className="health-header-sub">
@@ -513,7 +513,7 @@ function SleepSection({ hasOura }: { hasOura: boolean }) {
     <div className="health-section sleep-section">
       {night && (
         <div className="sleep-detail">
-          <div className="health-header">
+          <div className="view-header">
             <div>
               <h2>
                 {fmtDay(night.day)}

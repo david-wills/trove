@@ -155,11 +155,11 @@ export default function EmailView() {
   const haveAll = messages.length >= total;
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Email</h2>
-          <div className="activity-sub">{syncLine}</div>
+          <div className="view-sub">{syncLine}</div>
         </div>
         <div className="segmented">
           {RANGES.map((r) => (
@@ -204,14 +204,14 @@ export default function EmailView() {
         )}
       </div>
 
-      <div className="activity-section-title">
+      <div className="view-section-title">
         {total === 0
           ? "No email in this range"
           : `${total} email${total === 1 ? "" : "s"}${query ? ` matching “${query}”` : ""}, newest first`}
       </div>
 
       {total === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           Nothing here yet. Gmail pulls automatically every 15 minutes once a
           Google account is connected (Integrations tab); older archives can
           be imported as .mbox from the Messages tab. Try a wider range — the
@@ -285,7 +285,7 @@ export default function EmailView() {
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Email is stored complete in your vault —{" "}
         <code>~/Documents/Trove/correspondence/email/</code>, one JSONL file per month,
         shared by Gmail sync and .mbox imports and deduped by Message-ID.

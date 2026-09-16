@@ -116,11 +116,11 @@ export default function AdsView({
   const needsSetup = observerOn === false || !everCollected;
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Ads</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             The display ads the web showed you — who served them, who paid,
             and how long they were actually on screen.
           </div>
@@ -170,7 +170,7 @@ export default function AdsView({
       )}
 
       {summary && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label="Ads seen" value={String(summary.ads)} />
           <Stat label="Viewable" value={viewablePct} muted />
           <Stat
@@ -182,7 +182,7 @@ export default function AdsView({
       )}
 
       {summary && summary.ads === 0 && !needsSetup && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No ads recorded {range === "today" ? "today" : "in this range"} yet.
           Records land within about half a minute of an ad leaving the screen.
         </div>
@@ -203,22 +203,22 @@ export default function AdsView({
       )}
 
       {range !== "today" && seen.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Ads seen per day</div>
+        <div className="view-trend">
+          <div className="view-section-title">Ads seen per day</div>
           <Chart points={seen} name="Ads" unit="" kind="sum" />
         </div>
       )}
 
       {range !== "today" && viewedDaily.some((p) => p.value > 0) && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Ad-viewing time per day</div>
+        <div className="view-trend">
+          <div className="view-section-title">Ad-viewing time per day</div>
           <Chart points={viewedDaily} name="Ad time" unit="min" kind="sum" />
         </div>
       )}
 
       {range === "today" && timeline.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Today, most recent first</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Today, most recent first</div>
           {[...timeline]
             .sort((a, b) => (a.end < b.end ? 1 : -1))
             .slice(0, 60)
@@ -264,7 +264,7 @@ export default function AdsView({
       )}
 
       {summary && summary.ads > 0 && !identifyOn && (
-        <div className="activity-footnote">
+        <div className="view-footnote">
           Advertisers show as the domain or network behind each ad — the
           paying company's name isn't in what the page reveals. To resolve who
           paid (e.g. the agency or brand of record), enable{" "}
@@ -282,7 +282,7 @@ export default function AdsView({
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Observed by the browser extension's opt-in page observer — viewability
         is the MRC display bar (≥50% visible for ≥1s). Nothing is blocked and
         no page content is captured. Raw records:{" "}
@@ -299,7 +299,7 @@ function UsageBars({ title, rows }: { title: string; rows: AdUsage[] }) {
   const max = Math.max(...rows.map((r) => (byTime ? r.viewed_secs : r.count)), 1);
   return (
     <div className="app-bars">
-      <div className="activity-section-title">{title}</div>
+      <div className="view-section-title">{title}</div>
       {rows.slice(0, 12).map((r) => (
         <div
           key={r.name}

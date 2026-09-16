@@ -117,11 +117,11 @@ export default function ActivityView() {
   const maxApp = view && view.apps.length > 0 ? view.apps[0].seconds : 1;
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Activity</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             {liveApp ? (
               <>
                 <span className="live-dot" /> Now in <strong>{liveApp}</strong>
@@ -159,7 +159,7 @@ export default function ActivityView() {
       )}
 
       {view && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label="Active" value={fmtDuration(view.active_seconds)} />
           <Stat label="Away" value={fmtDuration(view.afk_seconds)} muted />
           <Stat label="Apps" value={String(view.apps.length)} muted />
@@ -167,7 +167,7 @@ export default function ActivityView() {
       )}
 
       {view && view.apps.length === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No activity recorded yet. trove-collector logs the app you're using
           every few seconds while it runs — switch around and check back.
         </div>
@@ -196,15 +196,15 @@ export default function ActivityView() {
       )}
 
       {range !== "today" && daily.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Active hours per day</div>
+        <div className="view-trend">
+          <div className="view-section-title">Active hours per day</div>
           <Chart points={daily} name="Active time" unit="hr" kind="sum" />
         </div>
       )}
 
       {range === "today" && timeline.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Today, most recent first</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Today, most recent first</div>
           {[...timeline]
             .reverse()
             .slice(0, 60)
@@ -223,7 +223,7 @@ export default function ActivityView() {
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         {collector?.running ? (
           <>
             Recorded by trove-collector

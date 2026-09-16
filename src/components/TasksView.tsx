@@ -125,11 +125,11 @@ export default function TasksView() {
     .find(Boolean);
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Tasks</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             {lastSynced ? (
               <>TickTick · synced {fmtSynced(lastSynced)}</>
             ) : (
@@ -153,7 +153,7 @@ export default function TasksView() {
       )}
 
       {overview && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label="Open" value={String(overview.open)} />
           <Stat label="Due today" value={String(overview.due_today)} />
           <Stat label="Overdue" value={String(overview.overdue)} />
@@ -162,7 +162,7 @@ export default function TasksView() {
       )}
 
       {overview && overview.open === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No tasks here yet. Trove syncs TickTick every 15 minutes once a
           token is provisioned at{" "}
           <code>~/Documents/Trove/.trove/sync/ticktick-token.json</code> — and any other
@@ -191,8 +191,8 @@ export default function TasksView() {
       )}
 
       {daily.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">
+        <div className="view-trend">
+          <div className="view-section-title">
             Completed per day, last {TREND_DAYS} days
           </div>
           <Chart points={daily} name="Completed" unit="" kind="sum" />
@@ -200,8 +200,8 @@ export default function TasksView() {
       )}
 
       {groups.map((g) => (
-        <div key={g.title} className="activity-timeline">
-          <div className="activity-section-title">
+        <div key={g.title} className="view-timeline">
+          <div className="view-section-title">
             {g.title} · {g.tasks.length}
           </div>
           {g.tasks.map((t) => (
@@ -220,7 +220,7 @@ export default function TasksView() {
         </div>
       ))}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Synced read-only from TickTick — completions are detected by diffing
         snapshots, building a history TickTick itself doesn't expose. Files:{" "}
         <code>~/Documents/Trove/tasks/</code> — open tasks in <code>tasks.jsonl</code>,

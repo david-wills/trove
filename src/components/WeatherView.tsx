@@ -219,11 +219,11 @@ export default function WeatherView() {
   const trend = pressureTrend(today);
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Weather</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             {latest ? (
               <>
                 {fmtPlace(latest.lat, latest.lon, latest.place ?? "")} · observed{" "}
@@ -410,15 +410,15 @@ export default function WeatherView() {
       )}
 
       {!latest && !needsLocation && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No observations yet. Trove records conditions once an hour while
           it is open — the first one should land within 15 minutes.
         </div>
       )}
 
       {today.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Today, hour by hour</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Today, hour by hour</div>
           <div className="weather-strip" ref={stripRef}>
             {today.map((o, i) => {
               const [g] = describeCode(o.weather_code, o.is_day);
@@ -447,8 +447,8 @@ export default function WeatherView() {
       )}
 
       {daily.length > 1 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Temperature °C</div>
+        <div className="view-trend">
+          <div className="view-section-title">Temperature °C</div>
           <WeatherChart
             dates={dates}
             unit="°C"
@@ -460,7 +460,7 @@ export default function WeatherView() {
           />
           {hasPrecip && (
             <>
-              <div className="activity-section-title weather-chart-gap">
+              <div className="view-section-title weather-chart-gap">
                 Precipitation mm
               </div>
               <WeatherChart
@@ -482,8 +482,8 @@ export default function WeatherView() {
       )}
 
       {daily.length > 1 && daily.length <= 31 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Day by day</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Day by day</div>
           <div className="weather-days">
             {[...daily].reverse().map((d) => (
               <DayRow
@@ -497,7 +497,7 @@ export default function WeatherView() {
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         Conditions come from the Open-Meteo public API — no account, no key,
         no tracking; only your rounded coordinates are sent. Raw records:{" "}
         <code>~/Documents/Trove/weather/</code> — one JSONL file per month.

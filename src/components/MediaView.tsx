@@ -148,11 +148,11 @@ export default function MediaView() {
     : [];
 
   return (
-    <div className="activity-view">
-      <div className="activity-header">
+    <div className="view view--scroll">
+      <div className="view-header">
         <div>
           <h2>Media</h2>
-          <div className="activity-sub">
+          <div className="view-sub">
             Music · Podcasts · Audiobooks · Video — every play, one stream
           </div>
         </div>
@@ -203,7 +203,7 @@ export default function MediaView() {
 
       {showLive && (
         <div className="live-now">
-          <div className="activity-section-title">
+          <div className="view-section-title">
             <span className="live-dot" /> Playing now
           </div>
           {live.map((s) => (
@@ -233,7 +233,7 @@ export default function MediaView() {
       )}
 
       {summary && (
-        <div className="activity-stats">
+        <div className="view-stats">
           <Stat label="Plays" value={String(summary.plays)} />
           <Stat label="Listening" value={fmtDuration(summary.seconds)} />
           <Stat label="Partials" value={String(summary.partials)} muted />
@@ -241,7 +241,7 @@ export default function MediaView() {
       )}
 
       {summary && total === 0 && (
-        <div className="activity-empty">
+        <div className="view-empty">
           No plays recorded {range === "today" ? "today" : "in this range"}.
           Music scrobbles land live as tracks finish; web playback is captured
           by the browser extension while it's connected; podcast listens
@@ -277,15 +277,15 @@ export default function MediaView() {
       )}
 
       {range !== "today" && daily.length > 0 && (
-        <div className="activity-trend">
-          <div className="activity-section-title">Plays per day</div>
+        <div className="view-trend">
+          <div className="view-section-title">Plays per day</div>
           <Chart points={daily} name="Plays" unit="" kind="sum" />
         </div>
       )}
 
       {range === "today" && rows.length > 0 && (
-        <div className="activity-timeline">
-          <div className="activity-section-title">Today, most recent first</div>
+        <div className="view-timeline">
+          <div className="view-section-title">Today, most recent first</div>
           {[...rows]
             .sort((a, b) => (a.ts < b.ts ? 1 : -1))
             .slice(0, 60)
@@ -334,7 +334,7 @@ export default function MediaView() {
         </div>
       )}
 
-      <div className="activity-footnote">
+      <div className="view-footnote">
         One read-time stream over per-source files: music scrobbles in{" "}
         <code>~/Documents/Trove/music/plays/</code>, podcast listens in{" "}
         <code>~/Documents/Trove/podcasts/events/</code>, audible web spans in{" "}

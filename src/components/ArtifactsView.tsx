@@ -116,10 +116,10 @@ export default function ArtifactsView({ openRequest }: { openRequest: OpenReques
   );
 
   return (
-    <div className="artifacts-view">
-      <div className="artifacts-list">
-        <div className="artifacts-list-header">
-          <span className="artifacts-list-title">Artifacts</span>
+    <div className="view view--split">
+      <div className="view-rail">
+        <div className="view-rail-header">
+          <span className="view-rail-title">Artifacts</span>
           <button className="btn-new" onClick={newArtifact} title="New note">
             +
           </button>
@@ -131,7 +131,7 @@ export default function ArtifactsView({ openRequest }: { openRequest: OpenReques
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <div className="artifacts-list-items">
+        <div className="view-rail-items">
           {artifacts.length === 0 && (
             <div className="artifacts-empty">
               {query.trim() ? (
