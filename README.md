@@ -113,6 +113,31 @@ cargo test -p trove-core     # the core tests
 
 The first build compiles all of the Rust and takes a while; later builds only recompile what changed. For day-to-day hacking, `npm run tauri dev` runs the app with live reload instead, and `scripts/make-dev-launcher.sh` wraps that in a double-clickable `Trove Dev.app` so you never need a terminal open. The app creates `~/Documents/Trove` on first launch.
 
+### Asking questions: the vault MCP server
+
+Trove has no chat box. Its question layer is `trove-mcp`, a read-only [MCP](https://modelcontextprotocol.io) server over the vault that ships inside the app bundle, so any agent that speaks MCP (Claude Code, Claude Desktop, …) can read the same files the window shows. It never writes to the vault, and `.trove/` (tokens, indexes) is unreachable through it.
+
+```bash
+# Claude Code
+claude mcp add trove -- /Applications/Trove.app/Contents/MacOS/trove-mcp
+
+# or, from a checkout without the app installed
+cargo build --release -p trove-mcp
+claude mcp add trove -- "$PWD/target/release/trove-mcp"
+```
+
+Claude Desktop reads the same shape from its config file (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "trove": { "command": "/Applications/Trove.app/Contents/MacOS/trove-mcp" }
+  }
+}
+```
+
+Both default to `~/Documents/Trove`; pass `--vault <path>` for another vault. The tools are `list_sources` (the registry, with data presence), `list_streams` (every JSONL directory with its date range), `read_stream` (newest-first, paginated, date-bounded raw records), `describe_type` (the vault-spec page for a domain, embedded at build time), `search_artifacts` / `read_artifact` (the notes layer), and `health_metrics` / `health_series` (Apple Health and Oura, aggregated per day/week/month). Live service connectors (Gmail, TickTick, …) are not this server's job; attach those to your MCP client directly. Trove's own pulls are for retention, not freshness.
+
 The daemon, if you want collection to continue when the app is closed:
 
 ```bash

@@ -56,6 +56,7 @@ pub mod notes;
 pub mod oura;
 pub mod photos;
 pub mod podcasts;
+pub mod query;
 pub mod reading;
 pub mod registry;
 pub mod runner;
@@ -143,6 +144,7 @@ pub use music_library::{
 pub use music_listener::{pump_main_run_loop, MusicListener};
 pub use oura::{OuraCollectionState, OuraSyncState, OuraSyncStats, OURA_SYNC_SECS};
 pub use photos::Photo;
+pub use query::{list_sources, record_date, SourceInfo, StreamInfo, StreamPage, STREAM_PAGE_MAX};
 pub use podcasts::{
     diff_episodes, podcasts_db_mtime, read_podcast_library, read_podcasts_via_copy,
     PodcastEpisode, PodcastEvent, PodcastSnapshotStats,

@@ -39,6 +39,13 @@ source "$HOME/.cargo/env" 2>/dev/null || true
 export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
 npm run tauri build -- --bundles app
 
+# The vault MCP server ships inside the bundle (docs/roadmap.md, M1): a
+# second binary next to the app's, so `claude mcp add trove -- <path>` points
+# at something that survives rebuilds and gets the same signature.
+echo "==> building trove-mcp (release)"
+cargo build --release -p trove-mcp
+ditto target/release/trove-mcp "$BUNDLE/Contents/MacOS/trove-mcp"
+
 echo "==> code-signing $BUNDLE"
 codesign --force --deep --sign "$SIGN_ID" "$BUNDLE"
 codesign -d -r- "$BUNDLE" 2>&1 | grep -q "certificate leaf" \
@@ -61,3 +68,5 @@ for dest in "/Applications/Trove.app" "./Trove.app"; do
 done
 
 echo "==> done — launch Trove from /Applications or double-click ./Trove.app"
+echo "    MCP server: /Applications/Trove.app/Contents/MacOS/trove-mcp"
+echo "    register:   claude mcp add trove -- /Applications/Trove.app/Contents/MacOS/trove-mcp"

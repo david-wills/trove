@@ -65,14 +65,14 @@ export default function GenericStreamView({
   const loadMore = useCallback(
     async (offset: number) => {
       setLoading(true);
-      let page: StreamPage = { records: [], partitions: [] };
+      let page: StreamPage = { records: [], partitions: [], next_offset: null };
       try {
         page = await api.readStream(dir, PAGE, offset);
       } catch {
         // Missing / non-stream folder: empty is fine, never crash the card.
       }
       setRecords((prev) => (offset === 0 ? page.records : [...prev, ...page.records]));
-      if (page.records.length < PAGE) setDone(true);
+      if (page.next_offset === null) setDone(true);
       setLoading(false);
       setLoaded(true);
       if (offset === 0) onFirstPageRef.current?.(page);

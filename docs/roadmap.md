@@ -1,6 +1,6 @@
 # Trove — Roadmap
 
-*2026-09-14, decided with David; M1 + read-side section added 2026-09-15. Supersedes `docs/post-wave-roadmap.md` for
+*2026-09-14, decided with David; M1 + read-side section added 2026-09-15, M1 shipped the same day. Supersedes `docs/post-wave-roadmap.md` for
 sequencing. The write-time doctrine in `docs/integration-pipeline.md`
 (contracts, conventions, evidence hierarchy) still stands; the vault spec
 in `docs/vault-spec/` is unchanged and remains the product's core contract.*
@@ -119,6 +119,50 @@ are for **retention**, not freshness — slow and correct is fine.
   with no per-question code. Note in this file which questions felt like
   they wanted a chart — that list seeds the data-type passes.
 
+### M1 outcome (2026-09-15)
+
+Built as briefed: `crates/trove-mcp` (rmcp 3.4, stdio), eight read-only
+tools, ships as `Trove.app/Contents/MacOS/trove-mcp` via
+`scripts/build-app.sh`, registered in Claude Code at user scope. The
+generic reads it needed (`read_stream_page`, `list_streams`,
+`list_sources`) were extracted into `crates/trove-core/src/query.rs`; the
+Tauri `read_stream` command now calls the same function. Ten tests
+(`cargo test -p trove-mcp` + the `query` unit tests), including the
+`.trove/`/`..` jail and a wire-level stdio test.
+
+Both done-when questions returned grounded, cited answers with no
+per-question code ("last Tuesday across every source": ~12 streams read
+and cross-referenced; "Oura sleep vs calendar density last month": daily
+sleep score + weekly duration against daily event counts). The first live
+run found two things the brief did not anticipate, both fixed:
+
+- **MCP `structuredContent` must be a JSON object.** Every list-shaped
+  tool failed client-side validation until wrapped (`{streams: [...]}`).
+- **Pages need a byte budget and record-level date bounds.** Month
+  partitions made "one day" cost a whole month of paging, and 100 email
+  records (or 3 raw Oura sleep sessions with their 5-minute arrays)
+  exceeded Claude Code's tool-result limit no matter the range. Day
+  bounds now also filter records by `ts`/`occurrence`/`start`/`day`, and
+  a page ends early past ~160 KB with `next_offset` pointing at the rest.
+
+Wanted a chart (seeds for the data-type passes, from the two answers):
+
+- A day timeline with calendar blocks and message bursts on one time axis
+  (S7+ messages/calendar).
+- Message volume by contact and hour; screen time stacked by app across a
+  day; browser activity as topic clusters over time (messages, activity,
+  browser passes).
+- Health trend around a date with the data gap visible; sleep score vs
+  event count on a dual axis; weekly duration vs weekly event total; a
+  month heatmap of event counts; a missing-nights annotation over event
+  bars (S7-health — the cross-source overlay is exactly the merged vs
+  source-native question).
+
+Not done in M1, by design: the "Copy MCP config" affordance in settings;
+any typed aggregate beyond health. The Oura raw `sleep` rows are the first
+concrete case for the generic-chart constraint below (a numeric column
+under a non-contract stream that someone wanted plotted).
+
 ## Read-side shape (leaning, to be settled by S7-health)
 
 Discussed 2026-09-15; not yet decided. The Health pass (S7) builds
@@ -171,7 +215,7 @@ Constraints that hold either way:
 | S1 | Double-clickable `Trove.app` + `Trove Dev.app` launcher | ✅ 2026-09-14 |
 | S2 | Prune the catalog to the keep list; INDEX records restore commits | ✅ 2026-09-14 (`b0e2bce`) |
 | S3 | Catalog view in the hub, rendered from INDEX at build time | ✅ 2026-09-14 (`60bc571`) |
-| M1 | **Vault MCP server** (`crates/trove-mcp`) — see "Next up" above; the ask component lives here, not in the window | next |
+| M1 | **Vault MCP server** (`crates/trove-mcp`) — see "Next up" above; the ask component lives here, not in the window | ✅ 2026-09-15 (outcome below) |
 | S4 | Extract the watcher to its own project; delete `troved`; app syncs on open | paused 2026-09-14: `~/Local/trove-collector` scaffolded (standalone binary + extension, compiles, 36 tests; local repo, not pushed). Trove side untouched — still carries troved + watcher modules |
 | S5 | Measure each periodic sync's memory in isolation; fix what the daemon leaked | |
 | S6 | UI baseline: navigation, theme, layout | |

@@ -1,0 +1,23 @@
+[package]
+name = "trove-mcp"
+description = "Read-only MCP server over a Trove vault (stdio) — the vault's question layer"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "trove-mcp"
+path = "src/main.rs"
+
+[dependencies]
+trove-core = { path = "../trove-core" }
+# Official Rust MCP SDK (github.com/modelcontextprotocol/rust-sdk). `server` +
+# `macros` give the #[tool_router]/#[tool] attribute API; `transport-io` is
+# the stdio transport. Pure Rust; no network features enabled.
+rmcp = { version = "3.4", features = ["server", "macros", "transport-io"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "io-std"] }
+schemars = "1"
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true

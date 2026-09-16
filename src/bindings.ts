@@ -100,8 +100,9 @@ async vaultManifest() : Promise<Result<Manifest, string>> {
 },
 /**
  * Newest-first raw records from any date-partitioned JSONL directory — the
- * generic "Recent data" read behind every integration card. Jailed by the
- * vault's path resolution; `.trove/` is never readable here.
+ * generic "Recent data" read behind every integration card. One thin wrapper
+ * over [`Vault::read_stream_page`] (shared with `trove-mcp`), which jails
+ * path escapes and `.trove/`.
  */
 async readStream(dir: string, limit: number, offset: number) : Promise<Result<StreamPage, string>> {
     try {
@@ -2123,9 +2124,13 @@ error?: string | null }
  */
 export type StreamPage = { records: JsonValue[]; 
 /**
- * Partition keys present, newest first.
+ * Partition keys present (within the requested bounds), newest first.
  */
-partitions: string[] }
+partitions: string[]; 
+/**
+ * Offset of the next page, or `None` when this page ended the stream.
+ */
+next_offset: number | null }
 export type Subtask = { title: string; done?: boolean; completed?: string | null }
 /**
  * One task, in the normalized cross-source schema. Times are RFC3339 local.

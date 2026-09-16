@@ -190,17 +190,10 @@ async fn vault_manifest(state: State<'_, AppState>) -> Result<trove_core::Manife
     .map_err(|e| e.to_string())?
 }
 
-/// One page of a generic stream read, newest records first.
-#[derive(serde::Serialize, specta::Type)]
-struct StreamPage {
-    records: Vec<serde_json::Value>,
-    /// Partition keys present, newest first.
-    partitions: Vec<String>,
-}
-
 /// Newest-first raw records from any date-partitioned JSONL directory — the
-/// generic "Recent data" read behind every integration card. Jailed by the
-/// vault's path resolution; `.trove/` is never readable here.
+/// generic "Recent data" read behind every integration card. One thin wrapper
+/// over [`Vault::read_stream_page`] (shared with `trove-mcp`), which jails
+/// path escapes and `.trove/`.
 #[tauri::command]
 #[specta::specta]
 async fn read_stream(
@@ -208,33 +201,13 @@ async fn read_stream(
     dir: String,
     limit: u32,
     offset: u32,
-) -> Result<StreamPage, String> {
-    if dir.is_empty() || dir.starts_with(".trove") {
-        return Err("not a readable stream".into());
-    }
+) -> Result<trove_core::StreamPage, String> {
     let root = state.vault.lock().unwrap().root().to_path_buf();
     tauri::async_runtime::spawn_blocking(move || {
         let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
-        let stream = vault.stream(&dir, trove_core::Partition::Day);
-        let mut partitions = stream.partitions().map_err(|e| e.to_string())?;
-        partitions.reverse();
-        let mut records = Vec::new();
-        let mut skip = offset as usize;
-        'outer: for key in &partitions {
-            let mut rows: Vec<serde_json::Value> = stream.read(key).map_err(|e| e.to_string())?;
-            rows.reverse();
-            for r in rows {
-                if skip > 0 {
-                    skip -= 1;
-                    continue;
-                }
-                if records.len() >= limit as usize {
-                    break 'outer;
-                }
-                records.push(r);
-            }
-        }
-        Ok(StreamPage { records, partitions })
+        vault
+            .read_stream_page(&dir, None, None, limit as usize, offset as usize, None)
+            .map_err(|e| e.to_string())
     })
     .await
     .map_err(|e| e.to_string())?
