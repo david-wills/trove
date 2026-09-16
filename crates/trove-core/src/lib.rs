@@ -36,6 +36,7 @@ pub mod habits;
 pub mod health;
 pub mod health_medical;
 pub mod health_nutrition;
+pub mod health_sleep;
 pub mod health_unified;
 pub mod home;
 pub mod icloud_drive;
@@ -112,6 +113,7 @@ pub use habits::{Checkin, Habit};
 pub use health::{Bucket, HealthSummary, ImportProgress, MetricKind, MetricSummary, SeriesPoint};
 pub use health_medical::Observation;
 pub use health_nutrition::Entry as NutritionEntry;
+pub use health_sleep::{apple_sessions, dedupe_relays, oura_session, AppleInterval, Session as SleepSession};
 pub use health_unified::{
     HeartratePoint, OuraDayScore, SleepNight, SourceSeries, UnifiedMetric, UnifiedSourceInfo,
     WorkoutItem,

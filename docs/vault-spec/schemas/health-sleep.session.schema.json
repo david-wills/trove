@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trove.app/vault-spec/health-sleep.session.schema.json",
+  "title": "Trove sleep session",
+  "description": "One line of health/sleep/<source>/YYYY-MM.jsonl: one sleep session (a night, a nap, a rest) as one source observed it. The normalized convergence of every sleep tracker; the source's full-fidelity record stays in its raw file and is joinable by guid. Additive evolution: readers tolerate unknown fields.",
+  "type": "object",
+  "required": ["day", "start", "end", "source", "guid"],
+  "additionalProperties": true,
+  "properties": {
+    "day": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "description": "The local date the session belongs to, as the source attributes it: Oura's own `day` (its sleep day turns over at 18:00, so an evening nap lands on the next day); for a source with no such notion, the local date of `end`. Readers group by this, never by the date of `end`. Also the partition key's day.", "examples": ["2026-06-10"] },
+    "start": { "type": "string", "format": "date-time", "description": "RFC3339 local time the session began (got into bed / the tracker started the session)", "examples": ["2026-06-09T23:12:40-07:00"] },
+    "end": { "type": "string", "format": "date-time", "description": "RFC3339 local time the session ended", "examples": ["2026-06-10T07:02:15-07:00"] },
+    "source": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "collector id, identical to the source folder name", "examples": ["oura", "apple-health"] },
+    "guid": { "type": "string", "minLength": 1, "description": "source-unique id, the dedupe key and the join key into the source's raw file: Oura's sleep record id; for a relay like Apple Health, `<origin-slug>:<start>`", "examples": ["5b1f0e6a-3c2d-4e8f-9a11-7d2c0b4e9f31", "apple-watch:2026-06-09T23:05:00-07:00"] },
+    "origin": { "type": "string", "description": "the app or device that recorded the session, when the writer is a relay of several (Apple Health's sourceName: \"Oura\", \"Apple Watch\", \"Pillow\"); omitted when the writer is the device itself", "examples": ["Apple Watch"] },
+    "kind": { "type": "string", "enum": ["sleep", "nap", "rest"], "description": "the source's own classification of the session, where it has one (Oura: long_sleep → sleep, sleep / late_nap → nap, rest → rest); omitted when the source does not classify", "examples": ["sleep"] },
+    "asleep_seconds": { "type": "integer", "minimum": 0, "description": "total time asleep, every stage summed; excludes awake time", "examples": [25380] },
+    "in_bed_seconds": { "type": "integer", "minimum": 0, "description": "time in bed, `start` to `end`, awake time included", "examples": [28175] },
+    "deep_seconds": { "type": "integer", "minimum": 0, "description": "deep (slow-wave) sleep, where the source reports stages", "examples": [4980] },
+    "rem_seconds": { "type": "integer", "minimum": 0, "description": "REM sleep, where the source reports stages", "examples": [6120] },
+    "light_seconds": { "type": "integer", "minimum": 0, "description": "light sleep, where the source reports stages (Apple's \"Core\" stage)", "examples": [14280] },
+    "awake_seconds": { "type": "integer", "minimum": 0, "description": "time awake inside the session, where the source reports it", "examples": [2795] },
+    "extra": { "type": "object", "description": "the source's scalar fields the shape has no column for (Oura efficiency, latency, average_hrv, lowest_heart_rate, average_breath, restless_periods, …). Per-sample arrays (5-minute phases, heart-rate and HRV samples) stay in the raw file, reachable by guid", "additionalProperties": true }
+  }
+}

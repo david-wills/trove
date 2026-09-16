@@ -16,7 +16,7 @@ use trove_core::{
     ActivityEvent, AdRecord, Almanac, BrowserVisit, CalendarChange, CalendarOccurrence, Checkin,
     Contact, EnvGeoEvent, EnvReading, Fix, Habit, Highlight, HomeReading, Item, LineItem,
     MediaItem, Meeting, Message, Note, NutritionEntry, Observation, Photo, Post, Recording,
-    Search, Segment, Task, TaskEvent, TimeEntry, DOMAINS,
+    Search, Segment, SleepSession, Task, TaskEvent, TimeEntry, DOMAINS,
 };
 
 fn repo_root() -> PathBuf {
@@ -128,6 +128,7 @@ fn fixtures_validate_against_schemas_and_rust_types() {
     check::<LineItem>("finance-purchases.line-item.jsonl", "finance-purchases.line-item.schema.json");
     check::<NutritionEntry>("health-nutrition.entry.jsonl", "health-nutrition.entry.schema.json");
     check::<Observation>("health-medical.observation.jsonl", "health-medical.observation.schema.json");
+    check::<SleepSession>("health-sleep.session.jsonl", "health-sleep.session.schema.json");
     check::<Segment>("travel.segment.jsonl", "travel.segment.schema.json");
     check::<Fix>("location.fix.jsonl", "location.fix.schema.json");
     check::<Search>("browser-searches.search.jsonl", "browser-searches.search.schema.json");
@@ -165,6 +166,7 @@ fn doc_examples_are_the_fixture_lines_verbatim() {
         ("domains/finance-purchases.md", "jsonl", "finance-purchases.line-item.jsonl"),
         ("domains/health-nutrition.md", "jsonl", "health-nutrition.entry.jsonl"),
         ("domains/health-medical.md", "jsonl", "health-medical.observation.jsonl"),
+        ("domains/health-sleep.md", "jsonl", "health-sleep.session.jsonl"),
         ("domains/travel.md", "jsonl", "travel.segment.jsonl"),
         ("domains/location.md", "jsonl", "location.fix.jsonl"),
         ("domains/browser-searches.md", "jsonl", "browser-searches.search.jsonl"),
@@ -303,6 +305,7 @@ fn schema_required_lists_match_the_domain_registry() {
         ("finance-purchases.line-item.schema.json", "finance-purchases"),
         ("health-nutrition.entry.schema.json", "health-nutrition"),
         ("health-medical.observation.schema.json", "health-medical"),
+        ("health-sleep.session.schema.json", "health-sleep"),
         ("travel.segment.schema.json", "travel"),
         ("location.fix.schema.json", "location"),
         ("browser-searches.search.schema.json", "browser-searches"),

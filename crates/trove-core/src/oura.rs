@@ -40,6 +40,7 @@ use chrono::{Local, NaiveDate};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::health_sleep::oura_session;
 use crate::integrations::{Integration, IntegrationKind};
 use crate::registry::{Behavior, Cadence, IntegrationDef, PullOutcome};
 use crate::vault::Vault;
@@ -701,6 +702,12 @@ impl Vault {
             let prev = self.load_oura_records(&rel)?;
             let (merged, n, u) = merge_records(prev, fetched, c.key);
             self.write_oura_records(&rel, &merged)?;
+            if c.name == "sleep" {
+                // The health-sleep contract is a projection of this raw file;
+                // regenerate it whole while the records are in memory.
+                let sessions: Vec<_> = merged.iter().filter_map(oura_session).collect();
+                self.write_sleep_sessions("oura", &sessions, true)?;
+            }
             new = n;
             updated = u;
         }

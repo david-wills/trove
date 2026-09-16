@@ -222,7 +222,7 @@ Constraints that hold either way:
 | S4 | Extract the watcher to its own project; delete `troved`; app syncs on open | ✅ 2026-09-16 (outcome below) |
 | S5 | Measure each periodic sync's memory in isolation; fix what the daemon leaked | |
 | S6 | UI baseline: navigation, theme, layout | |
-| S7-health | First data-type pass. Build **both** read-side shapes (merged vs source-native, see above) on real Oura + Apple Health data; pick one; record the decision here | |
+| S7-health | First data-type pass. Build **both** read-side shapes (merged vs source-native, see above) on real Oura + Apple Health data; pick one; record the decision here | groundwork 2026-09-16 (below); views wait on S6 |
 | S7+ | Remaining data-type passes, one at a time, in the shape S7-health settled: messages, browser, calendar, activity (via the external watcher), music | |
 | later | Scheduled insights: an agent reads the vault through M1 on a schedule and writes findings back as markdown; the window shows them like any other type | |
 | later | The read layer from the old R4: vault-wide search, unified timeline, entity resolution, then LLM analysis over the search index | |
@@ -255,6 +255,42 @@ the view is one a new user would keep open.
   and installed via its `scripts/build.sh`. Its first job (measure its own
   memory) is built in: `rss_mb` in the heartbeat and a log line every ten
   minutes. S5 measures the app's periodic syncs the same way.
+
+### S7-health groundwork (2026-09-16)
+
+Settled with David before the views: thin S6 first, then S7; S5 whenever.
+Both shapes ship in one build behind a toggle and are judged against the
+five chart wants from M1 over a week of use; the decision is recorded
+here. What landed ahead of the export:
+
+- **The `health/` raw layer has a spec page** (`domains/health.md`): the
+  Apple per-metric CSV layout (with its non-RFC3339 timestamps recorded
+  as the exception they are) and the Oura verbatim-record layout.
+- **`health-sleep` is the first promoted noun contract**
+  (`domains/health-sleep.md`, schema, fixture, `SleepSession`, DOMAINS
+  entry, round-trip test). It qualified under the roadmap's own rule: two
+  real sources report it and a real cross-source question needs it. A
+  session is day/start/end/source/guid plus asleep, in-bed, and four
+  stage totals; everything else scalar rides `extra`, per-sample arrays
+  stay raw. Both writers are projections of raw they already hold and
+  rewrite their own folder whole (Oura re-scores; an export replaces).
+- **Apple Health is a relay, and that decides a lot.** Its sleep export
+  carries seven origins (AutoSleep 1619 sessions, iPhone, Apple Watch,
+  Oura 255, Clock, Pillow, Withings) and the Oura nights arrive twice —
+  identical to the second on stage totals. The contract keeps both rows
+  with `origin` set and hides the relay at read time when the device
+  writes its own folder (`dedupe_relays`). This is the concrete case for
+  "source-native by default": the merged shape needs this rule on day one.
+- **Real-data fidelity check** (4978 sessions): every row passes the
+  schema; the one spec correction it forced is that `day` is the
+  *source's* attribution (Oura's sleep day turns over at 18:00, so an
+  evening nap belongs to the next day, and that is the key its daily
+  score joins on), not the date of `end`.
+- Seeds for the views, from the same check: 14 nights with no Oura
+  long-sleep row in the last 90 days (the "missing nights" annotation
+  has real data to show); three Oura collections (cardiovascular age,
+  resilience, VO2 max) are empty because the account never granted their
+  scope — a reconnect, not a bug.
 
 ## Carried forward unchanged
 

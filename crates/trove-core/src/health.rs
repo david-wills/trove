@@ -20,6 +20,7 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use serde::{Deserialize, Serialize};
 
+use crate::health_sleep::{apple_sessions, AppleInterval};
 use crate::integrations::{Integration, IntegrationKind};
 use crate::registry::{Behavior, IntegrationDef};
 use crate::vault::Vault;
@@ -286,6 +287,9 @@ struct ImportState<'a> {
     pending: usize,
     metrics: HashMap<String, MetricMeta>,
     records: u64,
+    /// Every `SleepAnalysis` interval, stitched into `health-sleep` sessions
+    /// at the end of the import (the contract's Apple writer).
+    sleep: Vec<AppleInterval>,
 }
 
 impl<'a> ImportState<'a> {
@@ -297,6 +301,7 @@ impl<'a> ImportState<'a> {
             pending: 0,
             metrics: HashMap::new(),
             records: 0,
+            sleep: Vec::new(),
         }
     }
 
@@ -378,6 +383,12 @@ impl<'a> ImportState<'a> {
                     } else {
                         self.touch("sleep", "Sleep", "hr", MetricKind::SumThenAvg);
                     }
+                    self.sleep.push(AppleInterval {
+                        origin: source.clone(),
+                        start: start_dt,
+                        end: end_dt,
+                        stage: stage.clone(),
+                    });
                     self.push_row("sleep", &end_dt, vec![start_str, end_str, stage, String::new(), source])?;
                 }
                 "MindfulSession" => {
@@ -538,6 +549,9 @@ impl<'a> ImportState<'a> {
     /// Flush everything, write daily aggregates, the summary index and index.md.
     fn finish(mut self, source_name: &str) -> Result<HealthSummary> {
         self.flush()?;
+        // The sleep contract: a full export replaces the whole source folder.
+        let sessions = apple_sessions(std::mem::take(&mut self.sleep));
+        self.vault.write_sleep_sessions("apple-health", &sessions, true)?;
 
         let mut summaries = Vec::new();
         for (slug, meta) in &self.metrics {

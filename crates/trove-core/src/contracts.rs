@@ -33,6 +33,7 @@ pub use crate::finance::LineItem;
 pub use crate::habits::{Checkin, Habit};
 pub use crate::health_medical::Observation;
 pub use crate::health_nutrition::Entry as NutritionEntry;
+pub use crate::health_sleep::Session as SleepSession;
 pub use crate::home::HomeReading;
 pub use crate::media::MediaItem;
 pub use crate::meetings::Meeting;
@@ -407,6 +408,28 @@ pub static DOMAINS: &[DomainContract] = &[
         kind: ContractKind::EventStream,
         spec_page: "docs/vault-spec/domains/health-nutrition.md",
         required: &["ts", "source", "guid"],
+    },
+    DomainContract {
+        // Sleep as sessions — one record per night, nap, or rest, as one
+        // source observed it — the normalized convergence of every sleep
+        // tracker (see [`SleepSession`]). Both shipping writers project raw
+        // they already hold (Oura's `health/oura/sleep.jsonl`; an Apple Health
+        // export's `SleepAnalysis` intervals, stitched per origin) and rewrite
+        // their own month files whole, since both sources revise sessions
+        // after the fact; a writer without raw appends with `guid` dedupe.
+        // Apple Health is a relay, so the same night can arrive twice (Oura
+        // directly and through Apple, marked by `origin`) — by design; the
+        // read side hides the relay when the device writes its own folder
+        // (`dedupe_relays`). The Apple importer's per-stage CSVs sit under the
+        // same root as *files*; `scan_contract` reads directories only, so
+        // they coexist. Partitioned by the month of `day` (the wake date).
+        id: "health-sleep",
+        layout: "health/sleep/<source>/YYYY-MM.jsonl",
+        root: "health/sleep",
+        partition: Partition::Month,
+        kind: ContractKind::EventStream,
+        spec_page: "docs/vault-spec/domains/health-sleep.md",
+        required: &["day", "start", "end", "source", "guid"],
     },
     DomainContract {
         // Clinical records — lab results, vital signs, medications, and
