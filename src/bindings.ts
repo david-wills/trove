@@ -687,6 +687,89 @@ async calendarDaily(from: string, to: string) : Promise<Result<SeriesPoint[], st
 }
 },
 /**
+ * Timed events per day — calendar density for the cross-source health charts.
+ */
+async calendarEventCounts(from: string, to: string) : Promise<Result<SeriesPoint[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("calendar_event_counts", { from, to }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Sleep sessions from every source folder under `health/sleep/`, `day` in
+ * `from..=to`. `dedupe` hides relay rows whose device writes its own folder.
+ */
+async sleepSessions(from: string, to: string, dedupe: boolean) : Promise<Result<Session[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("sleep_sessions", { from, to, dedupe }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Every chartable table (directory listings only).
+ */
+async listTables() : Promise<Result<TableInfo[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_tables") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * A table's numeric columns with coverage; builds or refreshes its index.
+ */
+async tableColumns(id: string) : Promise<Result<TableColumns, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("table_columns", { id }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * One column of one table as a bucketed series; empty `from`/`to` are open.
+ */
+async tableSeries(id: string, column: string, agg: Agg, bucket: Bucket, from: string, to: string) : Promise<Result<SeriesPoint[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("table_series", { id, column, agg, bucket, from, to }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async listBoards() : Promise<Result<Board[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("list_boards") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Create or replace `boards/<slug>.md`. A blank slug is derived from the title.
+ */
+async writeBoard(board: Board) : Promise<Result<Board, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("write_board", { board }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async deleteBoard(slug: string) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("delete_board", { slug }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Recent change-stream entries (reschedules, cancellations, additions).
  */
 async calendarChanges(from: string, to: string) : Promise<Result<CalendarChange[], string>> {
@@ -1102,6 +1185,19 @@ networks: AdUsage[];
  */
 advertisers: AdUsage[] }
 /**
+ * How a column's per-day values fold into a bucket.
+ */
+export type Agg = "sum" | 
+/**
+ * Weighted by record count, so a week's average is the average of its
+ * records, not of its days. The default fold.
+ */
+"avg" | "min" | "max" | 
+/**
+ * Records with a value (for [`RECORDS_COLUMN`]: days with records).
+ */
+"count"
+/**
  * Per-app time over a date range (active time only).
  */
 export type AppUsage = { app: string; seconds: number }
@@ -1136,6 +1232,52 @@ seconds: number }
  * decision).
  */
 export type AttachmentMeta = { name?: string; mime: string; bytes: number }
+export type Board = { 
+/**
+ * File stem: `[a-z0-9-]`, the only thing a caller may not change.
+ */
+slug: string; title: string; panels?: Panel[]; 
+/**
+ * Markdown body under the frontmatter.
+ */
+notes: string }
+/**
+ * One line on a panel: either a **catalog metric** (`metric`, a slug from
+ * the unified health catalog, read through the typed path with its
+ * source-aware semantics) or a **table column** (`table` + `column`, read
+ * through the generic column index). Exactly one of the two forms.
+ */
+export type BoardSeries = { 
+/**
+ * Metric slug from the health catalog (`sleep-score`, `steps`, …).
+ */
+metric: string; 
+/**
+ * With `metric`: the source to read (`oura`, `apple-health`); every
+ * source that reports it when empty.
+ */
+source: string; 
+/**
+ * Table id as [`Vault::list_tables`] reports it.
+ */
+table: string; 
+/**
+ * Column name, or `@records` for records per day.
+ */
+column: string; 
+/**
+ * How a table column folds; ignored for a metric (the catalog knows).
+ */
+agg?: Agg; 
+/**
+ * Legend label; the metric name or column name when empty.
+ */
+label: string; 
+/**
+ * Divide every value by this before plotting (3600 turns seconds into
+ * hours). Presentation only; the index keeps the source's unit.
+ */
+divide?: number | null; unit: string }
 /**
  * Aggregate of a date range for the Web view.
  */
@@ -1211,6 +1353,7 @@ transition: string;
  * opened — a rough "tab clutter" signal. 0/absent when unknown.
  */
 tab_count: number }
+export type Bucket = "day" | "week" | "month"
 /**
  * One line of `calendar/changes/YYYY-MM.jsonl`.
  */
@@ -1355,6 +1498,27 @@ installed: boolean; pid: number | null; role: string | null;
  * RFC3339 local time of the last heartbeat, fresh or not.
  */
 updated: string | null; rss_mb: number | null }
+/**
+ * One numeric column of a table, from its index.
+ */
+export type ColumnInfo = { 
+/**
+ * Field name; nested one level as `outer.inner`; [`RECORDS_COLUMN`]
+ * for the per-day record count.
+ */
+name: string; 
+/**
+ * Records carrying a numeric value for this field.
+ */
+records: number; 
+/**
+ * Distinct days with at least one value.
+ */
+days: number; min: number; max: number; 
+/**
+ * First / last day with a value, `YYYY-MM-DD`.
+ */
+first: string; last: string }
 /**
  * What the hub needs to render one connect method, straight off the def.
  */
@@ -2001,6 +2165,49 @@ updated: string;
  * Why the last attempt failed (expired token, rate limit), for the UI.
  */
 error?: string | null; collections: Partial<{ [key in string]: OuraCollectionState }> }
+export type Panel = { title: string; kind: PanelKind; bucket?: Bucket; 
+/**
+ * Days back from `to` (default 90).
+ */
+days?: number; 
+/**
+ * Last day shown, `YYYY-MM-DD`; today when absent, so a board stays
+ * live. Set it to freeze a panel around a date.
+ */
+to?: string | null; series: BoardSeries[] }
+/**
+ * How a panel draws its series.
+ */
+export type PanelKind = 
+/**
+ * One or more series as lines; a day with no value breaks the line, so
+ * a data gap is visible. Series whose `unit` differs from the first's
+ * take a right-hand axis.
+ */
+"line" | 
+/**
+ * One series as bars.
+ */
+"bars" | 
+/**
+ * Two series, the second on a right-hand axis (a `line` that forces
+ * the split even when units match).
+ */
+"dual" | 
+/**
+ * One series as a calendar heatmap, one cell per day.
+ */
+"heatmap" | 
+/**
+ * The first series as bars, with a marker on every day inside the
+ * range where the second series has no value ("missing nights").
+ */
+"gaps" | 
+/**
+ * The latest value of each series as a card — an overview number, not
+ * a chart. `bucket`/`days` bound how far back "latest" may look.
+ */
+"tile"
 /**
  * macOS permission an integration depends on, with its preflight result.
  */
@@ -2104,6 +2311,71 @@ export type SeriesPoint = {
  */
 date: string; value: number }
 /**
+ * One sleep session — one line of `health/sleep/<source>/YYYY-MM.jsonl`.
+ * Matches `health-sleep.session.schema.json` field-for-field.
+ */
+export type Session = { 
+/**
+ * `YYYY-MM-DD` the session belongs to, as the source attributes it
+ * (Oura's `day`, whose sleep day turns over at 18:00; otherwise the
+ * local date of `end`); the partition key's day.
+ */
+day: string; 
+/**
+ * RFC3339 local time the session began.
+ */
+start: string; 
+/**
+ * RFC3339 local time the session ended.
+ */
+end: string; 
+/**
+ * Collector id, identical to the source folder name.
+ */
+source: string; 
+/**
+ * Source-unique id: the dedupe key and the join key into the raw file.
+ */
+guid: string; 
+/**
+ * The app or device that recorded the session when the writer is a
+ * relay (Apple Health's `sourceName`); empty when the writer is the device.
+ */
+origin: string; 
+/**
+ * `"sleep"` | `"nap"` | `"rest"` — the source's own classification, where
+ * it has one; empty when the source does not classify.
+ */
+kind: string; 
+/**
+ * Total time asleep, every stage summed, awake time excluded.
+ */
+asleep_seconds?: number | null; 
+/**
+ * Time in bed, `start` to `end`, awake time included.
+ */
+in_bed_seconds?: number | null; 
+/**
+ * Deep (slow-wave) sleep, where the source reports stages.
+ */
+deep_seconds?: number | null; 
+/**
+ * REM sleep, where the source reports stages.
+ */
+rem_seconds?: number | null; 
+/**
+ * Light sleep (Apple's "Core"), where the source reports stages.
+ */
+light_seconds?: number | null; 
+/**
+ * Time awake inside the session, where the source reports it.
+ */
+awake_seconds?: number | null; 
+/**
+ * The source's scalar fields the shape has no column for.
+ */
+extra: Partial<{ [key in string]: JsonValue }> }
+/**
  * One night from Oura's `sleep` sessions. Durations in hours.
  */
 export type SleepNight = { day: string; bedtime_start: string; bedtime_end: string; 
@@ -2140,6 +2412,49 @@ partitions: string[];
  */
 next_offset: number | null }
 export type Subtask = { title: string; done?: boolean; completed?: string | null }
+/**
+ * A table's chartable surface.
+ */
+export type TableColumns = { id: string; 
+/**
+ * Dated records in the table (undated records are not chartable and
+ * not counted).
+ */
+records: number; days: number; first?: string | null; last?: string | null; 
+/**
+ * [`RECORDS_COLUMN`] first, then every numeric field by name.
+ */
+columns: ColumnInfo[] }
+/**
+ * One chartable table, as discovered by [`Vault::list_tables`].
+ */
+export type TableInfo = { 
+/**
+ * Vault-relative id: the directory for a dated stream
+ * (`calendar/events`), or `dir/stem` for one undated file
+ * (`health/oura/daily_sleep`).
+ */
+id: string; 
+/**
+ * Directory holding the files.
+ */
+dir: string; 
+/**
+ * File stem when the table is a single undated file.
+ */
+file?: string | null; 
+/**
+ * Date-partitioned: many files, one per day or month.
+ */
+dated: boolean; 
+/**
+ * Named vault-spec contract the directory sits under, if any.
+ */
+domain?: string | null; 
+/**
+ * Oldest / newest partition key for a dated table.
+ */
+first?: string | null; last?: string | null }
 /**
  * One task, in the normalized cross-source schema. Times are RFC3339 local.
  */

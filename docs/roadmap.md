@@ -222,7 +222,7 @@ Constraints that hold either way:
 | S4 | Extract the watcher to its own project; delete `troved`; app syncs on open | ✅ 2026-09-16 (outcome below) |
 | S5 | Measure each periodic sync's memory in isolation; fix what the daemon leaked | |
 | S6 | UI baseline: navigation, theme, layout | ✅ thin scope 2026-09-16 (outcome below); theme deferred by decision |
-| S7-health | First data-type pass. Build **both** read-side shapes (merged vs source-native, see above) on real Oura + Apple Health data; pick one; record the decision here | groundwork 2026-09-16 (below); S6 landed; views next |
+| S7-health | First data-type pass. Build **both** read-side shapes (merged vs source-native, see above) on real Oura + Apple Health data; pick one; record the decision here | ✅ **decided 2026-09-16: metric-first, source as a filter, boards as the merged view** (below); the week of use now refines this shape rather than choosing one |
 | S7+ | Remaining data-type passes, one at a time, in the shape S7-health settled: messages, browser, calendar, activity (via the external watcher), music | |
 | later | Scheduled insights: an agent reads the vault through M1 on a schedule and writes findings back as markdown; the window shows them like any other type | |
 | later | The read layer from the old R4: vault-wide search, unified timeline, entity resolution, then LLM analysis over the search index | |
@@ -317,6 +317,112 @@ here. What landed ahead of the export:
   has real data to show); three Oura collections (cardiovascular age,
   resilience, VO2 max) are empty because the account never granted their
   scope — a reconnect, not a bug.
+
+### S7-health views (2026-09-16)
+
+Both read-side shapes ship in one build behind a toggle at the top of
+Health (`Merged` / `By source`, persisted per window). Each produces the
+five charts from the M1 outcome. What landed:
+
+- **The generic chart's read path** (`crates/trove-core/src/columns.rs`).
+  A *table* is a dated JSONL stream directory or one undated file
+  (`health/oura/daily_sleep`); tables are discovered, never registered.
+  `.trove/columns/<table>.json` is a rebuildable per-file, per-day index
+  of the record count and `(count, sum, min, max)` of every numeric field,
+  one level of nesting included (`extra.efficiency`,
+  `contributors.deep_sleep`). `table_columns` is the picker,
+  `table_series(table, column, agg, bucket, from, to)` the read; both cost
+  the index, and a file that changes re-indexes alone. `@records` is the
+  synthetic column every table has (events per day came from it with no
+  code).
+- **Boards are files** (`boards/<slug>.md`, markdown + YAML frontmatter;
+  spec `docs/vault-spec/boards.md`, fixture-verified). A panel is a kind
+  (`line` / `bars` / `dual` / `heatmap` / `gaps`), a bucket, a range, and
+  one or two series (table, column, agg, optional `divide`/`unit`). The
+  app rewrites the file whole; hand edits are read back. "Pin to a board"
+  from the generic chart is how panels come to exist; a starter board
+  with the five charts is one click.
+- **Sleep reads the contract** in both shapes (`sleep_sessions` over
+  `health/sleep/*/`, grouped by `day`). Merged applies `dedupe_relays`;
+  By source shows one folder, no dedupe.
+- **Shape A (Merged)**: Overview, Metrics (now with a per-metric preferred
+  source — Both / Apple / Oura — the precedence rule made explicit),
+  Sleep (contract, deduped), **Compare** (the five charts from typed reads:
+  Oura's daily score, nightly hours from the preferred source, timed
+  calendar events per day), Workouts.
+- **Shape B (By source)**: a rail of sources with data (Oura, Apple
+  Health) plus Boards and Chart anything. A source pane is Sleep (its
+  contract rows) · Metrics (its series alone) · Tables (every JSONL table
+  it writes, raw rows, "Chart →"). Boards render the five charts through
+  the generic chart with no per-question code.
+- Typed additions: `calendar_event_counts` (timed events per day),
+  `sleep_sessions_view` (extra trimmed to scalars). New Tauri commands:
+  `sleep_sessions`, `list_tables`, `table_columns`, `table_series`,
+  `list_boards`, `write_board`, `delete_board`, `calendar_event_counts`.
+
+Findings from building both on the real vault:
+
+- **Every Apple Health sleep row in the last 90 days is an Oura relay**
+  (73 of 73), so the merged Sleep list, deduped, is Oura-only — correct,
+  and the clearest demonstration yet of why the relay rule has to exist
+  on day one of any merged view.
+- **The generic chart cannot filter.** Its event count includes all-day
+  rows (birthdays, holidays); the typed read excludes them. Whether a
+  `where:` on a series is worth adding is a real input to the decision:
+  it is the first place the source-native shape needed a mapping.
+- **Oura's daily score has real gaps** (the 14 missing nights): the
+  line chart shows them only because the x axis spans the full range
+  with nulls, never the data's own dates.
+- Column discovery over Oura's raw files surfaces the long tail for
+  free — `contributors.*`, `temperature_trend_deviation`,
+  `average_met_minutes` — none of which the metric catalog names.
+
+### S7-health decision (2026-09-16, same day)
+
+David used both shapes on real data and chose **neither**: the answer is
+a third shape that takes A's navigation and B's per-source visibility and
+drops both of their top-level structures. Built the same day; the toggle,
+the source rail, the Compare tab, and the per-metric "prefer" segmented
+are gone.
+
+**Health is metric-first, source is a filter, boards are the merged view.**
+
+- Health opens on the **Metrics rail** — every metric in the unified
+  catalog, searchable, with a source dot per reporter. That is the
+  baseline, not a tab.
+- A **source multi-select** at the top (Oura, Apple Health) shows or hides
+  sources across every metric; each metric can **override** it. Default is
+  every source on: hiding data by default is the one thing the vault is
+  against, and the override is how a noisy metric is quieted. Both are
+  window preferences (localStorage), not vault data.
+- Some metrics open a **designed view** instead of the chart, keyed by
+  slug: Sleep → the sessions pane over the contract (deduped when more
+  than one source is on); Workouts likewise. Everything else opens its
+  chart. Designed views are the "per-type views with a generic fallback"
+  of shape B, attached to metrics instead of sources.
+- **Pin…** on any metric appends it to a board as a chart or a
+  latest-value **tile**. The **Overview** board is the one Health lists
+  first; it is seeded on request (today's scores as tiles, sleep trend),
+  never silently. Boards absorb the Compare tab: a panel takes up to six
+  series, and a series with a different unit takes a right-hand axis.
+- **Board series come in two forms**: a catalog `metric` (typed read,
+  source-aware; `source` optional, else one line per reporter) or a
+  `table` + `column` (generic index). The typed form is what the generic
+  chart could not do — filter — so the calendar's all-day rows stop
+  inflating event counts wherever a metric exists.
+- **Chart anything** stays as its own rail entry under Tools, rough by
+  admission, feeding boards.
+
+Why not A or B as built: A's "prefer Oura / prefer Apple" per metric was
+judged not to scale ("relatively unique fields, individual tabs"); B's
+source hierarchy would list every metric once per source, which the
+filter gives in one click without the duplication. Both panes had things
+worth keeping — A's overview and metric cycling, B's per-source clarity
+and boards — and this shape keeps them.
+
+S7+ passes (messages, browser, calendar, activity, music) follow this
+shape: a type-first rail, source as a filter, designed views where a type
+earns one, pins to boards for anything cross-source.
 
 ## Carried forward unchanged
 

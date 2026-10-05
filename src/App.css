@@ -3093,3 +3093,258 @@ body,
   border-radius: 6px;
   user-select: all;
 }
+
+/* ---------- Health: S7 read-side shapes ---------- */
+
+.health-shape-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 26px;
+  border-bottom: 1px solid var(--border);
+}
+
+.health-shape-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.health-shape-hint {
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.segmented--sm button {
+  font-size: 12px;
+  padding: 3px 9px;
+}
+
+.native .view-rail-items {
+  padding-top: 4px;
+}
+
+.native-rail-group {
+  display: block;
+  padding: 16px 10px 6px;
+}
+
+.ca-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ca-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 160px;
+}
+
+.ca-controls label > span,
+.pin-field > span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.ca-controls select,
+.pin-field select,
+.health-controls select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--bg-panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 6px 28px 6px 10px;
+  font-family: inherit;
+  font-size: 12.5px;
+  max-width: 360px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%),
+    linear-gradient(135deg, var(--text-dim) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 55%, calc(100% - 10px) 55%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+
+.ca-controls select:focus,
+.pin-field select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.ca-coverage {
+  margin: -6px 0 10px;
+}
+
+.board-panel {
+  margin-top: 22px;
+}
+
+.board-panel-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.board-panel-head .view-section-title {
+  margin-bottom: 2px;
+}
+
+.board-notes {
+  margin: -6px 0 6px;
+}
+
+.panel-note {
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gap-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 6px;
+  background: var(--danger);
+  border-radius: 1px;
+}
+
+.heatmap-host {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 14px 10px;
+  overflow-x: auto;
+}
+
+.heatmap-months {
+  display: grid;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+
+.heatmap-grid {
+  display: grid;
+  gap: 2px;
+}
+
+.heatmap-week {
+  display: grid;
+  grid-template-rows: repeat(7, 12px);
+  gap: 2px;
+}
+
+.heatmap-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--bg-hover);
+}
+
+.heatmap-cell.pad {
+  background: transparent;
+}
+
+.heatmap-cell.empty {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
+.pin-dialog {
+  max-width: 420px;
+}
+
+.pin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 14px;
+}
+
+.pin-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-ghost.danger {
+  color: var(--danger);
+}
+
+.btn-ghost:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.source-chips {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.source-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-panel);
+  color: var(--text-faint);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 3px 10px 3px 8px;
+  cursor: pointer;
+}
+
+.source-chip-btn.on {
+  background: var(--bg-active);
+}
+
+.source-chips--sm .source-chip-btn {
+  font-size: 11.5px;
+  padding: 2px 8px 2px 6px;
+}
+
+.override {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rail-group {
+  display: block;
+  padding: 16px 10px 6px;
+}
+
+.rail-search {
+  margin: 0 2px 8px;
+}
+
+.designed-mark {
+  margin-left: 6px;
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.view-header--compact {
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.score-card {
+  border-top: 2px solid transparent;
+}

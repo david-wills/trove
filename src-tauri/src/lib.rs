@@ -1195,6 +1195,139 @@ async fn calendar_daily(
     .map_err(|e| e.to_string())?
 }
 
+/// Timed events per day — calendar density for the cross-source health charts.
+#[tauri::command]
+#[specta::specta]
+async fn calendar_event_counts(
+    state: State<'_, AppState>,
+    from: String,
+    to: String,
+) -> Result<Vec<SeriesPoint>, String> {
+    let root = state.vault.lock().unwrap().root().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
+        vault.calendar_event_counts(&from, &to).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+// ===========================================================================
+// S7: the sleep contract read, the generic table/column chart, and boards.
+// Thin wrappers; every read is O(displayed) — month partitions in range for
+// sleep, the rebuildable column index for tables.
+// ===========================================================================
+
+/// Sleep sessions from every source folder under `health/sleep/`, `day` in
+/// `from..=to`. `dedupe` hides relay rows whose device writes its own folder.
+#[tauri::command]
+#[specta::specta]
+async fn sleep_sessions(
+    state: State<'_, AppState>,
+    from: String,
+    to: String,
+    dedupe: bool,
+) -> Result<Vec<trove_core::SleepSession>, String> {
+    let root = state.vault.lock().unwrap().root().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
+        vault.sleep_sessions_view(&from, &to, dedupe).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+/// Every chartable table (directory listings only).
+#[tauri::command]
+#[specta::specta]
+async fn list_tables(state: State<'_, AppState>) -> Result<Vec<trove_core::TableInfo>, String> {
+    let root = state.vault.lock().unwrap().root().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
+        vault.list_tables().map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+/// A table's numeric columns with coverage; builds or refreshes its index.
+#[tauri::command]
+#[specta::specta]
+async fn table_columns(state: State<'_, AppState>, id: String) -> Result<trove_core::TableColumns, String> {
+    let root = state.vault.lock().unwrap().root().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
+        vault.table_columns(&id).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+/// One column of one table as a bucketed series; empty `from`/`to` are open.
+#[tauri::command]
+#[specta::specta]
+async fn table_series(
+    state: State<'_, AppState>,
+    id: String,
+    column: String,
+    agg: trove_core::Agg,
+    bucket: Bucket,
+    from: String,
+    to: String,
+) -> Result<Vec<SeriesPoint>, String> {
+    let root = state.vault.lock().unwrap().root().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
+        vault
+            .table_series(&id, &column, agg, bucket, &from, &to)
+            .map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+#[tauri::command]
+#[specta::specta]
+async fn list_boards(state: State<'_, AppState>) -> Result<Vec<trove_core::Board>, String> {
+    let root = state.vault.lock().unwrap().root().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
+        vault.list_boards().map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+/// Create or replace `boards/<slug>.md`. A blank slug is derived from the title.
+#[tauri::command]
+#[specta::specta]
+async fn write_board(state: State<'_, AppState>, board: trove_core::Board) -> Result<trove_core::Board, String> {
+    let root = state.vault.lock().unwrap().root().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
+        let mut board = board;
+        if board.slug.trim().is_empty() {
+            board.slug = trove_core::board_slugify(&board.title);
+        }
+        vault.write_board(&board).map_err(|e| e.to_string())?;
+        Ok(board)
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
+#[tauri::command]
+#[specta::specta]
+async fn delete_board(state: State<'_, AppState>, slug: String) -> Result<(), String> {
+    let root = state.vault.lock().unwrap().root().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || {
+        let vault = Vault::open_or_create(root).map_err(|e| e.to_string())?;
+        vault.delete_board(&slug).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+}
+
 /// Recent change-stream entries (reschedules, cancellations, additions).
 #[tauri::command]
 #[specta::specta]
@@ -1620,6 +1753,14 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         calendar_summary,
         calendar_timeline,
         calendar_daily,
+        calendar_event_counts,
+        sleep_sessions,
+        list_tables,
+        table_columns,
+        table_series,
+        list_boards,
+        write_board,
+        delete_board,
         calendar_changes,
         calendar_sync_info,
         calendar_permission,

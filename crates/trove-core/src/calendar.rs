@@ -665,6 +665,22 @@ impl Vault {
             .collect())
     }
 
+    /// Timed (non-all-day) events per day — calendar density. All-day rows
+    /// (birthdays, holidays, multi-day markers) are left out because they
+    /// say nothing about how busy a day was.
+    pub fn calendar_event_counts(&self, from: &str, to: &str) -> Result<Vec<SeriesPoint>> {
+        let mut per_day: BTreeMap<String, u64> = BTreeMap::new();
+        for occ in self.calendar_range(from, to)? {
+            if !occ.all_day {
+                *per_day.entry(occ.day().to_string()).or_default() += 1;
+            }
+        }
+        Ok(per_day
+            .into_iter()
+            .map(|(date, n)| SeriesPoint { date, value: n as f64 })
+            .collect())
+    }
+
     pub fn read_calendar_sync(&self) -> Option<CalendarSyncState> {
         let path = self.resolve(SYNC_FILE).ok()?;
         let body = fs::read_to_string(path).ok()?;

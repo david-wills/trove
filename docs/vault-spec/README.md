@@ -58,5 +58,6 @@ Trove separates *what was collected* from *what it means*:
 | `browser/YYYY-MM-DD.jsonl` | web visits with duration ([spec](domains/browser-visits.md); multi-writer with flock, see conventions); sibling streams `browser/ads/` ([spec](domains/ads.md)) and `browser/searches/` ([spec](domains/browser-searches.md)) |
 | `health/<metric>/YYYY-MM.csv` + `health/oura/` | the raw layer: Apple Health per-metric CSVs, Oura API records verbatim ([spec](domains/health.md)) |
 | `health/sleep/<source>/YYYY-MM.jsonl` | sleep sessions, normalized across trackers ([spec](domains/health-sleep.md)) |
+| `boards/<slug>.md` | user-curated chart boards, markdown + YAML frontmatter ([spec](boards.md)) |
 | `.trove/` | rebuildable indexes, cursors, settings, secrets — see conventions |
 | `.trove/manifest.json` | rebuildable index of every data folder present |

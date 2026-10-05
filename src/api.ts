@@ -8,9 +8,17 @@
 
 import { commands } from "./bindings";
 import type * as B from "./bindings";
-import type { Result } from "./bindings";
+import type { Agg, Bucket, Result } from "./bindings";
 
 export type {
+  Agg,
+  BoardSeries,
+  Bucket,
+  ColumnInfo,
+  Panel,
+  PanelKind,
+  TableColumns,
+  TableInfo,
   ActivityEvent,
   ActivitySummary,
   AdRecord,
@@ -70,8 +78,9 @@ export type {
 
 // Frontend-only types: these never cross IPC in a command signature, so the
 // generator doesn't know about them.
-export type Bucket = "day" | "week" | "month";
 export type HealthSource = "apple-health" | "oura";
+/** One `health/sleep/<source>/` row (the health-sleep contract). */
+export type SleepSession = B.Session;
 
 /** Payload of the "import-progress" event, emitted while any `runImport`
  *  runs — filter by `integration_id`. */
@@ -214,6 +223,8 @@ export type FinanceTransaction = AlwaysSerialized<
   "currency" | "pending"
 >;
 export type ScreenTimeDevice = AlwaysSerialized<B.DeviceInfo, "last_seen">;
+/** `panels` is serde(default) on the Rust side, so it is always present on the wire. */
+export type Board = AlwaysSerialized<B.Board, "panels">;
 export type WeatherLocation = AlwaysSerialized<B.WeatherLocation, "place">;
 
 export type UnifiedSourceInfo = Omit<B.UnifiedSourceInfo, "source"> & {
@@ -419,6 +430,25 @@ export const api = {
     unwrap(commands.calendarTimeline(date)) as Promise<CalendarOccurrence[]>,
   calendarDaily: (from: string, to: string) =>
     unwrap(commands.calendarDaily(from, to)),
+  /** Timed (non-all-day) events per day. */
+  calendarEventCounts: (from: string, to: string) =>
+    unwrap(commands.calendarEventCounts(from, to)),
+  /** health-sleep contract rows, `day` in from..=to; dedupe hides relay rows. */
+  sleepSessions: (from: string, to: string, dedupe: boolean) =>
+    unwrap(commands.sleepSessions(from, to, dedupe)),
+  listTables: () => unwrap(commands.listTables()),
+  tableColumns: (id: string) => unwrap(commands.tableColumns(id)),
+  tableSeries: (
+    id: string,
+    column: string,
+    agg: Agg,
+    bucket: Bucket,
+    from: string,
+    to: string
+  ) => unwrap(commands.tableSeries(id, column, agg, bucket, from, to)),
+  listBoards: () => unwrap(commands.listBoards()) as Promise<Board[]>,
+  writeBoard: (board: Board) => unwrap(commands.writeBoard(board)) as Promise<Board>,
+  deleteBoard: (slug: string) => unwrap(commands.deleteBoard(slug)),
   calendarChanges: (from: string, to: string) =>
     unwrap(commands.calendarChanges(from, to)),
   calendarSyncInfo: () => commands.calendarSyncInfo(),

@@ -140,6 +140,24 @@ fn fixtures_validate_against_schemas_and_rust_types() {
 }
 
 #[test]
+fn board_spec_example_is_the_fixture_and_round_trips() {
+    assert_doc_block("boards.md", "markdown", "board.md");
+    let text = fixture("board.md");
+    let board = trove_core::parse_board("sleep-calendar", &text).expect("board fixture parses");
+    assert_eq!(board.title, "Sleep × Calendar");
+    assert_eq!(board.panels.len(), 3);
+    assert_eq!(board.panels[0].kind, trove_core::PanelKind::Tile);
+    assert_eq!(board.panels[0].series[0].metric, "readiness-score");
+    assert_eq!(board.panels[1].kind, trove_core::PanelKind::Dual);
+    assert_eq!(board.panels[1].series[0].source, "oura");
+    assert_eq!(board.panels[2].series[0].divide, Some(3600.0));
+    assert!(board.panels.iter().flat_map(|p| &p.series).all(|s| s.is_valid()));
+    assert_eq!(board.notes, "Does a packed calendar cost sleep?");
+    // The app's writer produces exactly the documented text.
+    assert_eq!(trove_core::render_board(&board).unwrap(), text);
+}
+
+#[test]
 fn doc_examples_are_the_fixture_lines_verbatim() {
     let pairs = [
         ("domains/correspondence.md", "jsonl", "correspondence.message.jsonl"),

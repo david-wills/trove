@@ -86,6 +86,10 @@ phonenumber = "0.3.9"
 # → correct UTC instant). Pure Rust — embeds the tz database at compile time,
 # no system zoneinfo, no C/cmake — keeping the standalone rule.
 specta = { version = "=2.0.0-rc.22", features = ["derive", "serde_json"], optional = true }
+# Pure-Rust YAML (unsafe-libyaml is a Rust transliteration of libyaml, no C)
+# for the frontmatter of board files (boards.rs). Boards are markdown with
+# YAML frontmatter by decision (docs/roadmap.md, S7).
+serde_yaml_ng = "0.10"
 # Pure-Rust tar reader for the Skype archival importer (skype.rs): unpacks the
 # official .tar export to extract messages.json. No C/cmake/system libs
 # (standalone rule). xattr feature disabled (not needed for read-only extraction).

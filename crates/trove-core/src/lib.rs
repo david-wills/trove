@@ -8,6 +8,7 @@
 pub mod activity;
 pub mod ads;
 pub mod apple_mail;
+pub mod boards;
 pub mod books;
 pub mod browser;
 pub mod browser_ext;
@@ -15,6 +16,7 @@ pub mod browser_searches;
 pub mod calendar;
 pub mod calls;
 pub mod cloud_folder;
+pub mod columns;
 pub mod connect;
 pub mod contacts;
 pub mod contracts;
@@ -136,6 +138,8 @@ pub use music_library::{
 };
 pub use oura::{OuraCollectionState, OuraSyncState, OuraSyncStats, OURA_SYNC_SECS};
 pub use photos::Photo;
+pub use boards::{parse_board, render_board, slugify as board_slugify, Board, BoardSeries, Panel, PanelKind, BOARDS_DIR};
+pub use columns::{Agg, ColumnInfo, TableColumns, TableInfo, RECORDS_COLUMN};
 pub use query::{list_sources, record_date, SourceInfo, StreamInfo, StreamPage, STREAM_PAGE_MAX};
 pub use podcasts::{
     diff_episodes, podcasts_db_mtime, read_podcast_library, read_podcasts_via_copy,

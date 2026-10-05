@@ -370,6 +370,27 @@ impl Vault {
     }
 }
 
+impl Vault {
+    /// [`Vault::sleep_sessions`] for a view: relay rows hidden when the
+    /// device writes its own folder (`dedupe`), and `extra` trimmed to
+    /// scalars a row can show (numbers, booleans, short strings) — Oura's
+    /// per-30-second phase strings stay in the file, joinable by `guid`.
+    pub fn sleep_sessions_view(&self, from: &str, to: &str, dedupe: bool) -> Result<Vec<Session>> {
+        let mut sessions = self.sleep_sessions(from, to)?;
+        if dedupe {
+            sessions = dedupe_relays(sessions);
+        }
+        for s in &mut sessions {
+            s.extra.retain(|_, v| match v {
+                Value::Number(_) | Value::Bool(_) => true,
+                Value::String(t) => t.len() <= 40,
+                _ => false,
+            });
+        }
+        Ok(sessions)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
